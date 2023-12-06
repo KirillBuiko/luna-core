@@ -1,0 +1,24 @@
+{
+  "include": ["src/**/*"],
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "target": "ES2022",
+    "moduleResolution": "node",
+    "isolatedModules": true,
+    "importsNotUsedAsValues": "error",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "paths": {
+      "@grpc-build/*": [ "./grpc/*" ],
+      "@/*": [ "./src/*" ]
+    }
+  },
+  "ts-node": {
+    "require": [
+      "tsconfig-paths/register"
+    ]
+  }
+}
