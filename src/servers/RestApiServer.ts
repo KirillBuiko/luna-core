@@ -1,44 +1,19 @@
-import type {IServer, ServerStatus} from "@/app/types/IServer";
+import type {IServer} from "@/app/types/IServer";
 import type {ServerConfigType} from "@/app/types/ServerConfigType";
-import Fastify, {type RouteHandlerMethod} from "fastify";
-import {fastifyMultipart} from "@fastify/multipart";
+import type {RouteHandlerMethod} from "fastify";
 import type {IRequestManager} from "@/app/types/IRequestManager";
-import {ProtocolType, RequestName} from "@/types/Enums";
-import type {RestApiQueryType} from "@/types/Types";
+import {AbstractRestApiServer} from "@/servers/AbstractRestApiServer";
 
-export class RestApiServer implements IServer {
-    status: ServerStatus = "off";
+export class RestApiServer extends AbstractRestApiServer implements IServer {
     requestManager: IRequestManager | undefined;
-    server = Fastify();
 
     constructor() {
-        const Duplicate2 = this;
-        this.server.register(fastifyMultipart, {
-            limits: {
-                fileSize: 1024 * 1024 * 1024
-            }
-        }).then(() => {
-            this.server.get('/get', this.getHandler.bind(this));
-            this.server.post('/set', this.setHandler.bind(this));
-        })
-        // this.server.register(fStat, {
-        //     root: swagger.absolutePath(),
-        //     // prefix: "/swagger",
-        //     logLevel: "info"
-        // })
+        super();
     }
 
     async start(config: ServerConfigType, requestManager: IRequestManager): Promise<Error | null> {
         this.requestManager = requestManager;
-        try {
-            await this.server.listen({
-                port: config.port
-            });
-        } catch (err) {
-            return err as Error;
-        }
-        this.status = "on";
-        return null;
+        return super.startDefault(config);
     }
 
     stop(): Promise<Error | undefined> {
@@ -46,7 +21,7 @@ export class RestApiServer implements IServer {
         return this.server.close();
     }
 
-    private getHandler: RouteHandlerMethod = (req, res) => {
+    protected getHandler: RouteHandlerMethod = (req, res) => {
         console.log(req.query);
         // this.requestManager!.register({
         //     protocol: ProtocolType.REST_API,
@@ -55,7 +30,7 @@ export class RestApiServer implements IServer {
         // }, (JSON.parse(req.query as string) as RestApiQueryType).info);
     }
 
-    private setHandler: RouteHandlerMethod = (req, res) => {
+    protected setHandler: RouteHandlerMethod = (req, res) => {
 
     }
 }
