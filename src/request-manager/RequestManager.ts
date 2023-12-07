@@ -15,11 +15,13 @@ export class RequestManager implements IRequestManager{
     constructor(private endpointsManager: IEndpointsManager) {}
 
     register(sourceOptions: SourceOptionsType, info: GetRequestInfo | DataRequestInfo) {
+        let destOptions: DestinationOptionsType | undefined;
+
         const destName =
             this.router.getEndpointName(info.requestType as RequestType__Output, sourceOptions.requestName);
-        console.log(`${sourceOptions.requestName} ${info.requestType} `+
-            `request from ${sourceOptions.protocol} to ${destName}`);
-        let destOptions: DestinationOptionsType | undefined;
+        console.log(`Request ${sourceOptions.requestName} of type ${info.requestType} `+
+            ` from ${sourceOptions.protocol} to ${destName}`);
+
         if (destName) {
             try {
                 destOptions = this.endpointsManager.getEndpoint(destName).send(sourceOptions.requestName, info);

@@ -1,8 +1,8 @@
-import type {IServer, ServerStatus} from "@/app/types/IServer";
+import type {ServerStatus} from "@/app/types/IServer";
 import type {ServerConfigType} from "@/app/types/ServerConfigType";
 import type {IRequestManager} from "@/app/types/IRequestManager";
 
-export class DummyServer implements IServer{
+export class DummyServer {
     status: ServerStatus = "off";
     requestManager: IRequestManager | undefined;
 

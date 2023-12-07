@@ -1,25 +1,29 @@
 import type {GetRequestInfo} from "@grpc-build/GetRequestInfo";
 import {serverConfigs} from "@/configs/serverConfigs";
+import type {DataRequestInfo} from "@grpc-build/DataRequestInfo";
 
 export class TestRestApiClient {
     constructor() {
     }
 
-    async get() {
-        const info: GetRequestInfo = {
-            requestType: "PROGRAM_GENERATE",
-            variableGetInfo: {
-                variableId: "123123"
-            }
-        }
-        serverConfigs["restApiServer"].port
-        await fetch(`http://localhost:${serverConfigs["restApiServer"].port}/get` +
+    async get(info: GetRequestInfo) {
+        return await fetch(`http://localhost:${serverConfigs["restApiServer"].port}/get` +
             `?info=${JSON.stringify(info)}`, {
             method: "GET",
         })
     }
 
-    set() {
+    async set(info: DataRequestInfo) {
+        const form = new FormData();
+        form.append("info", JSON.stringify(info));
+        // form.append("data", await fs.openAsBlob(__dirname + "/../test-data.txt"));
 
+        return await fetch(`http://localhost:${serverConfigs["restApiServer"].port}/set`, {
+            method: "POST",
+            // headers: {"Content-Type": "multipart/form-data"},
+            body: form,
+            // @ts-ignore
+            duplex: "half"
+        }).then(res => res.text());
     }
 }

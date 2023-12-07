@@ -1,19 +1,9 @@
-export enum ProtocolType {
-    GRPC = 0,
-    REST_API = 1
-}
 
-export enum RequestName {
-    GET = 10,
-    SET
-}
 
-export enum RequestDirection {
-    FROM = 20,
-    TO
-}
+// 1000 - 2000: Data type errors
+export enum ResultCode {
+    OK = 1,
+    FAIL = 2,
 
-export enum StreamType {
-    READER = 30,
-    WRITER
+    INFO_NOT_GIVEN = 1000,
 }

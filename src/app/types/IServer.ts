@@ -10,7 +10,7 @@ export interface IAbstractServer {
     stop(): Promise<Error | undefined>;
 }
 
-export interface IServer {
+export interface IServer extends IAbstractServer {
     requestManager: IRequestManager | undefined;
 
     start(config: ServerConfigType, requestManager: IRequestManager): Promise<Error | null>;

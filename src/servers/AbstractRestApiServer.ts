@@ -1,7 +1,6 @@
 import type {IAbstractServer} from "@/app/types/IServer";
 import type {ServerStatus} from "@/app/types/IServer";
 import Fastify, {RouteHandlerMethod} from "fastify";
-import {fastifyMultipart} from "@fastify/multipart";
 import type {ServerConfigType} from "@/app/types/ServerConfigType";
 
 export abstract class AbstractRestApiServer implements IAbstractServer{
@@ -9,19 +8,10 @@ export abstract class AbstractRestApiServer implements IAbstractServer{
     server = Fastify();
 
     protected constructor() {
-        this.server.register(fastifyMultipart, {
-            limits: {
-                fileSize: 1024 * 1024 * 1024
-            }
-        }).then(() => {
+        this.server.register(require('@fastify/multipart')).then(() => {
             this.server.get('/get', this.getHandler.bind(this));
             this.server.post('/set', this.setHandler.bind(this));
-        })
-        // this.server.register(fStat, {
-        //     root: swagger.absolutePath(),
-        //     // prefix: "/swagger",
-        //     logLevel: "info"
-        // })
+        });
     }
 
     async startDefault(config: ServerConfigType): Promise<Error | null> {

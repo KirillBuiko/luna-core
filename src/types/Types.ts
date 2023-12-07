@@ -2,7 +2,22 @@ import type {BusboyFileStream} from "@fastify/busboy";
 import type {DataRequestsClient, DataRequestsHandlers} from "@grpc-build/DataRequests";
 import type {GetRequestInfo__Output} from "@grpc-build/GetRequestInfo";
 import type {FastifyReply} from "fastify";
-import type {ProtocolType, RequestName} from "@/types/Enums";
+
+export type ProtocolType =
+    | "GRPC"
+    | "REST_API"
+
+export type RequestName =
+    | "GET"
+    | "SET"
+
+export type RequestDirection =
+    | "FROM"
+    | "TO"
+
+export type StreamType =
+    | "READER"
+    | "WRITER"
 
 interface SourceReaderWriterOptions<
     ProtocolT extends ProtocolType, RequestN extends RequestName,
@@ -23,23 +38,23 @@ interface DestinationReaderWriterOptions<
 }
 
 export type SourceOptionsType =
-    | SourceReaderWriterOptions<ProtocolType.GRPC, RequestName.GET,
+    | SourceReaderWriterOptions<"GRPC", "GET",
     void, Parameters<DataRequestsHandlers["Get"]>[0]>
 
-    | SourceReaderWriterOptions<ProtocolType.REST_API, RequestName.GET,
+    | SourceReaderWriterOptions<"REST_API", "GET",
     void, FastifyReply>
 
-    | SourceReaderWriterOptions<ProtocolType.GRPC, RequestName.SET,
+    | SourceReaderWriterOptions<"GRPC", "SET",
     Parameters<DataRequestsHandlers["Set"]>[0], Parameters<DataRequestsHandlers["Set"]>[1]>
 
-    | SourceReaderWriterOptions<ProtocolType.REST_API, RequestName.SET,
+    | SourceReaderWriterOptions<"REST_API", "SET",
     BusboyFileStream, Parameters<DataRequestsHandlers["Set"]>[1]>
 
 export type DestinationOptionsType =
-    | DestinationReaderWriterOptions<ProtocolType.GRPC, RequestName.GET,
+    | DestinationReaderWriterOptions<"GRPC", "GET",
     ReturnType<DataRequestsClient["Get"]>, void>
 
-    | DestinationReaderWriterOptions<ProtocolType.GRPC, RequestName.SET,
+    | DestinationReaderWriterOptions<"GRPC", "SET",
     Promise<NonNullable<Parameters<Parameters<DataRequestsClient["Set"]>[0]>[1]>>, ReturnType<DataRequestsClient["Set"]>>
 
 export type NarrowedOptionsType<
