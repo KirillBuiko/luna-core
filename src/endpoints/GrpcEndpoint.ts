@@ -68,6 +68,10 @@ export class GrpcEndpoint implements IEndpoint {
             });
         })
 
+        writer.write({
+            info: info
+        });
+
         return {
             requestName: "SET",
             protocol: "GRPC",

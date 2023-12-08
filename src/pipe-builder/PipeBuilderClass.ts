@@ -3,7 +3,7 @@ import type {
     SourceOptionsType
 } from "@/types/Types";
 
-export class PipelineBuilderClass {
+export class PipeBuilderClass {
     buildPipeline<SourceRequestT, SourceResponseT>
     (sourceOptions: SourceOptionsType,
      destOptions: DestinationOptionsType) {

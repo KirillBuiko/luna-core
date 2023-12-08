@@ -20,7 +20,7 @@ export class RequestManager implements IRequestManager{
         const destName =
             this.router.getEndpointName(info.requestType as RequestType__Output, sourceOptions.requestName);
         console.log(`Request ${sourceOptions.requestName} of type ${info.requestType} `+
-            ` from ${sourceOptions.protocol} to ${destName}`);
+            `from ${sourceOptions.protocol} to ${destName}`);
 
         if (destName) {
             try {
@@ -30,6 +30,8 @@ export class RequestManager implements IRequestManager{
                 `${info.requestType} from ${sourceOptions.protocol} to ${destName}`);
             }
         }
+
+
         // Build pipeline
     }
 }
