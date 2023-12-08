@@ -3,16 +3,20 @@ import {serverConfigs} from "@/configs/serverConfigs";
 import type {DataRequestInfo} from "@grpc-build/DataRequestInfo";
 import * as fs from "fs";
 import * as path from "path";
+import {Readable} from "node:stream";
 
 export class TestRestApiClient {
     constructor() {
     }
 
     async get(info: GetRequestInfo) {
-        return await fetch(`http://localhost:${serverConfigs["restApiServer"].port}/get` +
+        // @ts-ignore
+        Readable.fromWeb((await fetch(`http://localhost:${serverConfigs["restApiServer"].port}/get` +
             `?info=${JSON.stringify(info)}`, {
             method: "GET",
-        })
+        })).body).on("data", data => {
+            console.log(data.toString());
+        });
     }
 
     async set(info: DataRequestInfo) {

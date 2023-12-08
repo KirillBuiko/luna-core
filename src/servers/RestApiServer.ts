@@ -3,7 +3,6 @@ import type {ServerConfigType} from "@/app/types/ServerConfigType";
 import type {FastifyReply, RouteHandlerMethod} from "fastify";
 import type {IRequestManager} from "@/app/types/IRequestManager";
 import {AbstractRestApiServer} from "@/servers/AbstractRestApiServer";
-import type {RestApiQueryType} from "@/types/Types";
 import type {sendUnaryData} from "@grpc/grpc-js";
 import type {GetRequestInfo__Output} from "@grpc-build/GetRequestInfo";
 import {ErrorMessage} from "@/utils/ErrorMessage";
@@ -30,7 +29,7 @@ export class RestApiServer extends AbstractRestApiServer implements IServer {
         return this.server.close();
     }
 
-    sendError (res: FastifyReply, code: Status, message: string) {
+    sendError(res: FastifyReply, code: Status, message: string) {
         res.code(500);
         res.send(ErrorMessage.create(code, message));
     }
@@ -40,7 +39,7 @@ export class RestApiServer extends AbstractRestApiServer implements IServer {
             protocol: "REST_API",
             requestName: "GET",
             sourceWriter: res,
-        }, (JSON.parse((req.query as { info: string }).info) as RestApiQueryType).info);
+        }, (JSON.parse((req.query as { info: string }).info) as GetRequestInfo__Output));
     }
 
     protected setHandler: RouteHandlerMethod = async (req, res) => {
@@ -77,14 +76,16 @@ export class RestApiServer extends AbstractRestApiServer implements IServer {
             file = new EndedStream() as BusboyFileStream;
         }
 
-        const unaryCallback: sendUnaryData<GetRequestInfo__Output> = (error, value) => {
-            if (error) {
-                res.code(500);
-                res.send(error);
-            } else {
-                res.send(value);
+        let unaryCallback: sendUnaryData<GetRequestInfo__Output>
+        const promise = new Promise((resolve, reject) => {
+            unaryCallback = (error, value) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(value);
+                }
             }
-        }
+        })
 
         this.requestManager!.register({
             protocol: "REST_API",
@@ -92,5 +93,7 @@ export class RestApiServer extends AbstractRestApiServer implements IServer {
             sourceReader: file,
             sourceWriter: unaryCallback
         }, info);
+
+        return promise;
     }
 }

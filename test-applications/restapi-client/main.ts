@@ -5,8 +5,8 @@ import type {DataRequestInfo} from "@grpc-build/DataRequestInfo";
 
 (async function main() {
     const getInfo: GetRequestInfo = {
-        requestType: "PROGRAM_GENERATE",
-            variableGetInfo: {
+        requestType: "PROGRAM",
+        variableGetInfo: {
             variableId: "123123"
         }
     }
@@ -19,7 +19,7 @@ import type {DataRequestInfo} from "@grpc-build/DataRequestInfo";
         }
     }
     try {
-        // await (new TestRestApiClient()).get(getInfo);
+        // console.log(await (new TestRestApiClient()).get(getInfo));
         console.log(await (new TestRestApiClient()).set(setInfo));
     } catch (e) {
         console.log(`Fetch error: ${e}`);

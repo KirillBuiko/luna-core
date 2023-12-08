@@ -8,6 +8,7 @@ import type {IEndpointsManager} from "@/app/types/IEndpointsManager";
 import type {IRequestManager} from "@/app/types/IRequestManager";
 import type {GetRequestInfo} from "@grpc-build/GetRequestInfo";
 import type {DataRequestInfo} from "@grpc-build/DataRequestInfo";
+import {PipeBuilder} from "@/pipe-builder/PipeBuilder";
 
 export class RequestManager implements IRequestManager{
     router = new RequestRouter();
@@ -31,7 +32,6 @@ export class RequestManager implements IRequestManager{
             }
         }
 
-
-        // Build pipeline
+        (new PipeBuilder()).buildPipeline(sourceOptions, destOptions);
     }
 }

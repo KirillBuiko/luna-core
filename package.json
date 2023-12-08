@@ -7,7 +7,8 @@
     "start-core-windows": "powershell scripts/start-core-windows.ps1",
     "REMOVE-and-build-proto": "rmdir /Q /S \"./grpc/build\" & npm run build-proto-types",
     "build-proto-types": "powershell scripts/build-types.ps1",
-    "start-test-rest-client": "powershell scripts/start-script-windows.ps1 \"dist/test-applications/restapi-client/main.js\""
+    "start-test-rest-client": "powershell scripts/start-script-windows.ps1 \"dist/test-applications/restapi-client/main.js\"",
+    "start-test-grpc-server": "powershell scripts/start-script-windows.ps1 \"dist/test-applications/grpc-server/main.js\""
   },
   "author": "",
   "license": "ISC",

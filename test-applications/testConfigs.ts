@@ -1,4 +1,6 @@
+import {endpointConfigs} from "@/configs/endpointsConfigs";
+
 export const testConfigs = {
-    restServer: {port: 50004},
-    grpcServer: {port: 50003},
+    restServer: endpointConfigs.modulesStorage,
+    grpcServer: endpointConfigs.programsStorage,
 }

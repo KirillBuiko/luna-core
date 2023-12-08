@@ -12,7 +12,6 @@ export class EndpointsManager implements IEndpointsManager {
         const promises = Object.keys(endpoints).map(async endpointName => {
             const endpoint = endpoints[endpointName as EndpointName];
             const config = configs[endpointName as EndpointName];
-            console.log(endpointName);
             try {
                 const err = await endpoint.init(config);
                 if (err) {
