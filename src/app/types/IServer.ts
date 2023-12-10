@@ -6,7 +6,7 @@ export type ServerStatus = "on" | "off";
 export interface IAbstractServer {
     status: ServerStatus;
 
-    startDefault(config: ServerConfigType): Promise<Error | null>;
+    defaultStart(config: ServerConfigType): Promise<Error | null>;
     stop(): Promise<Error | undefined>;
 }
 

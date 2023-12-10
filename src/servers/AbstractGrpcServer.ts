@@ -23,7 +23,7 @@ export abstract class AbstractGrpcServer implements IAbstractServer {
         } as DataRequestsHandlers);
     }
 
-    startDefault(config: ServerConfigType): Promise<Error | null> {
+    defaultStart(config: ServerConfigType): Promise<Error | null> {
         return new Promise((resolve) => {
             this.server.bindAsync(`0.0.0.0:${config.port}`,
                 grpc.ServerCredentials.createInsecure(), (error) => {

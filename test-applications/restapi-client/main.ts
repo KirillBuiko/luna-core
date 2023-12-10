@@ -1,26 +1,13 @@
 import {TestRestApiClient} from "./TestRestApiClient";
-import type {GetRequestInfo} from "@grpc-build/GetRequestInfo";
-import type {DataRequestInfo} from "@grpc-build/DataRequestInfo";
+import {getProgramInfo} from "../testObjects";
+import {testClientConfigs} from "../testConfigs";
 
 
 (async function main() {
-    const getInfo: GetRequestInfo = {
-        requestType: "PROGRAM",
-        variableGetInfo: {
-            variableId: "123123"
-        }
-    }
-    const setInfo: DataRequestInfo = {
-        requestType: "PROGRAM",
-        variableDataInfo: {
-            getInfo: {
-                variableId: "123123"
-            }
-        }
-    }
     try {
-        // console.log(await (new TestRestApiClient()).get(getInfo));
-        console.log(await (new TestRestApiClient()).set(setInfo));
+        const client = new TestRestApiClient(testClientConfigs.coreRestServer.host);
+        console.log(await client.get(getProgramInfo));
+        // console.log(await client.set(setProgramInfo));
     } catch (e) {
         console.log(`Fetch error: ${e}`);
     }

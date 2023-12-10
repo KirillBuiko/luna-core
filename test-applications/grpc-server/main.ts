@@ -1,13 +1,12 @@
 import {TestGrpcServer} from "./TestGrpcServer";
 import {configs} from "@/configs/configs";
-import {testConfigs} from "../testConfigs";
+import {testServerConfigs} from "../testConfigs";
 
 
 (async function main() {
     try {
-        await (new TestGrpcServer(configs.PROTO_PATH)).startDefault({
-            port: Number(testConfigs.grpcServer.host.split(':')[1])
-        });
+        await (new TestGrpcServer(configs.PROTO_PATH)).defaultStart(testServerConfigs.grpcServer);
+        console.log(`Grpc server started`);
     }
     catch (e) {
         console.log(`Grpc server start error: ${e}`);

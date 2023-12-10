@@ -1,12 +1,10 @@
-import type {ServerErrorResponse} from "@grpc/grpc-js/src/server-call";
-import type {Status} from "@grpc/grpc-js/src/constants";
-import type {StatusObject} from "@grpc/grpc-js";
+import type {ServerErrorResponse} from "@grpc/grpc-js/build/src/server-call";
+import type {Status} from "@grpc/grpc-js/build/src/constants";
 
 export const ErrorMessage = {
-    create(code: Status, message: string): Partial<StatusObject> | ServerErrorResponse {
-        return {
-            code: code,
-            message: message
-        }
+    create(code: Status, message: string): ServerErrorResponse {
+        const error = new Error(message) as ServerErrorResponse;
+        error.code = code;
+        return error;
     }
 }

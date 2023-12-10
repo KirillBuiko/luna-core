@@ -15,7 +15,7 @@ export class GrpcServer extends AbstractGrpcServer implements IServer {
 
     async start(config: ServerConfigType, requestManager: IRequestManager): Promise<Error | null> {
         this.requestManager = requestManager;
-        return super.startDefault(config);
+        return super.defaultStart(config);
     }
 
     getHandler: DataRequestsHandlers["Get"] = (call) => {
