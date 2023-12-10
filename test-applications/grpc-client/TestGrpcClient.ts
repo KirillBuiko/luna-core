@@ -8,6 +8,8 @@ import type {EndpointStatus} from "@/app/types/IEndpoint";
 import type {GetRequestInfo} from "@grpc-build/GetRequestInfo";
 import type {DataRequestInfo} from "@grpc-build/DataRequestInfo";
 import type {DataStream__Output} from "@grpc-build/DataStream";
+import fs from "fs";
+import {testConfigs} from "../testConfigs";
 
 export class TestGrpcClient {
     status: EndpointStatus = "not-connected"
@@ -40,7 +42,11 @@ export class TestGrpcClient {
             err ? console.log(err) : console.log(JSON.stringify(resp));
         });
 
-        writer.write({info});
-        // TODO: put file read here
+        writer.write({info}, () => {
+            const file = fs.createReadStream(testConfigs.dataPath);
+            file.on("data", data => writer.write({chunkData: data}))
+                .on("error", (err) => writer.destroy(err))
+                .on("end", () => writer.end());
+        });
     }
 }

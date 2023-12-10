@@ -3,7 +3,7 @@ import type {sendUnaryData, ServerReadableStream, ServerWritableStream} from "@g
 import type {GetRequestInfo, GetRequestInfo__Output} from "@grpc-build/GetRequestInfo";
 import type {DataStream, DataStream__Output} from "@grpc-build/DataStream";
 import fs from "fs";
-import path from "path";
+import {testConfigs} from "../testConfigs";
 
 export class TestGrpcServer extends AbstractGrpcServer {
     constructor(protoPath: string) {
@@ -18,7 +18,7 @@ export class TestGrpcServer extends AbstractGrpcServer {
                 dataType: "FILE"
             }
         });
-        const fileStream = fs.createReadStream(path.join(__dirname, "..", "test-data.txt"));
+        const fileStream = fs.createReadStream(testConfigs.dataPath);
         fileStream.on("data", data => {
             call.write({
                 chunkData: data

@@ -1,5 +1,10 @@
 import {endpointConfigs} from "@/configs/endpointsConfigs";
 import {serverConfigs} from "@/configs/serverConfigs";
+import path from "path";
+
+export const testConfigs = {
+    dataPath: path.join(__dirname, "test-data.txt")
+}
 
 export const testServerConfigs = {
     restServer: {port: Number(endpointConfigs.modulesStorage.host.split(":")[1])},
