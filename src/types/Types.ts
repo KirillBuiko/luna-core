@@ -57,6 +57,8 @@ export type DestinationOptionsType =
     | DestinationReaderWriterOptions<"GRPC", "SET",
     Promise<NonNullable<Parameters<Parameters<DataRequestsClient["Set"]>[0]>[1]>>, ReturnType<DataRequestsClient["Set"]>>
 
+// TODO: add rest destination types
+
 export type NarrowedOptionsType<
     ProtocolT extends ProtocolType, RequestN extends RequestName, OptionsT> =
     OptionsT extends {protocol: ProtocolT, requestName: RequestN}

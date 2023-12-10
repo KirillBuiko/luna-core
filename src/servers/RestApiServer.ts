@@ -30,8 +30,7 @@ export class RestApiServer extends AbstractRestApiServer implements IServer {
     }
 
     sendError(res: FastifyReply, code: Status, message: string) {
-        res.code(500);
-        res.send(ErrorMessage.create(code, message));
+        res.code(500).send(ErrorMessage.create(code, message));
     }
 
     protected getHandler: RouteHandlerMethod = (req, res) => {

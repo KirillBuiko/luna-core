@@ -1,6 +1,6 @@
-import type {EndpointStatus, IEndpoint} from "@/app/types/IEndpoint";
+import type {EndpointStatus} from "@/app/types/IEndpoint";
 import type {
-    NarrowedDestinationOptionsType, RequestName
+    NarrowedDestinationOptionsType, ProtocolType
 } from "@/types/Types";
 import type {EndpointConfigType} from "@/app/types/EndpointConfigType";
 import * as protoLoader from "@grpc/proto-loader";
@@ -12,9 +12,11 @@ import type {DataRequestInfo} from "@grpc-build/DataRequestInfo";
 import {type ClientWritableStream, waitForClientReady} from "@grpc/grpc-js";
 import type {DataStream} from "@grpc-build/DataStream";
 import {configs} from "@/configs/configs";
+import {Endpoint} from "@/endpoints/Endpoint";
 
-export class GrpcEndpoint implements IEndpoint {
+export class GrpcEndpoint extends Endpoint {
     status: EndpointStatus = "not-connected"
+    protocol: ProtocolType = "GRPC";
     client: InstanceType<ProtoGrpcType["DataRequests"]> | undefined;
 
     init(config: EndpointConfigType): Promise<Error | null> {
@@ -31,20 +33,7 @@ export class GrpcEndpoint implements IEndpoint {
         })
     }
 
-    send<RequestN extends RequestName>
-    (requestName: RequestN, info: GetRequestInfo | DataRequestInfo):
-        NarrowedDestinationOptionsType<"GRPC", RequestName> {
-        if (this.status !== "connected") return {protocol: "GRPC", requestName};
-        switch (requestName) {
-            case "GET":
-                return this.getHandler(info as GetRequestInfo);
-            case "SET":
-                return this.setHandler(info as DataRequestInfo);
-        }
-        return {protocol: "GRPC", requestName}
-    }
-
-    private getHandler(info: GetRequestInfo):
+    protected getHandler(info: GetRequestInfo):
         NarrowedDestinationOptionsType<"GRPC", "GET"> {
         const get = this.client!.get(info);
         return {
@@ -54,10 +43,9 @@ export class GrpcEndpoint implements IEndpoint {
         }
     }
 
-    private setHandler(info: DataRequestInfo):
+    protected setHandler(info: DataRequestInfo):
         NarrowedDestinationOptionsType<"GRPC", "SET"> {
         let writer: ClientWritableStream<DataStream> | undefined = undefined;
-        // TODO: push info in writer stream
         const reader = new Promise<GetRequestInfo__Output>((resolve, reject) => {
             writer = this.client!.set((err, value) => {
                 if (err) {

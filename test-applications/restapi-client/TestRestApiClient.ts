@@ -3,6 +3,7 @@ import type {DataRequestInfo} from "@grpc-build/DataRequestInfo";
 import * as fs from "fs";
 import {Readable} from "node:stream";
 import {testConfigs} from "../testConfigs";
+import FormData from "form-data";
 
 export class TestRestApiClient {
     constructor(private host) {
@@ -22,13 +23,17 @@ export class TestRestApiClient {
     async set(info: DataRequestInfo) {
         const form = new FormData();
         form.append("info", JSON.stringify(info));
-        form.append("data", await fs.openAsBlob(testConfigs.dataPath));
-        return await fetch(`http://${this.host}/set`, {
-            method: "POST",
-            // headers: {"Content-Type": "multipart/form-data"},
-            body: form,
-            // @ts-ignore
-            duplex: "half"
-        }).then(res => res.text());
+        form.append("data", fs.createReadStream(testConfigs.dataPath));
+        form.submit({
+            host: this.host.split(":")[0],
+            port: this.host.split(":")[1],
+            path: "/set",
+            method: "post"
+        }, (err, res) => {
+            console.log(err);
+            res.on("data", (data) => {
+                console.log(data.toString());
+            })
+        })
     }
 }
