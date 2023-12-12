@@ -4,16 +4,14 @@ import type {ServerErrorResponse} from "@grpc/grpc-js/build/src/server-call";
 export class PipeErrorHandler {
     sourceErrorEmit(sourceOptions: SourceOptionsType, error: ServerErrorResponse) {
         if (sourceOptions.protocol == "GRPC" && sourceOptions.requestName == "GET") {
-            sourceOptions.sourceWriter && sourceOptions.sourceWriter.destroy(error);
+            sourceOptions.writer && sourceOptions.writer.destroy(error);
         } else if (sourceOptions.protocol == "GRPC" && sourceOptions.requestName == "SET") {
-            sourceOptions.sourceWriter && sourceOptions.sourceWriter(error);
+            sourceOptions.writer && sourceOptions.writer(error);
             sourceOptions.sourceReader && sourceOptions.sourceReader.destroy(error);
         } else if (sourceOptions.protocol == "REST_API" && sourceOptions.requestName == "GET") {
-            sourceOptions.sourceWriter && sourceOptions.sourceWriter.raw.headersSent
-                ? sourceOptions.sourceWriter.raw.destroy()
-                : sourceOptions.sourceWriter.code(500).send(error);
+            sourceOptions.writer && sourceOptions.writer.destroy(error);
         } else if (sourceOptions.protocol == "REST_API" && sourceOptions.requestName == "SET") {
-            sourceOptions.sourceWriter && sourceOptions.sourceWriter(error);
+            sourceOptions.writer && sourceOptions.writer(error);
             sourceOptions.sourceReader && sourceOptions.sourceReader.destroy(error);
         }
     }

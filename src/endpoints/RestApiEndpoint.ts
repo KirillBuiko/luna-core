@@ -3,13 +3,14 @@ import type {
     NarrowedDestinationOptionsType
 } from "@/types/Types";
 import type {EndpointConfigType} from "@/app/types/EndpointConfigType";
-import type {GetRequestInfo} from "@grpc-build/GetRequestInfo";
+import type {GetRequestInfo, GetRequestInfo__Output} from "@grpc-build/GetRequestInfo";
 import type {DataRequestInfo} from "@grpc-build/DataRequestInfo";
 import {Endpoint} from "@/endpoints/Endpoint";
 import type {ProtocolType} from "@/types/Types";
-import {Readable} from "node:stream";
 import FormData from "form-data";
 import {getReaderWriter} from "@/utils/getReaderWriter";
+import {Readable} from "node:stream";
+import type {ReadableStream} from "stream/web";
 
 export class RestApiEndpoint extends Endpoint {
     status: EndpointStatus = "not-connected";
@@ -18,42 +19,51 @@ export class RestApiEndpoint extends Endpoint {
 
     init(config: EndpointConfigType): Promise<Error | null> {
         this.host = config.host;
+        this.status = "connected";
         return null;
     }
 
     protected getHandler(info: GetRequestInfo):
         NarrowedDestinationOptionsType<"REST_API", "GET"> {
-        // @ts-ignore
-        // reader
-        const reader = Readable.fromWeb((await fetch(`http://${this.host}/get` +
-            `?info=${JSON.stringify(info)}`, {
-            method: "GET",
-        })).body);
+        console.log("RESTS GET");
+        const [reader, _writer] = getReaderWriter();
+        fetch(`http://${this.host}/get?info=${JSON.stringify(info)}`, {
+            method: "GET"
+        }).then((response: Response) =>
+            Readable.fromWeb(response.body as ReadableStream).pipe(_writer));
         return {
             requestName: "GET",
-            protocol: this.protocol,
+            protocol: "REST_API",
             destReader: reader
         }
     }
 
     protected setHandler(info: DataRequestInfo):
         NarrowedDestinationOptionsType<"REST_API", "SET"> {
+        const [_reader, writer] = getReaderWriter();
         const form = new FormData();
-        const [r, writer] = getReaderWriter();
         form.append("info", JSON.stringify(info));
-        form.append("data", r);
-        return await fetch(`http://${this.host}/set`, {
-            method: "POST",
-            // headers: {"Content-Type": "multipart/form-data"},
-            body: Readable.toWeb(form),
-            // @ts-ignore
-            duplex: "half"
-        }).then(res => res.text());
+        form.append("data", _reader);
+        const reader = new Promise<GetRequestInfo__Output>((resolve, reject) =>
+            form.submit({
+                host: this.host.split(":")[0],
+                port: this.host.split(":")[1],
+                path: "/set",
+                method: "post"
+            }, (err, res) => {
+                if (err || !res) {
+                    reject(err);
+                } else {
+                    res.on("data", (data) => {
+                        resolve(data);
+                    })
+                }
+            }))
         return {
             requestName: "SET",
-            protocol: this.protocol,
-            // destReader: reader,
-            // destWriter: writer
+            protocol: "REST_API",
+            destReader: reader,
+            destWriter: writer
         }
     }
 }

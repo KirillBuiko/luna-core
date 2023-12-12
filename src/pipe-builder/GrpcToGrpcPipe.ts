@@ -13,14 +13,14 @@ type DestinationOptions<RequestN extends RequestName = RequestName> =
 
 export class GrpcToGrpcPipe extends PipeHandler<SourceOptions, DestinationOptions> {
     protected getHandler(sourceOptions: SourceOptions<"GET">, destOptions: DestinationOptions<"GET">) {
-        const {sourceWriter} = sourceOptions;
+        const {writer} = sourceOptions;
         const {destReader} = destOptions;
         destReader.on("data", (data: DataStream__Output) => {
-            sourceWriter.write(data);
+            writer.write(data);
         });
 
         destReader.on("end", () => {
-            sourceWriter.end();
+            writer.end();
         });
 
         destReader.on("error", err => {
@@ -30,21 +30,19 @@ export class GrpcToGrpcPipe extends PipeHandler<SourceOptions, DestinationOption
     }
 
     protected setHandler(sourceOptions: SourceOptions<"SET">, destOptions: DestinationOptions<"SET">) {
-        const {sourceWriter, sourceReader} = sourceOptions;
+        const {writer, sourceReader} = sourceOptions;
         const {destWriter, destReader} = destOptions;
-        sourceReader.on("data", (data: DataStream) => {
-            destWriter.write(data);
-        });
 
-        sourceReader.on("error", err => {
-            this.pipeErrorHandler.destinationErrorEmit(destOptions,
-                ErrorMessage.create(Status.ABORTED, JSON.stringify(err)));
-        });
-
-        sourceReader.on("end", () => destWriter.end());
+        sourceReader
+            .on("data", (data: DataStream) =>
+                destWriter.write(data))
+            .on("error", err =>
+                this.pipeErrorHandler.destinationErrorEmit(destOptions,
+                    ErrorMessage.create(Status.ABORTED, JSON.stringify(err))))
+            .on("end", () => destWriter.end());
 
         destReader.then(data => {
-            sourceWriter(null, data);
+            writer(null, data);
         }).catch(err => {
             this.pipeErrorHandler.sourceErrorEmit(destOptions,
                 ErrorMessage.create(Status.ABORTED, JSON.stringify(err)));

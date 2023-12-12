@@ -25,7 +25,7 @@ export class GrpcServer extends AbstractGrpcServer implements IServer {
         this.requestManager?.register({
             protocol: "GRPC",
             requestName: "GET",
-            sourceWriter: call,
+            writer: call,
             sourceReader: undefined
         }, call.request);
     }
@@ -37,7 +37,7 @@ export class GrpcServer extends AbstractGrpcServer implements IServer {
                 this.requestManager?.register({
                     protocol: "GRPC",
                     requestName: "SET",
-                    sourceWriter: callback,
+                    writer: callback,
                     sourceReader: call
                 }, info.info);
             } else {

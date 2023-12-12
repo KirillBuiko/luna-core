@@ -1,5 +1,5 @@
 import type {
-    NarrowedDestinationOptionsType, RequestName,
+    DestinationOptionsType, RequestName,
 } from "@/types/Types";
 import type {GetRequestInfo} from "@grpc-build/GetRequestInfo";
 import type {DataRequestInfo} from "@grpc-build/DataRequestInfo";
@@ -12,9 +12,8 @@ export interface IEndpoint {
 
     init(config: EndpointConfigType): Promise<Error | null>;
 
-    send<RequestT, ResponseT, RequestN extends RequestName>
-    (requestName: RequestName, info: GetRequestInfo | DataRequestInfo):
-        NarrowedDestinationOptionsType<"GRPC", RequestName>;
+    send(requestName: RequestName, info: GetRequestInfo | DataRequestInfo):
+        DestinationOptionsType;
 }
 
 

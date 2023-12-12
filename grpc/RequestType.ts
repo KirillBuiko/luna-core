@@ -13,6 +13,9 @@ export const RequestType = {
   TASK_PLAN: 'TASK_PLAN',
   COMPUTATIONAL_MODEL: 'COMPUTATIONAL_MODEL',
   COMPUTATIONAL_MODEL_LIST: 'COMPUTATIONAL_MODEL_LIST',
+  MODULE: 'MODULE',
+  MODULE_LIST: 'MODULE_LIST',
+  MODULE_INFO: 'MODULE_INFO',
 } as const;
 
 export type RequestType =
@@ -40,5 +43,11 @@ export type RequestType =
   | 30
   | 'COMPUTATIONAL_MODEL_LIST'
   | 31
+  | 'MODULE'
+  | 40
+  | 'MODULE_LIST'
+  | 41
+  | 'MODULE_INFO'
+  | 42
 
 export type RequestType__Output = typeof RequestType[keyof typeof RequestType]

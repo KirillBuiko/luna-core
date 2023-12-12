@@ -1,7 +1,7 @@
 import type {BusboyFileStream} from "@fastify/busboy";
 import type {DataRequestsClient, DataRequestsHandlers} from "@grpc-build/DataRequests";
 import type {GetRequestInfo__Output} from "@grpc-build/GetRequestInfo";
-import type {FastifyReply} from "fastify";
+import type {Readable, Writable} from "node:stream";
 
 export type ProtocolType =
     | "GRPC"
@@ -25,7 +25,7 @@ interface SourceReaderWriterOptions<
     protocol: ProtocolT;
     requestName: RequestN;
     sourceReader?: SourceReaderT;
-    sourceWriter?: SourceWriterT;
+    writer?: SourceWriterT;
 }
 
 interface DestinationReaderWriterOptions<
@@ -42,7 +42,7 @@ export type SourceOptionsType =
     void, Parameters<DataRequestsHandlers["Get"]>[0]>
 
     | SourceReaderWriterOptions<"REST_API", "GET",
-    void, FastifyReply>
+    void, Writable>
 
     | SourceReaderWriterOptions<"GRPC", "SET",
     Parameters<DataRequestsHandlers["Set"]>[0], Parameters<DataRequestsHandlers["Set"]>[1]>
@@ -57,6 +57,12 @@ export type DestinationOptionsType =
     | DestinationReaderWriterOptions<"GRPC", "SET",
     Promise<NonNullable<Parameters<Parameters<DataRequestsClient["Set"]>[0]>[1]>>, ReturnType<DataRequestsClient["Set"]>>
 
+    | DestinationReaderWriterOptions<"REST_API", "GET",
+    Readable, void>
+
+    | DestinationReaderWriterOptions<"REST_API", "SET",
+    Promise<NonNullable<Parameters<Parameters<DataRequestsClient["Set"]>[0]>[1]>>, Writable>
+
 // TODO: add rest destination types
 
 export type NarrowedOptionsType<
@@ -65,11 +71,11 @@ export type NarrowedOptionsType<
         ? OptionsT : never;
 
 export type NarrowedSourceOptionsType<
-    ProtocolT extends ProtocolType, RequestN extends RequestName> =
+    ProtocolT extends ProtocolType = ProtocolType, RequestN extends RequestName = RequestName> =
     NarrowedOptionsType<ProtocolT, RequestN, SourceOptionsType>
 
 export type NarrowedDestinationOptionsType<
-    ProtocolT extends ProtocolType, RequestN extends RequestName> =
+    ProtocolT extends ProtocolType = ProtocolType, RequestN extends RequestName = RequestName> =
     NarrowedOptionsType<ProtocolT, RequestN, DestinationOptionsType>
 
 export interface RestApiQueryType {

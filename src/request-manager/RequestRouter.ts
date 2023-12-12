@@ -52,12 +52,24 @@ const routes: {[requestType in RequestType__Output]: {[requestName in RequestNam
         GET: "planner",
         SET: null
     },
+    MODULE: {
+        GET: "modulesStorage",
+        SET: "modulesStorage"
+    },
+    MODULE_LIST: {
+        GET: "modulesStorage",
+        SET: null
+    },
+    MODULE_INFO: {
+        GET: "modulesStorage",
+        SET: "modulesStorage"
+    }
 }
 
 export class RequestRouter {
     getEndpointName(requestType: RequestType__Output, requestName: RequestName): EndpointName | null {
         // if (!requestType || !requestName || !routes[requestType] || !) return null;
-        console.log(requestType, requestName);
+        // console.log(requestType, requestName);
         return requestType && requestName && routes[requestType] && routes[requestType][requestName] || null;
     }
 }

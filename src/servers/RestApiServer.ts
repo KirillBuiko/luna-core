@@ -11,6 +11,7 @@ import type {Multipart} from "@fastify/multipart";
 import type {BusboyFileStream} from "@fastify/busboy";
 import {EndedStream} from "@/utils/EndedStream";
 import type {DataRequestInfo} from "@grpc-build/DataRequestInfo";
+import {getReaderWriter} from "@/utils/getReaderWriter";
 
 export class RestApiServer extends AbstractRestApiServer implements IServer {
     requestManager: IRequestManager | undefined;
@@ -34,10 +35,12 @@ export class RestApiServer extends AbstractRestApiServer implements IServer {
     }
 
     protected getHandler: RouteHandlerMethod = (req, res) => {
+        const [r, writer] = getReaderWriter();
+        res.send(r);
         this.requestManager!.register({
             protocol: "REST_API",
             requestName: "GET",
-            sourceWriter: res,
+            writer: writer,
         }, (JSON.parse((req.query as { info: string }).info) as GetRequestInfo__Output));
     }
 
@@ -90,7 +93,7 @@ export class RestApiServer extends AbstractRestApiServer implements IServer {
             protocol: "REST_API",
             requestName: "SET",
             sourceReader: file,
-            sourceWriter: unaryCallback
+            writer: unaryCallback
         }, info);
 
         return promise;

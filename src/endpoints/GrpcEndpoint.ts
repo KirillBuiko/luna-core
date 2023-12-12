@@ -20,7 +20,7 @@ export class GrpcEndpoint extends Endpoint {
     client: InstanceType<ProtoGrpcType["DataRequests"]> | undefined;
 
     init(config: EndpointConfigType): Promise<Error | null> {
-        const packageDefinition = protoLoader.loadSync('./node_modules/luna-proto-files/data_requests.proto', grpcLoadOptions);
+        const packageDefinition = protoLoader.loadSync(configs.PROTO_PATH, grpcLoadOptions);
         const proto = grpc.loadPackageDefinition(packageDefinition) as unknown as ProtoGrpcType;
         this.client = new proto.DataRequests(config.host, grpc.credentials.createInsecure());
         return new Promise(resolve => {
