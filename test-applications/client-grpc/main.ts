@@ -7,8 +7,8 @@ import {testClientConfigs} from "../testConfigs";
     try {
         const client = new TestGrpcClient();
         await client.init(testClientConfigs.coreGrpcServer);
-        client.get(testObjects.get);
-        // client.set(testObjects.set);
+        // client.get(testObjects.get);
+        client.set(testObjects.set);
     }
     catch (e) {
         console.log(`Grpc request error: ${e}`);

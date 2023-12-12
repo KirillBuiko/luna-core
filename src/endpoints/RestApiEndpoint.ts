@@ -25,7 +25,6 @@ export class RestApiEndpoint extends Endpoint {
 
     protected getHandler(info: GetRequestInfo):
         NarrowedDestinationOptionsType<"REST_API", "GET"> {
-        console.log("RESTS GET");
         const [reader, _writer] = getReaderWriter();
         fetch(`http://${this.host}/get?info=${JSON.stringify(info)}`, {
             method: "GET"
@@ -55,7 +54,7 @@ export class RestApiEndpoint extends Endpoint {
                     reject(err);
                 } else {
                     res.on("data", (data) => {
-                        resolve(data);
+                        resolve(JSON.parse(data));
                     })
                 }
             }))
