@@ -13,20 +13,20 @@ type DestinationOptions<RequestN extends RequestName = RequestName> =
 
 export class GrpcToRestPipe extends PipeHandler<SourceOptions, DestinationOptions> {
     protected getHandler(sourceOptions: SourceOptions<"GET">, destOptions: DestinationOptions<"GET">) {
-        const {writer} = sourceOptions;
+        const {sourceWriter} = sourceOptions;
         const {destReader} = destOptions;
         destReader
             .on("data", (data) =>
-                writer.write({chunkData: data}))
+                sourceWriter.write({chunkData: data}))
             .on("end", () =>
-                writer.end())
+                sourceWriter.end())
             .on("error", err =>
                 this.pipeErrorHandler.sourceErrorEmit(sourceOptions,
                     ErrorMessage.create(Status.ABORTED, JSON.stringify(err))));
     }
 
     protected setHandler(sourceOptions: SourceOptions<"SET">, destOptions: DestinationOptions<"SET">) {
-        const {writer, sourceReader} = sourceOptions;
+        const {sourceWriter, sourceReader} = sourceOptions;
         const {destWriter, destReader} = destOptions;
 
         sourceReader
@@ -38,9 +38,9 @@ export class GrpcToRestPipe extends PipeHandler<SourceOptions, DestinationOption
             .on("end", () => destWriter.end());
 
         destReader.then(data => {
-            writer(null, data);
+            sourceWriter(null, data);
         }).catch(err => {
-            this.pipeErrorHandler.sourceErrorEmit(destOptions,
+            this.pipeErrorHandler.sourceErrorEmit(sourceOptions,
                 ErrorMessage.create(Status.ABORTED, JSON.stringify(err)));
         })
     }

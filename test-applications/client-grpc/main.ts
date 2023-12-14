@@ -9,8 +9,7 @@ import {testClientConfigs} from "../testConfigs";
         await client.init(testClientConfigs.coreGrpcServer);
         // client.get(testObjects.get);
         client.set(testObjects.set);
-    }
-    catch (e) {
+    } catch (e) {
         console.log(`Grpc request error: ${e}`);
     }
 })()

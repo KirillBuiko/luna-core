@@ -3,7 +3,6 @@ import type {DataRequestInfo} from "@grpc-build/DataRequestInfo";
 import * as fs from "fs";
 import {testConfigs} from "../testConfigs";
 import {RestApiEndpoint} from "@/endpoints/RestApiEndpoint";
-import {log} from "@grpc/grpc-js/build/src/logging";
 
 export class TestRestApiClient extends RestApiEndpoint {
     constructor() {
@@ -21,7 +20,7 @@ export class TestRestApiClient extends RestApiEndpoint {
         const options = super.setHandler(info);
         options.destWriter && fs.createReadStream(testConfigs.dataPath).pipe(options.destWriter);
         options.destReader?.then(data => {
-            console.log(data.toString());
-        }).catch(err => log(err));
+            console.log(data);
+        }).catch(err => console.log(err));
     }
 }

@@ -6,6 +6,7 @@ services:
     image: luna-core
     restart: "unless-stopped"
     build: https://github.com/KirillBuiko/luna-core.git
+#    build: .
     ports:
       - ${CORE_REST_PORT}:5051
       - ${CORE_GRPC_PORT}:5052

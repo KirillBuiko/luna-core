@@ -25,7 +25,7 @@ interface SourceReaderWriterOptions<
     protocol: ProtocolT;
     requestName: RequestN;
     sourceReader?: SourceReaderT;
-    writer?: SourceWriterT;
+    sourceWriter?: SourceWriterT;
 }
 
 interface DestinationReaderWriterOptions<

@@ -38,5 +38,5 @@ const setModuleInfo: DataRequestInfo = {
 // Program requests to GRPC endpoint (server-grpc)
 // Module requests to Rest API endpoint (server-restapi)
 export const testObjects =
-    // {get: getProgramInfo, set: setProgramInfo}
-    {get: getModuleInfo, set: setModuleInfo}
+    {get: getProgramInfo, set: setProgramInfo}
+    // {get: getModuleInfo, set: setModuleInfo}

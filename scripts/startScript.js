@@ -3,7 +3,6 @@ const platform = require("os").platform()
 const args = process.argv.slice(2);
 const cmd = ["ts-node", ...args];
 
-console.log(cmd, platform);
 const proc = spawn(cmd[0], cmd.slice(1), {
     stdio: "inherit",
     env: {

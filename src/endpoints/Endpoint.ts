@@ -12,7 +12,7 @@ export abstract class Endpoint implements IEndpoint {
 
     send(requestName: RequestName, info: GetRequestInfo | DataRequestInfo):
         DestinationOptionsType {
-        if (this.status !== "connected") return {protocol: this.protocol, requestName} as DestinationOptionsType;
+        // if (this.status !== "connected") return {protocol: this.protocol, requestName} as DestinationOptionsType;
         switch (requestName) {
             case "GET":
                 return this.getHandler(info as GetRequestInfo);

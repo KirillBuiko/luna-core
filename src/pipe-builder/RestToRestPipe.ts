@@ -12,13 +12,13 @@ type DestinationOptions<RequestN extends RequestName = RequestName> =
 
 export class RestToRestPipe extends PipeHandler<SourceOptions, DestinationOptions> {
     protected getHandler(sourceOptions: SourceOptions<"GET">, destOptions: DestinationOptions<"GET">) {
-        const {writer} = sourceOptions;
+        const {sourceWriter} = sourceOptions;
         const {destReader} = destOptions;
         destReader
             .on("data", (data) =>
-                writer.write(data))
+                sourceWriter.write(data))
             .on("end", () =>
-                writer.end())
+                sourceWriter.end())
             .on("error", err => {
                 this.pipeErrorHandler.sourceErrorEmit(sourceOptions,
                     ErrorMessage.create(Status.ABORTED, JSON.stringify(err)));
@@ -26,7 +26,7 @@ export class RestToRestPipe extends PipeHandler<SourceOptions, DestinationOption
     }
 
     protected setHandler(sourceOptions: SourceOptions<"SET">, destOptions: DestinationOptions<"SET">) {
-        const {writer, sourceReader} = sourceOptions;
+        const {sourceWriter, sourceReader} = sourceOptions;
         const {destWriter, destReader} = destOptions;
         sourceReader
             .on("data", data => destWriter.write(data))
@@ -37,9 +37,9 @@ export class RestToRestPipe extends PipeHandler<SourceOptions, DestinationOption
             });
 
         destReader.then(data => {
-            writer(null, data);
+            sourceWriter(null, data);
         }).catch(err => {
-            this.pipeErrorHandler.sourceErrorEmit(destOptions,
+            this.pipeErrorHandler.sourceErrorEmit(sourceOptions,
                 ErrorMessage.create(Status.ABORTED, JSON.stringify(err)));
         })
     }

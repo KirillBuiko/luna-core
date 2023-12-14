@@ -28,6 +28,6 @@ export class TestGrpcClient extends GrpcEndpoint {
             .on("end", () => writer.end());
         reader.then((data) => {
             console.log(data);
-        })
+        }).catch(err => console.log(err));
     }
 }

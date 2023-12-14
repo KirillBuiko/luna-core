@@ -28,8 +28,9 @@ export class RestApiEndpoint extends Endpoint {
         const [reader, _writer] = getReaderWriter();
         fetch(`http://${this.host}/get?info=${JSON.stringify(info)}`, {
             method: "GET"
-        }).then((response: Response) =>
-            Readable.fromWeb(response.body as ReadableStream).pipe(_writer));
+        }).then((response: Response) => {
+            Readable.fromWeb(response.body as ReadableStream).pipe(_writer)
+        });
         return {
             requestName: "GET",
             protocol: "REST_API",
@@ -48,13 +49,20 @@ export class RestApiEndpoint extends Endpoint {
                 host: this.host.split(":")[0],
                 port: this.host.split(":")[1],
                 path: "/set",
-                method: "post"
+                method: "post",
+
             }, (err, res) => {
-                if (err || !res) {
+                if (err) {
                     reject(err);
                 } else {
                     res.on("data", (data) => {
-                        resolve(JSON.parse(data));
+                        try {
+                            res.statusCode != 200
+                                ? reject(JSON.parse(data))
+                                : resolve(JSON.parse(data));
+                        } catch (e) {
+                            reject(e);
+                        }
                     })
                 }
             }))

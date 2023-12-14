@@ -15,3 +15,8 @@ export const testClientConfigs = {
     coreRestServer: {host: `localhost:${serverConfigs.restApiServer.port}`},
     coreGrpcServer: {host: `localhost:${serverConfigs.grpcServer.port}`},
 }
+
+// export const testClientConfigs = {
+//     coreRestServer: {host: `192.168.12.29:${serverConfigs.restApiServer.port}`},
+//     coreGrpcServer: {host: `192.168.12.29:${serverConfigs.grpcServer.port}`},
+// }

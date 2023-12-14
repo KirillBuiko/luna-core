@@ -9,13 +9,11 @@ import {testConfigs} from "../testConfigs";
 export class TestRestApiRequestManager implements IRequestManager {
     register(sourceOptions: NarrowedSourceOptionsType<"REST_API">, info: GetRequestInfo | DataRequestInfo) {
         if (sourceOptions.requestName == "GET") {
-            console.log("GET REQUEST");
-            const {writer} = sourceOptions;
-            writer.write(JSON.stringify(testObjects.set));
-            fs.createReadStream(testConfigs.dataPath).pipe(writer);
+            const {sourceWriter} = sourceOptions;
+            sourceWriter.write(JSON.stringify(testObjects.set));
+            fs.createReadStream(testConfigs.dataPath).pipe(sourceWriter);
         } else {
-            console.log("SET REQUEST");
-            const {sourceReader: reader, writer: writer} = sourceOptions;
+            const {sourceReader: reader, sourceWriter: writer} = sourceOptions;
             reader
                 .on("data", data =>
                     console.log(data.toString()))

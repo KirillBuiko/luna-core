@@ -40,7 +40,7 @@ export class RestApiServer extends AbstractRestApiServer implements IServer {
         this.requestManager!.register({
             protocol: "REST_API",
             requestName: "GET",
-            writer: writer,
+            sourceWriter: writer,
         }, (JSON.parse((req.query as { info: string }).info) as GetRequestInfo__Output));
     }
 
@@ -52,7 +52,6 @@ export class RestApiServer extends AbstractRestApiServer implements IServer {
                 return this.sendError(res, Status.INVALID_ARGUMENT, "Body is not multipart");
             }
         } catch (e) {
-            console.log(e);
             return this.sendError(res, Status.INVALID_ARGUMENT, "Body is not multipart");
         }
 
@@ -93,7 +92,7 @@ export class RestApiServer extends AbstractRestApiServer implements IServer {
             protocol: "REST_API",
             requestName: "SET",
             sourceReader: file,
-            writer: unaryCallback
+            sourceWriter: unaryCallback
         }, info);
 
         return promise;

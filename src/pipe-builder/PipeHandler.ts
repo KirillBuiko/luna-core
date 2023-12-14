@@ -11,8 +11,8 @@ export abstract class PipeHandler<SourceOT extends SourceOptionsType, DestOT ext
 
     handle(sourceOptions: SourceOT,
            destOptions: DestOT) {
-        if ((sourceOptions.writer && !destOptions.destReader) ||
-            (!sourceOptions.writer && destOptions.destReader) ||
+        if ((sourceOptions.sourceWriter && !destOptions.destReader) ||
+            (!sourceOptions.sourceWriter && destOptions.destReader) ||
             (sourceOptions.sourceReader && !destOptions.destWriter) ||
             (!sourceOptions.sourceReader && destOptions.destWriter)) {
             this.pipeErrorHandler.bothErrorEmit(sourceOptions, destOptions,
