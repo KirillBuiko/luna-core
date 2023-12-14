@@ -1,5 +1,5 @@
 {
-  "name": "fetch-stream-test",
+  "name": "luna-core",
   "version": "1.0.0",
   "description": "",
   "main": "src/rest-api-stream-test/server.ts",
