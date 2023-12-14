@@ -9,4 +9,4 @@ RUN npm install --production
 
 COPY . .
 EXPOSE 5051 5052
-CMD ["npm", "run", "start-core-windows"]
+CMD ["npm", "run", "start-core"]

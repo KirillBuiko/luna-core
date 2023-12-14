@@ -4,14 +4,14 @@
   "description": "",
   "main": "src/rest-api-stream-test/server.ts",
   "scripts": {
-    "start-core-windows": "ts-node ./src/app/main.ts",
+    "start-core": "ts-node ./src/app/main.ts",
     "update-protos": "npm i github:KirillBuiko/luna-proto-files & npm run build-proto-types",
     "REMOVE-and-build-proto": "rmdir /Q /S \"./grpc/build\" & npm run build-proto-types",
-    "build-proto-types": "powershell scripts/build-types.ps1",
-    "start-client-rest": "powershell scripts/start-script.ps1 \\\"dist/test-applications/client-restapi/main.js\\\"",
-    "start-client-grpc": "powershell scripts/start-script.ps1 \\\"dist/test-applications/client-grpc/main.js\\\"",
-    "start-server-rest": "powershell scripts/start-script.ps1 \\\"dist/test-applications/server-restapi/main.js\\\"",
-    "start-server-grpc": "powershell scripts/start-script.ps1 \\\"dist/test-applications/server-grpc/main.js\\\""
+    "build-proto-types": "powershell ./scripts/build-types.ps1",
+    "start-client-rest": "ts-node \"test-applications/client-restapi/main.ts\"",
+    "start-client-grpc": "ts-node \"test-applications/client-grpc/main.ts\"",
+    "start-server-rest": "ts-node \"test-applications/server-restapi/main.ts\"",
+    "start-server-grpc": "ts-node \"test-applications/server-grpc/main.ts\""
   },
   "author": "",
   "license": "ISC",

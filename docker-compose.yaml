@@ -9,3 +9,14 @@ services:
     ports:
       - ${CORE_REST_PORT}:5051
       - ${CORE_GRPC_PORT}:5052
+    environment:
+      - NODE_ENV=production
+      - COMPUTATION_MODELS_STORAGE_HOST=host.docker.internal:5001
+      - EXECUTOR_HOST=host.docker.internal:5002
+      - GENERATOR_HOST=host.docker.internal:5003
+      - INTERPRETER_HOST=host.docker.internal:5004
+      - MODULES_STORAGE_HOST=host.docker.internal:5005
+      - PLANNER_HOST=host.docker.internal:5006
+      - VARIABLES_STORAGE_HOST=host.docker.internal:5007
+      - PROGRAMS_STORAGE_HOST=host.docker.internal:5008
+      - TASKS_STORAGE_HOST=host.docker.internal:5009

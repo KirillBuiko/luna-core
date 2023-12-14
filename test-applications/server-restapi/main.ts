@@ -7,7 +7,7 @@ import {TestRestApiRequestManager} from "./TestRestApiRequestManager";
     try {
         const server = new RestApiServer();
         await server.start(testServerConfigs.restServer, new TestRestApiRequestManager());
-        console.log(`Rest api server started`);
+        console.log(`Rest api server started on ${testServerConfigs.restServer.port}`);
     }
     catch (e) {
         console.log(`Rest api server start error: ${e}`);
