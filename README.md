@@ -90,5 +90,5 @@ DataType =
 Далее все данные будут отправленны в потоке описанным выше образом.
 #### REST - Set
 Для выполнения Set запроса через HTTP нужно выполнить POST запрос /set,
-передав в тело form-data с DataRequestInfo JSON в поле 'info' и данными в поле 'data'
+передав в тело form-data с DataRequestInfo JSON в поле 'info' и данными в поле 'data'.  
 В ответ придёт GetRequestInfo JSON
