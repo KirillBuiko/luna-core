@@ -1,6 +1,7 @@
 import type {EndpointConfigsType} from "@/app/types/EndpointConfigType";
 
-export const endpointConfigs: EndpointConfigsType = process.env.NODE_ENV == "production"
+export const endpointConfigs: EndpointConfigsType =
+    process.env.NODE_ENV == "production"
     ? {
         computationModelsStorage:
             {host: process.env.COMPUTATION_MODELS_STORAGE_HOST},
