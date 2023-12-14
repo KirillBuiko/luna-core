@@ -1,5 +1,9 @@
-src
-grpc
+node_modules
+.gitignore
+.git
+.idea
+#src
+#grpc
 test-applications
 text
-tsconfig.json
+#tsconfig.json

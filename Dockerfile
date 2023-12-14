@@ -1,6 +1,6 @@
-FROM node:20
+FROM node:lts-alpine
 
-ARG APP_DIR=luna-core
+ARG APP_DIR=app
 RUN mkdir -p ${APP_DIR}
 WORKDIR ${APP_DIR}
 
@@ -9,3 +9,4 @@ RUN npm install --production
 
 COPY . .
 EXPOSE 5051 5052
+CMD ["npm", "run", "start-core-windows"]

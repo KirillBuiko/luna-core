@@ -1,0 +1,11 @@
+version: '3.9'
+
+services:
+  core:
+    container_name: core
+    image: luna-core
+    restart: "unless-stopped"
+    build: https://github.com/KirillBuiko/luna-core.git
+    ports:
+      - ${CORE_REST_PORT}:5051
+      - ${CORE_GRPC_PORT}:5052
