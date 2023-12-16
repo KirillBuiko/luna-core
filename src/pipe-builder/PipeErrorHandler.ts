@@ -5,7 +5,6 @@ export class PipeErrorHandler {
     sourceErrorEmit(sourceOptions: SourceOptionsType, error: ServerErrorResponse) {
         switch (typeof sourceOptions.sourceWriter) {
             case "object":
-                console.log(error.code , error.message);
                 sourceOptions.sourceWriter.destroy && sourceOptions.sourceWriter.destroy(error);
                 break;
             case "function":
