@@ -30,6 +30,8 @@ export class RestApiEndpoint extends Endpoint {
             method: "GET",
         }).then((response: Response) => {
             Readable.fromWeb(response.body as ReadableStream).pipe(_writer)
+        }).catch(err => {
+            _writer.destroy(err);
         });
         return {
             requestName: "GET",
