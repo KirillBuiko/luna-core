@@ -4,13 +4,13 @@ import {GrpcEndpoint} from "@/endpoints/GrpcEndpoint";
 import {RestApiEndpoint} from "@/endpoints/RestApiEndpoint";
 
 export const endpoints: {[endpoint in EndpointName]: IEndpoint} = {
-    computationModelsStorage: new GrpcEndpoint(),
-    executor: new GrpcEndpoint(),
-    generator: new GrpcEndpoint(),
-    interpreter: new GrpcEndpoint(),
+    computationModelsStorage: new RestApiEndpoint(),
+    executor: new RestApiEndpoint(),
+    generator: new RestApiEndpoint(),
+    interpreter: new RestApiEndpoint(),
     modulesStorage: new RestApiEndpoint(),
-    planner: new GrpcEndpoint(),
-    programsStorage: new GrpcEndpoint(),
-    tasksStorage: new GrpcEndpoint(),
-    variablesStorage: new GrpcEndpoint()
+    planner: new RestApiEndpoint(),
+    programsStorage: new RestApiEndpoint(),
+    tasksStorage: new RestApiEndpoint(),
+    variablesStorage: new RestApiEndpoint()
 }

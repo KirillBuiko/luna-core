@@ -8,7 +8,7 @@ export const endpointConfigs: EndpointConfigsType =
         executor:
             {host: process.env.EXECUTOR_HOST},
         generator:
-            {host: process.env.GENERATOR_HOST}, // grpc
+            {host: process.env.GENERATOR_HOST},
         interpreter:
             {host: process.env.INTERPRETER_HOST},
         modulesStorage:
@@ -16,7 +16,7 @@ export const endpointConfigs: EndpointConfigsType =
         planner:
             {host: process.env.PLANNER_HOST},
         variablesStorage:
-            {host: process.env.VARIABLES_STORAGE_HOST}, // rest
+            {host: process.env.VARIABLES_STORAGE_HOST},
         programsStorage:
             {host: process.env.PROGRAMS_STORAGE_HOST},
         tasksStorage:
@@ -28,7 +28,7 @@ export const endpointConfigs: EndpointConfigsType =
         executor:
             {host: "localhost:5002"},
         generator:
-            {host: "localhost:5003"}, // grpc
+            {host: "localhost:5003"},
         interpreter:
             {host: "localhost:5004"},
         modulesStorage:
@@ -36,7 +36,7 @@ export const endpointConfigs: EndpointConfigsType =
         planner:
             {host: "localhost:5006"},
         variablesStorage:
-            {host: "localhost:5007"}, // rest
+            {host: "localhost:5007"},
         programsStorage:
             {host: "localhost:5008"},
         tasksStorage:
