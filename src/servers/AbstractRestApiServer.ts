@@ -17,7 +17,8 @@ export abstract class AbstractRestApiServer implements IAbstractServer{
     async defaultStart(config: ServerConfigType): Promise<Error | null> {
         try {
             await this.server.listen({
-                port: config.port
+                port: config.port,
+                host: config.host
             });
         } catch (err) {
             return err as Error;
@@ -27,6 +28,7 @@ export abstract class AbstractRestApiServer implements IAbstractServer{
     }
 
     stop(): Promise<Error | undefined> {
+        if (this.status == "off") return;
         this.status = "off";
         return this.server.close();
     }

@@ -1,5 +1,6 @@
 export interface ServerConfigType {
-    port: number
+    port: number,
+    host: string
 }
 
 export type ServerName =

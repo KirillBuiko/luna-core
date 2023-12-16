@@ -2,16 +2,19 @@ version: '3.9'
 
 services:
   core:
+#    network_mode: host
     container_name: core
     image: luna-core
     restart: "unless-stopped"
-    build: https://github.com/KirillBuiko/luna-core.git
-#    build: .
+#    build: https://github.com/KirillBuiko/luna-core.git
+    build: .
     ports:
-      - ${CORE_REST_PORT}:5051
-      - ${CORE_GRPC_PORT}:5052
+      - "${CORE_REST_PORT}:${CORE_REST_PORT}"
+      - "${CORE_GRPC_PORT}:${CORE_GRPC_PORT}"
     environment:
       - NODE_ENV=production
+      - REST_PORT=${CORE_REST_PORT}
+      - GRPC_PORT=${CORE_GRPC_PORT}
       - COMPUTATION_MODELS_STORAGE_HOST=host.docker.internal:5001
       - EXECUTOR_HOST=host.docker.internal:5002
       - GENERATOR_HOST=host.docker.internal:5003

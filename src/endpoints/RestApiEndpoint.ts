@@ -27,7 +27,7 @@ export class RestApiEndpoint extends Endpoint {
         NarrowedDestinationOptionsType<"REST_API", "GET"> {
         const [reader, _writer] = getReaderWriter();
         fetch(`http://${this.host}/get?info=${JSON.stringify(info)}`, {
-            method: "GET"
+            method: "GET",
         }).then((response: Response) => {
             Readable.fromWeb(response.body as ReadableStream).pipe(_writer)
         });

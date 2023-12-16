@@ -4,6 +4,6 @@ node_modules
 .idea
 #src
 #grpc
-test-applications
-text
+#test-applications
+#text
 #tsconfig.json

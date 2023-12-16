@@ -8,5 +8,5 @@ COPY package*.json ./
 RUN npm install --production
 
 COPY . .
-EXPOSE 5051 5052
+EXPOSE 4061 4062
 CMD ["npm", "run", "start-core"]
