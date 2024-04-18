@@ -5,13 +5,19 @@ import type {DataRequestInfo} from "@grpc-build/DataRequestInfo";
 import {testObjects} from "../testObjects";
 import fs from "fs";
 import {testConfigs} from "../testConfigs";
+import {getReaderWriter} from "@/utils/getReaderWriter";
+import FormData from "form-data";
 
 export class TestRestApiRequestManager implements IRequestManager {
     register(sourceOptions: NarrowedSourceOptionsType<"REST_API">, info: GetRequestInfo | DataRequestInfo) {
         if (sourceOptions.requestName == "GET") {
             const {sourceWriter} = sourceOptions;
-            sourceWriter.write(JSON.stringify(testObjects.set));
-            fs.createReadStream(testConfigs.dataPath).pipe(sourceWriter);
+            const [reader, writer] = getReaderWriter();
+            const form = new FormData();
+            form.append("info", JSON.stringify(testObjects.set));
+            form.append("data", reader);
+            form.pipe(sourceWriter);
+            fs.createReadStream(testConfigs.dataPath).pipe(writer);
         } else {
             const {sourceReader: reader, sourceWriter: writer} = sourceOptions;
             reader

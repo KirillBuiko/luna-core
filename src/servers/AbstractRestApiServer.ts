@@ -3,7 +3,7 @@ import type {ServerStatus} from "@/app/types/IServer";
 import Fastify, {RouteHandlerMethod} from "fastify";
 import type {ServerConfigType} from "@/app/types/ServerConfigType";
 
-export abstract class AbstractRestApiServer implements IAbstractServer{
+export abstract class AbstractRestApiServer implements IAbstractServer {
     status: ServerStatus = "off";
     server = Fastify();
 
