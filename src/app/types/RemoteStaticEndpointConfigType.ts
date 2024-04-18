@@ -1,4 +1,4 @@
-export interface EndpointConfigType {
+export interface RemoteStaticEndpointConfigType {
     host: string
 }
 
@@ -13,4 +13,4 @@ export type EndpointName =
     | "tasksStorage"
     | "programsStorage"
 
-export type EndpointConfigsType = {[endpoint in EndpointName]: EndpointConfigType}
+export type EndpointConfigsType = {[endpoint in EndpointName]: RemoteStaticEndpointConfigType}

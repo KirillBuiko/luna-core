@@ -2,7 +2,7 @@ import type {EndpointStatus} from "@/app/types/IEndpoint";
 import type {
     NarrowedDestinationOptionsType, ProtocolType
 } from "@/types/Types";
-import type {EndpointConfigType} from "@/app/types/EndpointConfigType";
+import type {RemoteStaticEndpointConfigType} from "@/app/types/RemoteStaticEndpointConfigType";
 import * as protoLoader from "@grpc/proto-loader";
 import {grpcLoadOptions} from "@/grpcLoadOptions";
 import * as grpc from "@grpc/grpc-js";
@@ -19,7 +19,7 @@ export class GrpcEndpoint extends Endpoint {
     protocol: ProtocolType = "GRPC";
     client: InstanceType<ProtoGrpcType["DataRequests"]> | undefined;
 
-    init(config: EndpointConfigType): Promise<Error | null> {
+    init(config: RemoteStaticEndpointConfigType): Promise<Error | null> {
         const packageDefinition = protoLoader.loadSync(configs.PROTO_PATH, grpcLoadOptions);
         const proto = grpc.loadPackageDefinition(packageDefinition) as unknown as ProtoGrpcType;
         this.client = new proto.DataRequests(config.host, grpc.credentials.createInsecure());

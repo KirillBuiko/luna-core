@@ -1,4 +1,4 @@
-import type {EndpointConfigsType} from "@/app/types/EndpointConfigType";
+import type {EndpointConfigsType} from "@/app/types/RemoteStaticEndpointConfigType";
 
 export const endpointConfigs: EndpointConfigsType =
     process.env.NODE_ENV == "production"

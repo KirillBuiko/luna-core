@@ -5,11 +5,11 @@ import type {IRequestManager} from "@/app/types/IRequestManager";
 import {AbstractGrpcServer} from "@/servers/AbstractGrpcServer";
 import {configs} from "@/configs/configs";
 import type {ServerConfigType} from "@/app/types/ServerConfigType";
-import {ErrorMessage} from "@/utils/ErrorMessage";
-import {Status} from "@grpc/grpc-js/build/src/constants";
+import {GrpcActions} from "@/servers/actions/GrpcActions";
 
 export class GrpcServer extends AbstractGrpcServer implements IServer {
     requestManager: IRequestManager | undefined = undefined;
+    grpcActions: GrpcActions;
 
     constructor() {
         super(configs.PROTO_PATH);
@@ -17,32 +17,19 @@ export class GrpcServer extends AbstractGrpcServer implements IServer {
 
     async start(config: ServerConfigType, requestManager: IRequestManager): Promise<Error | null> {
         this.requestManager = requestManager;
+        this.grpcActions = new GrpcActions(this.requestManager);
         return super.defaultStart(config);
     }
 
     getHandler: DataRequestsHandlers["Get"] = (call) => {
-        console.log("Get GRPC request", call.request.requestType);
-        this.requestManager?.register({
-            protocol: "GRPC",
-            requestName: "GET",
-            sourceWriter: call,
-            sourceReader: undefined
-        }, call.request);
+        return this.grpcActions.getHandler(call);
     }
 
     setHandler: DataRequestsHandlers["Set"] = (call, callback) => {
-        console.log("Set GRPC request");
-        call.once("data", info => {
-            if (info.infoOrData === "info") {
-                this.requestManager?.register({
-                    protocol: "GRPC",
-                    requestName: "SET",
-                    sourceWriter: callback,
-                    sourceReader: call
-                }, info.info);
-            } else {
-                call.destroy(ErrorMessage.create(Status.FAILED_PRECONDITION, "Not info first"));
-            }
-        })
+        return this.grpcActions.setHandler(call, callback);
+    }
+
+    connectHandler: DataRequestsHandlers["Connect"] = () => {
+        // TODO: write creating grpc connect handler
     }
 }

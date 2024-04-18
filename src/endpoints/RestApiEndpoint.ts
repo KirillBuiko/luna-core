@@ -2,7 +2,7 @@ import type {EndpointStatus} from "@/app/types/IEndpoint";
 import type {
     NarrowedDestinationOptionsType
 } from "@/types/Types";
-import type {EndpointConfigType} from "@/app/types/EndpointConfigType";
+import type {RemoteStaticEndpointConfigType} from "@/app/types/RemoteStaticEndpointConfigType";
 import type {GetRequestInfo, GetRequestInfo__Output} from "@grpc-build/GetRequestInfo";
 import type {DataRequestInfo} from "@grpc-build/DataRequestInfo";
 import {Endpoint} from "@/endpoints/Endpoint";
@@ -17,7 +17,7 @@ export class RestApiEndpoint extends Endpoint {
     protocol: ProtocolType = "REST_API";
     host: string | undefined;
 
-    init(config: EndpointConfigType): Promise<Error | null> {
+    init(config: RemoteStaticEndpointConfigType): Promise<Error | null> {
         this.host = config.host;
         this.status = "connected";
         return null;
@@ -52,7 +52,6 @@ export class RestApiEndpoint extends Endpoint {
                 port: this.host.split(":")[1],
                 path: "/set",
                 method: "post",
-
             }, (err, res) => {
                 if (err) {
                     reject(err);

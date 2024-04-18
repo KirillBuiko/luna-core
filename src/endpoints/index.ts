@@ -1,6 +1,5 @@
-import type {EndpointName} from "@/app/types/EndpointConfigType";
+import type {EndpointName} from "@/app/types/RemoteStaticEndpointConfigType";
 import type {IEndpoint} from "@/app/types/IEndpoint";
-import {GrpcEndpoint} from "@/endpoints/GrpcEndpoint";
 import {RestApiEndpoint} from "@/endpoints/RestApiEndpoint";
 
 export const endpoints: {[endpoint in EndpointName]: IEndpoint} = {

@@ -1,5 +1,5 @@
 import type {IEndpointsManager} from "@/app/types/IEndpointsManager";
-import type {EndpointConfigsType, EndpointName} from "@/app/types/EndpointConfigType";
+import type {EndpointConfigsType, EndpointName} from "@/app/types/RemoteStaticEndpointConfigType";
 import {endpoints} from "./index";
 
 export class EndpointsManager implements IEndpointsManager {

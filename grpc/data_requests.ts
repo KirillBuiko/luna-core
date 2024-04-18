@@ -8,11 +8,13 @@ type SubtypeConstructor<Constructor extends new (...args: any) => any, Subtype> 
 };
 
 export interface ProtoGrpcType {
+  BidiMessage: MessageTypeDefinition
   DataRequestInfo: MessageTypeDefinition
   DataRequests: SubtypeConstructor<typeof grpc.Client, _DataRequestsClient> & { service: _DataRequestsDefinition }
   DataStream: MessageTypeDefinition
   DataType: EnumTypeDefinition
   GetRequestInfo: MessageTypeDefinition
+  HelloInfo: MessageTypeDefinition
   RequestType: EnumTypeDefinition
   TaskDataInfo: MessageTypeDefinition
   TaskGetInfo: MessageTypeDefinition

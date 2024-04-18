@@ -29,7 +29,7 @@ export class RequestManager implements IRequestManager{
 
         if (destName) {
             try {
-                destOptions = this.endpointsManager.getEndpoint(destName).send(sourceOptions.requestName, info);
+                destOptions = this.endpointsManager.getEndpoint(destName).createSendHandler(sourceOptions.requestName, info);
             } catch (e) {
                 console.log(`Failed to ${sourceOptions.requestName} ` +
                 `${info.requestType} from ${sourceOptions.protocol} to ${destName}`);

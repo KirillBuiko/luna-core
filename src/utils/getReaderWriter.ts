@@ -4,6 +4,7 @@ export function getReaderWriter(): [Readable, Writable] {
     const reader = new Readable({
         read() {}
     });
+
     const writer = new Writable({
         write(chunk, encoding, callback) {
             reader.push(chunk);

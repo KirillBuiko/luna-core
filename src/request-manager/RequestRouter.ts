@@ -1,5 +1,5 @@
 import type {RequestType__Output} from "@grpc-build/RequestType";
-import type {EndpointName} from "@/app/types/EndpointConfigType";
+import type {EndpointName} from "@/app/types/RemoteStaticEndpointConfigType";
 
 import type {RequestName} from "@/types/Types";
 
