@@ -1,5 +1,6 @@
 import type {EndpointStatus} from "@/app/types/IEndpoint";
 import type {
+    MultipartTransferObject,
     NarrowedDestinationOptionsType
 } from "@/types/Types";
 import type {RemoteStaticEndpointConfigType} from "@/app/types/RemoteStaticEndpointConfigType";
@@ -11,6 +12,7 @@ import FormData from "form-data";
 import {getReaderWriter} from "@/utils/getReaderWriter";
 import {Readable} from "node:stream";
 import type {ReadableStream} from "stream/web";
+import busboy from "busboy";
 
 export class RestApiEndpoint extends Endpoint {
     status: EndpointStatus = "not-connected";
@@ -25,14 +27,58 @@ export class RestApiEndpoint extends Endpoint {
 
     protected getHandler(info: GetRequestInfo):
         NarrowedDestinationOptionsType<"REST_API", "GET"> {
-        const [reader, _writer] = getReaderWriter();
-        fetch(`http://${this.host}/get?info=${JSON.stringify(info)}`, {
-            method: "GET",
-        }).then((response: Response) => {
-            Readable.fromWeb(response.body as ReadableStream).pipe(_writer)
-        }).catch(err => {
-            _writer.destroy(err);
-        });
+        const reader = new Promise<MultipartTransferObject>(async (resolve, reject) => {
+            try {
+                const response = await fetch(`http://${this.host}/get?info=${JSON.stringify(info)}`, {
+                    method: "GET",
+                });
+                if (response.status !== 200) {
+                    Readable.fromWeb(response.body as ReadableStream).on("data", (value) => {
+                        reject(value.toString());
+                    })
+                    return;
+                }
+
+                let infoString: string;
+                let stream: Readable;
+                const bb = busboy({headers: {"content-type": response.headers.get("content-type")}});
+                Readable.fromWeb(response.body as ReadableStream).pipe(bb);
+                function resolvePromise() {
+                    if (!infoString) {
+                        reject()
+                    }
+                    resolve({
+                        info: JSON.parse(infoString),
+                        data: stream
+                    });
+                }
+
+                bb.on("field", (name, value) => {
+                    console.log(`[BB] ${name}: ${value}`);
+                    if (name == "info") {
+                        infoString = value;
+                    }
+                });
+
+                bb.on("file", (name, value) => {
+                    stream = value;
+                    console.log(`[BB] ${name}: ${value}`);
+                    resolvePromise();
+                });
+
+                bb.on("error", (err) => {
+                    reject(err);
+                });
+
+                bb.on("close", () => {
+                    console.log("BB CLOSE");
+                    resolvePromise();
+                });
+            } catch (err) {
+                reject(err);
+            }
+        })
+
         return {
             requestName: "GET",
             protocol: "REST_API",

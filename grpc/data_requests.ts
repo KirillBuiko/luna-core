@@ -9,16 +9,26 @@ type SubtypeConstructor<Constructor extends new (...args: any) => any, Subtype> 
 
 export interface ProtoGrpcType {
   BidiMessage: MessageTypeDefinition
+  CodeFragmentData: MessageTypeDefinition
+  CodeFragmentGet: MessageTypeDefinition
+  CodeFragmentInfoData: MessageTypeDefinition
+  CodeFragmentInfoGet: MessageTypeDefinition
+  CodeFragmentListData: MessageTypeDefinition
+  CodeFragmentPluginData: MessageTypeDefinition
+  CodeFragmentPluginGet: MessageTypeDefinition
+  CodeFragmentPluginProcedureData: MessageTypeDefinition
+  CodeFragmentPluginProcedureGet: MessageTypeDefinition
+  CodeFragmentPluginsListData: MessageTypeDefinition
+  CodeFragmentPluginsListGet: MessageTypeDefinition
   DataRequestInfo: MessageTypeDefinition
   DataRequests: SubtypeConstructor<typeof grpc.Client, _DataRequestsClient> & { service: _DataRequestsDefinition }
   DataStream: MessageTypeDefinition
   DataType: EnumTypeDefinition
+  FileInfo: MessageTypeDefinition
   GetRequestInfo: MessageTypeDefinition
   HelloInfo: MessageTypeDefinition
   RequestType: EnumTypeDefinition
-  TaskDataInfo: MessageTypeDefinition
-  TaskGetInfo: MessageTypeDefinition
-  VariableDataInfo: MessageTypeDefinition
-  VariableGetInfo: MessageTypeDefinition
+  TaskGet: MessageTypeDefinition
+  VariableGet: MessageTypeDefinition
 }
 

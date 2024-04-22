@@ -2,6 +2,7 @@ import type {BusboyFileStream} from "@fastify/busboy";
 import type {DataRequestsClient, DataRequestsHandlers} from "@grpc-build/DataRequests";
 import type {GetRequestInfo__Output} from "@grpc-build/GetRequestInfo";
 import type {Readable, Writable} from "node:stream";
+import type {DataRequestInfo} from "@grpc-build/DataRequestInfo";
 
 export type ProtocolType =
     | "GRPC"
@@ -42,7 +43,7 @@ export type SourceOptionsType =
     void, Parameters<DataRequestsHandlers["Get"]>[0]>
 
     | SourceReaderWriterOptions<"REST_API", "GET",
-    void, Writable>
+    void, (error, value?: MultipartTransferObject) => void>
 
     | SourceReaderWriterOptions<"GRPC", "SET",
     Parameters<DataRequestsHandlers["Set"]>[0], Parameters<DataRequestsHandlers["Set"]>[1]>
@@ -58,7 +59,7 @@ export type DestinationOptionsType =
     Promise<NonNullable<Parameters<Parameters<DataRequestsClient["Set"]>[0]>[1]>>, ReturnType<DataRequestsClient["Set"]>>
 
     | DestinationReaderWriterOptions<"REST_API", "GET",
-    Readable, void>
+    Promise<MultipartTransferObject>, void>
 
     | DestinationReaderWriterOptions<"REST_API", "SET",
     Promise<NonNullable<Parameters<Parameters<DataRequestsClient["Set"]>[0]>[1]>>, Writable>
@@ -67,7 +68,7 @@ export type DestinationOptionsType =
 
 export type NarrowedOptionsType<
     ProtocolT extends ProtocolType, RequestN extends RequestName, OptionsT> =
-    OptionsT extends {protocol: ProtocolT, requestName: RequestN}
+    OptionsT extends { protocol: ProtocolT, requestName: RequestN }
         ? OptionsT : never;
 
 export type NarrowedSourceOptionsType<
@@ -80,4 +81,9 @@ export type NarrowedDestinationOptionsType<
 
 export interface RestApiQueryType {
     info: GetRequestInfo__Output
+}
+
+export interface MultipartTransferObject {
+    info: DataRequestInfo,
+    data?: Readable
 }

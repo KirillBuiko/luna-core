@@ -5,10 +5,11 @@ import type {DataRequestInfo} from "@grpc-build/DataRequestInfo";
 import type {sendUnaryData} from "@grpc/grpc-js";
 import type {IRequestManager} from "@/app/types/IRequestManager";
 import type {FastifyReply} from "fastify";
-import {getReaderWriter} from "@/utils/getReaderWriter";
 import {Status} from "@grpc/grpc-js/build/src/constants";
 import {EndedStream} from "@/utils/EndedStream";
 import {ErrorMessage} from "@/utils/ErrorMessage";
+import FormData from "form-data";
+import type {MultipartTransferObject} from "@/types/Types";
 
 export class RestApiActions {
     constructor(private requestManager: IRequestManager){};
@@ -17,13 +18,23 @@ export class RestApiActions {
         res.code(500).send(ErrorMessage.create(code, message));
     }
 
-    getHandler = (req, res) => {
-        const [r, writer] = getReaderWriter();
-        res.send(r);
+    getHandler = (req, res: FastifyReply) => {
+        const callback = (error, value: MultipartTransferObject) => {
+            if (error) {
+                res.code(500).send(error);
+            } else {
+                const formData = new FormData();
+                formData.append("info", JSON.stringify(value.info));
+                if (value && value.data) {
+                    formData.append("data", value.data);
+                }
+                res.headers(formData.getHeaders()).send(formData);
+            }
+        }
         this.requestManager!.register({
             protocol: "REST_API",
             requestName: "GET",
-            sourceWriter: writer,
+            sourceWriter: callback,
         }, (JSON.parse((req.query as { info: string }).info) as GetRequestInfo__Output));
     }
 

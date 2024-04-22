@@ -15,35 +15,39 @@ export class RestToGrpcPipe extends PipeHandler<SourceOptions, DestinationOption
     protected getHandler(sourceOptions: SourceOptions<"GET">, destOptions: DestinationOptions<"GET">) {
         const {sourceWriter} = sourceOptions;
         const {destReader} = destOptions;
-        destReader
-            .on("data", (data: DataStream__Output) =>
-                data.infoOrData == "info"
-                    ? sourceWriter.write(JSON.stringify(data.info))
-                    : sourceWriter.write(data.chunkData))
-            .on("end", () =>
-                sourceWriter.end())
-            .on("error", err => {
-                this.pipeErrorHandler.sourceErrorEmit(sourceOptions,
-                    ErrorMessage.create(Status.ABORTED, JSON.stringify(err)));
-            });
+
+        // TODO: support it
+        // destReader
+        //     .on("data", (data: DataStream__Output) =>
+        //         data.infoOrData == "info"
+        //             ? sourceWriter.write(JSON.stringify(data.info))
+        //             : sourceWriter.write(data.chunkData))
+        //     .on("end", () =>
+        //         sourceWriter.end())
+        //     .on("error", err => {
+        //         this.pipeErrorHandler.sourceErrorEmit(sourceOptions,
+        //             ErrorMessage.create(Status.ABORTED, JSON.stringify(err)));
+        //     });
     }
 
     protected setHandler(sourceOptions: SourceOptions<"SET">, destOptions: DestinationOptions<"SET">) {
         const {sourceWriter, sourceReader} = sourceOptions;
         const {destWriter, destReader} = destOptions;
-        sourceReader
-            .on("data", data => destWriter.write({chunkData: data}))
-            .on("end", () => destWriter.end())
-            .on("error", err => {
-                this.pipeErrorHandler.destinationErrorEmit(destOptions,
-                    ErrorMessage.create(Status.ABORTED, JSON.stringify(err)));
-            });
 
-        destReader.then(data => {
-            sourceWriter(null, data);
-        }).catch(err => {
-            this.pipeErrorHandler.sourceErrorEmit(sourceOptions,
-                ErrorMessage.create(Status.ABORTED, JSON.stringify(err)));
-        })
+        // TODO: support it
+        // sourceReader
+        //     .on("data", data => destWriter.write({chunkData: data}))
+        //     .on("end", () => destWriter.end())
+        //     .on("error", err => {
+        //         this.pipeErrorHandler.destinationErrorEmit(destOptions,
+        //             ErrorMessage.create(Status.ABORTED, JSON.stringify(err)));
+        //     });
+        //
+        // destReader.then(data => {
+        //     sourceWriter(null, data);
+        // }).catch(err => {
+        //     this.pipeErrorHandler.sourceErrorEmit(sourceOptions,
+        //         ErrorMessage.create(Status.ABORTED, JSON.stringify(err)));
+        // })
     }
 }

@@ -14,15 +14,11 @@ export class RestToRestPipe extends PipeHandler<SourceOptions, DestinationOption
     protected getHandler(sourceOptions: SourceOptions<"GET">, destOptions: DestinationOptions<"GET">) {
         const {sourceWriter} = sourceOptions;
         const {destReader} = destOptions;
-        destReader
-            .on("data", (data) =>
-                sourceWriter.write(data))
-            .on("end", () =>
-                sourceWriter.end())
-            .on("error", err => {
-                this.pipeErrorHandler.sourceErrorEmit(sourceOptions,
-                    ErrorMessage.create(Status.ABORTED, JSON.stringify(err)));
-            });
+        destReader.then((value) => {
+            sourceWriter(null, value);
+        }).catch(err => {
+            sourceWriter(err);
+        })
     }
 
     protected setHandler(sourceOptions: SourceOptions<"SET">, destOptions: DestinationOptions<"SET">) {

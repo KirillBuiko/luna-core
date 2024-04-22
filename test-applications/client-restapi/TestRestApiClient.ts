@@ -11,9 +11,18 @@ export class TestRestApiClient extends RestApiEndpoint {
 
     async get(info: GetRequestInfo) {
         const options = super.getHandler(info);
-        options.destReader.on("data", data => {
-            console.log(data.toString());
-        })
+        const result = await options.destReader;
+        console.log("info:", result.info);
+        let file = "";
+        if (result.data) {
+            result.data.on("data", (value) => {
+                file += value;
+            });
+            result.data.on("end", () => {
+                console.log(file);
+                console.log("END");
+            })
+        }
     }
 
     async set(info: DataRequestInfo) {

@@ -7,7 +7,7 @@ export const endpoints: {[endpoint in EndpointName]: IEndpoint} = {
     executor: new RestApiEndpoint(),
     generator: new RestApiEndpoint(),
     interpreter: new RestApiEndpoint(),
-    modulesStorage: new RestApiEndpoint(),
+    codeFragmentsStorage: new RestApiEndpoint(),
     planner: new RestApiEndpoint(),
     programsStorage: new RestApiEndpoint(),
     tasksStorage: new RestApiEndpoint(),

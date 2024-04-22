@@ -3,34 +3,34 @@ import type {DataRequestInfo} from "@grpc-build/DataRequestInfo";
 
 const getProgramInfo: GetRequestInfo = {
     requestType: "PROGRAM",
-    variableGetInfo: {
-        variableId: "123123"
+    codeFragmentGet: {
+        id: "123123"
     }
 }
 
 const setProgramInfo: DataRequestInfo = {
     requestType: "PROGRAM",
     dataType: "FILE",
-    variableDataInfo: {
+    codeFragment: {
         getInfo: {
-            variableId: "123123"
+            id: "123123"
         }
     }
 }
 
 const getModuleInfo: GetRequestInfo = {
-    requestType: "MODULE",
-    variableGetInfo: {
-        variableId: "123123"
+    requestType: "CODE_FRAGMENT",
+    codeFragmentGet: {
+         id: "123123"
     }
 }
 
 const setModuleInfo: DataRequestInfo = {
-    requestType: "MODULE",
+    requestType: "CODE_FRAGMENT",
     dataType: "FILE",
-    variableDataInfo: {
+    codeFragment: {
         getInfo: {
-            variableId: "123123"
+            id: "123123"
         }
     }
 }
@@ -38,5 +38,5 @@ const setModuleInfo: DataRequestInfo = {
 // Program requests to GRPC endpoint (server-grpc)
 // Module requests to Rest API endpoint (server-restapi)
 export const testObjects =
-    {get: getProgramInfo, set: setProgramInfo}
-    // {get: getModuleInfo, set: setModuleInfo}
+    // {get: getProgramInfo, set: setProgramInfo}
+    {get: getModuleInfo, set: setModuleInfo}

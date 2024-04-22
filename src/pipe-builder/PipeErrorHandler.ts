@@ -11,6 +11,7 @@ export class PipeErrorHandler {
                 sourceOptions.sourceWriter(error)
                 break;
         }
+
         // if (sourceOptions.protocol == "GRPC" && sourceOptions.requestName == "GET") {
         //     sourceOptions.sourceWriter && sourceOptions.sourceWriter.destroy(error);
         // } else if (sourceOptions.protocol == "GRPC" && sourceOptions.requestName == "SET") {

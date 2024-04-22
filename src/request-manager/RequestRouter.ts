@@ -52,18 +52,30 @@ const routes: {[requestType in RequestType__Output]: {[requestName in RequestNam
         GET: "planner",
         SET: null
     },
-    MODULE: {
-        GET: "modulesStorage",
-        SET: "modulesStorage"
+    CODE_FRAGMENT: {
+        GET: "codeFragmentsStorage",
+        SET: "codeFragmentsStorage"
     },
-    MODULE_LIST: {
-        GET: "modulesStorage",
+    CODE_FRAGMENT_LIST: {
+        GET: "codeFragmentsStorage",
         SET: null
     },
-    MODULE_INFO: {
-        GET: "modulesStorage",
-        SET: "modulesStorage"
-    }
+    CODE_FRAGMENT_INFO: {
+        GET: "codeFragmentsStorage",
+        SET: "codeFragmentsStorage"
+    },
+    CODE_FRAGMENT_PLUGIN: {
+        GET: "codeFragmentsStorage",
+        SET: "codeFragmentsStorage"
+    },
+    CODE_FRAGMENT_PLUGINS_LIST: {
+        GET: "codeFragmentsStorage",
+        SET: "codeFragmentsStorage"
+    },
+    CODE_FRAGMENT_PLUGIN_PROCEDURE: {
+        GET: "codeFragmentsStorage",
+        SET: "codeFragmentsStorage"
+    },
 }
 
 export class RequestRouter {

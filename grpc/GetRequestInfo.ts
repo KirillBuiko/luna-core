@@ -1,19 +1,28 @@
 // Original file: node_modules/luna-proto-files/data_requests.proto
 
 import type { RequestType as _RequestType, RequestType__Output as _RequestType__Output } from './RequestType';
-import type { VariableGetInfo as _VariableGetInfo, VariableGetInfo__Output as _VariableGetInfo__Output } from './VariableGetInfo';
-import type { TaskGetInfo as _TaskGetInfo, TaskGetInfo__Output as _TaskGetInfo__Output } from './TaskGetInfo';
+import type { CodeFragmentGet as _CodeFragmentGet, CodeFragmentGet__Output as _CodeFragmentGet__Output } from './CodeFragmentGet';
+import type { CodeFragmentInfoGet as _CodeFragmentInfoGet, CodeFragmentInfoGet__Output as _CodeFragmentInfoGet__Output } from './CodeFragmentInfoGet';
+import type { CodeFragmentPluginGet as _CodeFragmentPluginGet, CodeFragmentPluginGet__Output as _CodeFragmentPluginGet__Output } from './CodeFragmentPluginGet';
+import type { CodeFragmentPluginProcedureGet as _CodeFragmentPluginProcedureGet, CodeFragmentPluginProcedureGet__Output as _CodeFragmentPluginProcedureGet__Output } from './CodeFragmentPluginProcedureGet';
+import type { CodeFragmentPluginsListGet as _CodeFragmentPluginsListGet, CodeFragmentPluginsListGet__Output as _CodeFragmentPluginsListGet__Output } from './CodeFragmentPluginsListGet';
 
 export interface GetRequestInfo {
   'requestType'?: (_RequestType);
-  'variableGetInfo'?: (_VariableGetInfo | null);
-  'taskGetInfo'?: (_TaskGetInfo | null);
-  'infoType'?: "variableGetInfo"|"taskGetInfo";
+  'codeFragmentGet'?: (_CodeFragmentGet | null);
+  'codeFragmentInfoGet'?: (_CodeFragmentInfoGet | null);
+  'codeFragmentPluginGet'?: (_CodeFragmentPluginGet | null);
+  'codeFragmentPluginProcedureGet'?: (_CodeFragmentPluginProcedureGet | null);
+  'codeFragmentPluginListGet'?: (_CodeFragmentPluginsListGet | null);
+  'getInfoType'?: "codeFragmentGet"|"codeFragmentInfoGet"|"codeFragmentPluginGet"|"codeFragmentPluginProcedureGet"|"codeFragmentPluginListGet";
 }
 
 export interface GetRequestInfo__Output {
   'requestType'?: (_RequestType__Output);
-  'variableGetInfo'?: (_VariableGetInfo__Output);
-  'taskGetInfo'?: (_TaskGetInfo__Output);
-  'infoType': "variableGetInfo"|"taskGetInfo";
+  'codeFragmentGet'?: (_CodeFragmentGet__Output);
+  'codeFragmentInfoGet'?: (_CodeFragmentInfoGet__Output);
+  'codeFragmentPluginGet'?: (_CodeFragmentPluginGet__Output);
+  'codeFragmentPluginProcedureGet'?: (_CodeFragmentPluginProcedureGet__Output);
+  'codeFragmentPluginListGet'?: (_CodeFragmentPluginsListGet__Output);
+  'getInfoType': "codeFragmentGet"|"codeFragmentInfoGet"|"codeFragmentPluginGet"|"codeFragmentPluginProcedureGet"|"codeFragmentPluginListGet";
 }
