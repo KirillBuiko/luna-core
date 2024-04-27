@@ -15,11 +15,11 @@ import type {ProtocolType} from "@/types/Types";
 //         })
 //     }
 //
-//     protected getHandler(info: GetRequestInfo) {
+//     protected getGetHandler(info: GetRequestInfo) {
 //
 //     }
 //
-//     protected setHandler(info: DataRequestInfo) {
+//     protected getSetHandler(info: DataRequestInfo) {
 //
 //     }
 // }

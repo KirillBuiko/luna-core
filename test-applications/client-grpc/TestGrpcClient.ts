@@ -11,7 +11,7 @@ export class TestGrpcClient extends GrpcEndpoint {
     }
 
     get(info: GetRequestInfo) {
-        const {destReader: reader} = this.getHandler(info);
+        const {destReader: reader} = this.getGetHandler(info);
         reader
             .on("data", (data: DataStream__Output) =>
                 console.log(data.infoOrData == "info" ? JSON.stringify(data.info) : data.chunkData.toString()))
@@ -21,7 +21,7 @@ export class TestGrpcClient extends GrpcEndpoint {
     }
 
     set(info: DataRequestInfo) {
-        const {destReader: reader, destWriter: writer} = this.setHandler(info);
+        const {destReader: reader, destWriter: writer} = this.getSetHandler(info);
         fs.createReadStream(testConfigs.dataPath)
             .on("data", data => writer.write({chunkData: data}))
             .on("error", (err) => writer.destroy(err))

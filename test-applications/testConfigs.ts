@@ -1,4 +1,4 @@
-import {endpointConfigs} from "@/configs/endpointsConfigs";
+import {endpointConfigs} from "@/configs/endpointConfigs";
 import {serverConfigs} from "@/configs/serverConfigs";
 import path from "path";
 
@@ -7,13 +7,13 @@ export const testConfigs = {
 }
 
 export const testServerConfigs = {
-    restServer: {host: "0.0.0.0", port: Number(endpointConfigs.codeFragmentsStorage.host.split(":")[1])},
-    grpcServer: {host: "0.0.0.0", port: Number(endpointConfigs.programsStorage.host.split(":")[1])},
+    restServer: {host: "0.0.0.0", port: Number(endpointConfigs.codeFragmentsStorage.host.split(":").at(-1))},
+    grpcServer: {host: "0.0.0.0", port: Number(endpointConfigs.programsStorage.host.split(":").at(-1))},
 };
 
 export const testClientConfigs = {
-    coreRestServer: {host: `localhost:${serverConfigs.restApiServer.port}`},
-    coreGrpcServer: {host: `localhost:${serverConfigs.grpcServer.port}`},
+    coreRestServer: {host: `http://localhost:${serverConfigs.restApiServer.port}`},
+    coreGrpcServer: {host: `http://localhost:${serverConfigs.grpcServer.port}`},
 }
 
 // export const testClientConfigs = {

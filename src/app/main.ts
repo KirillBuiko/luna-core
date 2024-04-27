@@ -2,7 +2,7 @@ import {ServersManager} from "@/servers/ServersManager";
 import {serverConfigs} from "@/configs/serverConfigs";
 import {EndpointsManager} from "@/endpoints/EndpointsManager";
 import {RequestManager} from "@/request-manager/RequestManager";
-import {endpointConfigs} from "@/configs/endpointsConfigs";
+import {endpointConfigs} from "@/configs/endpointConfigs";
 
 const serversManager = new ServersManager();
 const endpointsManager = new EndpointsManager();

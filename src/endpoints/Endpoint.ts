@@ -15,13 +15,13 @@ export abstract class Endpoint implements IEndpoint {
         // if (this.status !== "connected") return {protocol: this.protocol, requestName} as DestinationOptionsType;
         switch (requestName) {
             case "GET":
-                return this.getHandler(info as GetRequestInfo);
+                return this.getGetHandler(info as GetRequestInfo);
             case "SET":
-                return this.setHandler(info as DataRequestInfo);
+                return this.getSetHandler(info as DataRequestInfo);
         }
         return {protocol: this.protocol} as DestinationOptionsType;
     }
 
-    protected abstract getHandler(info: GetRequestInfo);
-    protected abstract setHandler(info: DataRequestInfo);
+    protected abstract getGetHandler(info: GetRequestInfo);
+    protected abstract getSetHandler(info: DataRequestInfo);
 }

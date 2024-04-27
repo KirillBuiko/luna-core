@@ -11,11 +11,10 @@ export function getReaderWriter(): [Readable, Writable] {
             callback();
         },
     });
-    writer.on("close", () => {
-        reader.push(null);
-    });
     writer.on("error", err => {
         reader.destroy(err);
+    }).on("finish", () => {
+        reader.push(null);
     })
     return [reader, writer];
 }

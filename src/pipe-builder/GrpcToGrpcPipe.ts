@@ -18,8 +18,8 @@ export class GrpcToGrpcPipe extends PipeHandler<SourceOptions, DestinationOption
         destReader
             .on("data", (data: DataStream__Output) =>
                 sourceWriter.write(data))
-            .on("end", () =>
-                sourceWriter.end())
+            .on("close", () =>
+                sourceWriter.destroy())
             .on("error", err =>
                 this.pipeErrorHandler.sourceErrorEmit(sourceOptions,
                     ErrorMessage.create(Status.ABORTED, JSON.stringify(err))));

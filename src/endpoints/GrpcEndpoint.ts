@@ -33,7 +33,7 @@ export class GrpcEndpoint extends Endpoint {
         })
     }
 
-    protected getHandler(info: GetRequestInfo):
+    protected getGetHandler(info: GetRequestInfo):
         NarrowedDestinationOptionsType<"GRPC", "GET"> {
         const get = this.client!.get(info);
         return {
@@ -43,7 +43,7 @@ export class GrpcEndpoint extends Endpoint {
         }
     }
 
-    protected setHandler(info: DataRequestInfo):
+    protected getSetHandler(info: DataRequestInfo):
         NarrowedDestinationOptionsType<"GRPC", "SET"> {
         let writer: ClientWritableStream<DataStream> | undefined = undefined;
         const reader = new Promise<GetRequestInfo__Output>((resolve, reject) => {

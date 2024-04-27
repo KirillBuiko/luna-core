@@ -1,4 +1,4 @@
-import type {GetRequestInfo} from "@grpc-build/GetRequestInfo";
+import type {GetRequestInfo__Output} from "@grpc-build/GetRequestInfo";
 import type {DataRequestInfo} from "@grpc-build/DataRequestInfo";
 import * as fs from "fs";
 import {testConfigs} from "../testConfigs";
@@ -9,10 +9,10 @@ export class TestRestApiClient extends RestApiEndpoint {
         super();
     }
 
-    async get(info: GetRequestInfo) {
-        const options = super.getHandler(info);
+    async get(info: GetRequestInfo__Output) {
+        const options = super.getGetHandler(info);
         const result = await options.destReader;
-        console.log("info:", result.info);
+        console.log(result.info);
         let file = "";
         if (result.data) {
             result.data.on("data", (value) => {
@@ -26,7 +26,8 @@ export class TestRestApiClient extends RestApiEndpoint {
     }
 
     async set(info: DataRequestInfo) {
-        const options = super.setHandler(info);
+        const options = super.getSetHandler(info);
+        // options.destWriter.end();
         options.destWriter && fs.createReadStream(testConfigs.dataPath).pipe(options.destWriter);
         options.destReader?.then(data => {
             console.log(data);
