@@ -6,11 +6,15 @@ import type { FileInfo as _FileInfo, FileInfo__Output as _FileInfo__Output } fro
 export interface CodeFragmentData {
   'getInfo'?: (_CodeFragmentGet | null);
   'fileInfo'?: (_FileInfo | null);
+  'codeFragmentJson'?: (string);
   '_getInfo'?: "getInfo";
+  '_codeFragmentJson'?: "codeFragmentJson";
 }
 
 export interface CodeFragmentData__Output {
   'getInfo'?: (_CodeFragmentGet__Output);
   'fileInfo'?: (_FileInfo__Output);
+  'codeFragmentJson'?: (string);
   '_getInfo': "getInfo";
+  '_codeFragmentJson': "codeFragmentJson";
 }

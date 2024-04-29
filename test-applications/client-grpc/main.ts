@@ -2,7 +2,6 @@ import {TestGrpcClient} from "./TestGrpcClient";
 import {testObjects} from "../testObjects";
 import {testClientConfigs} from "../testConfigs";
 
-
 (async function main() {
     try {
         const client = new TestGrpcClient();

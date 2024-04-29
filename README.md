@@ -147,6 +147,7 @@ info:
     dataType: "FILE",
     codeFragment: {
         [Если запрос на обновление] getInfo:...,
+        codeFragmentJson: (json фрагмента кода)
         fileInfo: {
             filename: ""
         }
@@ -228,7 +229,7 @@ GET /get
     requestType: "CODE_FRAGMENT_PLUGIN_PROCEDURE",
     codeFragmentPluginProcedureGet: {
         codeFragmentId: "идентификатор ФК";
-        pluginName: "название плагина";
+        type: "тип выполнения";
     }
 }
 ```

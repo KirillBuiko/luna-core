@@ -71,6 +71,30 @@ export class RestApiEndpoint extends Endpoint {
         }
     }
 
+    async getFile(options: { url: string }) {
+        const response = await fetch(options.url, {
+            method: "GET",
+        });
+        if (response.status !== 200) {
+            Readable.fromWeb(response.body as ReadableStream).on("data", (value) => {
+                throw (value.toString());
+            });
+        }
+        return Readable.fromWeb(response.body as ReadableStream);
+    }
+
+    async getText(options: { url: string }) {
+        const response = await fetch(options.url, {
+            method: "GET",
+        });
+        if (response.status !== 200) {
+            Readable.fromWeb(response.body as ReadableStream).on("data", (value) => {
+                throw (value.toString());
+            });
+        }
+        return response.text();
+    }
+
     getMultipart(options: { url: string }) {
         return new Promise<{ fields: Record<string, string>, stream: Readable }>
         (async (resolve, reject) => {

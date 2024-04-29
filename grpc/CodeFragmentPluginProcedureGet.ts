@@ -3,10 +3,10 @@
 
 export interface CodeFragmentPluginProcedureGet {
   'codeFragmentId'?: (string);
-  'pluginName'?: (string);
+  'type'?: (string);
 }
 
 export interface CodeFragmentPluginProcedureGet__Output {
   'codeFragmentId'?: (string);
-  'pluginName'?: (string);
+  'type'?: (string);
 }

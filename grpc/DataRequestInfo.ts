@@ -6,6 +6,7 @@ import type { CodeFragmentData as _CodeFragmentData, CodeFragmentData__Output as
 import type { CodeFragmentInfoData as _CodeFragmentInfoData, CodeFragmentInfoData__Output as _CodeFragmentInfoData__Output } from './CodeFragmentInfoData';
 import type { CodeFragmentListData as _CodeFragmentListData, CodeFragmentListData__Output as _CodeFragmentListData__Output } from './CodeFragmentListData';
 import type { CodeFragmentPluginsListData as _CodeFragmentPluginsListData, CodeFragmentPluginsListData__Output as _CodeFragmentPluginsListData__Output } from './CodeFragmentPluginsListData';
+import type { CodeFragmentPluginProcedureData as _CodeFragmentPluginProcedureData, CodeFragmentPluginProcedureData__Output as _CodeFragmentPluginProcedureData__Output } from './CodeFragmentPluginProcedureData';
 
 export interface DataRequestInfo {
   'requestType'?: (_RequestType);
@@ -14,7 +15,8 @@ export interface DataRequestInfo {
   'codeFragmentInfo'?: (_CodeFragmentInfoData | null);
   'codeFragmentList'?: (_CodeFragmentListData | null);
   'codeFragmentPluginsList'?: (_CodeFragmentPluginsListData | null);
-  'dataValueType'?: "codeFragment"|"codeFragmentInfo"|"codeFragmentList"|"codeFragmentPluginsList";
+  'codeFragmentPluginProcedure'?: (_CodeFragmentPluginProcedureData | null);
+  'dataValueType'?: "codeFragment"|"codeFragmentInfo"|"codeFragmentList"|"codeFragmentPluginsList"|"codeFragmentPluginProcedure";
 }
 
 export interface DataRequestInfo__Output {
@@ -24,5 +26,6 @@ export interface DataRequestInfo__Output {
   'codeFragmentInfo'?: (_CodeFragmentInfoData__Output);
   'codeFragmentList'?: (_CodeFragmentListData__Output);
   'codeFragmentPluginsList'?: (_CodeFragmentPluginsListData__Output);
-  'dataValueType': "codeFragment"|"codeFragmentInfo"|"codeFragmentList"|"codeFragmentPluginsList";
+  'codeFragmentPluginProcedure'?: (_CodeFragmentPluginProcedureData__Output);
+  'dataValueType': "codeFragment"|"codeFragmentInfo"|"codeFragmentList"|"codeFragmentPluginsList"|"codeFragmentPluginProcedure";
 }
