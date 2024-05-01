@@ -30,5 +30,10 @@ export interface ProtoGrpcType {
   RequestType: EnumTypeDefinition
   TaskGet: MessageTypeDefinition
   VariableGet: MessageTypeDefinition
+  google: {
+    protobuf: {
+      Any: MessageTypeDefinition
+    }
+  }
 }
 

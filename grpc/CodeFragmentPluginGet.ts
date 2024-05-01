@@ -2,11 +2,9 @@
 
 
 export interface CodeFragmentPluginGet {
-  'codeFragmentId'?: (string);
-  'pluginName'?: (string);
+  'pluginId'?: (string);
 }
 
 export interface CodeFragmentPluginGet__Output {
-  'codeFragmentId'?: (string);
-  'pluginName'?: (string);
+  'pluginId'?: (string);
 }

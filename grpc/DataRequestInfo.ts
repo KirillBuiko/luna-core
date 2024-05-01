@@ -7,6 +7,7 @@ import type { CodeFragmentInfoData as _CodeFragmentInfoData, CodeFragmentInfoDat
 import type { CodeFragmentListData as _CodeFragmentListData, CodeFragmentListData__Output as _CodeFragmentListData__Output } from './CodeFragmentListData';
 import type { CodeFragmentPluginsListData as _CodeFragmentPluginsListData, CodeFragmentPluginsListData__Output as _CodeFragmentPluginsListData__Output } from './CodeFragmentPluginsListData';
 import type { CodeFragmentPluginProcedureData as _CodeFragmentPluginProcedureData, CodeFragmentPluginProcedureData__Output as _CodeFragmentPluginProcedureData__Output } from './CodeFragmentPluginProcedureData';
+import type { CodeFragmentPluginData as _CodeFragmentPluginData, CodeFragmentPluginData__Output as _CodeFragmentPluginData__Output } from './CodeFragmentPluginData';
 
 export interface DataRequestInfo {
   'requestType'?: (_RequestType);
@@ -16,7 +17,8 @@ export interface DataRequestInfo {
   'codeFragmentList'?: (_CodeFragmentListData | null);
   'codeFragmentPluginsList'?: (_CodeFragmentPluginsListData | null);
   'codeFragmentPluginProcedure'?: (_CodeFragmentPluginProcedureData | null);
-  'dataValueType'?: "codeFragment"|"codeFragmentInfo"|"codeFragmentList"|"codeFragmentPluginsList"|"codeFragmentPluginProcedure";
+  'codeFragmentPlugin'?: (_CodeFragmentPluginData | null);
+  'dataValueType'?: "codeFragment"|"codeFragmentInfo"|"codeFragmentList"|"codeFragmentPluginsList"|"codeFragmentPluginProcedure"|"codeFragmentPlugin";
 }
 
 export interface DataRequestInfo__Output {
@@ -27,5 +29,6 @@ export interface DataRequestInfo__Output {
   'codeFragmentList'?: (_CodeFragmentListData__Output);
   'codeFragmentPluginsList'?: (_CodeFragmentPluginsListData__Output);
   'codeFragmentPluginProcedure'?: (_CodeFragmentPluginProcedureData__Output);
-  'dataValueType': "codeFragment"|"codeFragmentInfo"|"codeFragmentList"|"codeFragmentPluginsList"|"codeFragmentPluginProcedure";
+  'codeFragmentPlugin'?: (_CodeFragmentPluginData__Output);
+  'dataValueType': "codeFragment"|"codeFragmentInfo"|"codeFragmentList"|"codeFragmentPluginsList"|"codeFragmentPluginProcedure"|"codeFragmentPlugin";
 }

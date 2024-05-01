@@ -8,7 +8,8 @@ type CPN = "REST_API";
 
 type SelectByName<M extends string, T extends string> =
     { [key in T]: key extends `${M}${infer R}` ? key : never }[T];
-type SpecHandlerReturnType<P extends ProtocolType, R extends RequestName> = Pick<NarrowedDestinationOptionsType<P, R>, "destReader" | "destWriter">;
+type SpecHandlerReturnType<P extends ProtocolType, R extends RequestName> =
+    Pick<NarrowedDestinationOptionsType<P, R>, "destReader" | "destWriter">;
 type SpecRequestFunction<P extends ProtocolType, R extends RequestName> =
     (info: R extends "GET" ? GetRequestInfo__Output : DataRequestInfo__Output) => SpecHandlerReturnType<P, R>
 
@@ -176,7 +177,7 @@ export class CodeFragmentsStorageEndpoint extends RestApiEndpoint {
             await reader;
             return {
                 requestType: info.requestType,
-                getInfoType: "codeFragmentGet"
+                getInfoType: undefined
             }
         })()
 
@@ -192,8 +193,7 @@ export class CodeFragmentsStorageEndpoint extends RestApiEndpoint {
             url: `${this.config.host}/add_plugin`,
             streamName: "file",
             fields: {
-                id: info.codeFragment.getInfo.id,
-                json: info.codeFragment.codeFragmentJson
+                id: info.codeFragmentPlugin.getInfo.pluginId,
             }
         })
 
@@ -201,8 +201,7 @@ export class CodeFragmentsStorageEndpoint extends RestApiEndpoint {
             await reader;
             return {
                 requestType: info.requestType,
-                getInfoType: "codeFragmentGet",
-                codeFragmentGet: info.codeFragment.getInfo
+                getInfoType: undefined
             }
         })()
 

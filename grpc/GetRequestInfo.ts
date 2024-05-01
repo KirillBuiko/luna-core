@@ -1,6 +1,7 @@
 // Original file: node_modules/luna-proto-files/data_requests.proto
 
 import type { RequestType as _RequestType, RequestType__Output as _RequestType__Output } from './RequestType';
+import type { Any as _google_protobuf_Any, Any__Output as _google_protobuf_Any__Output } from './google/protobuf/Any';
 import type { CodeFragmentGet as _CodeFragmentGet, CodeFragmentGet__Output as _CodeFragmentGet__Output } from './CodeFragmentGet';
 import type { CodeFragmentInfoGet as _CodeFragmentInfoGet, CodeFragmentInfoGet__Output as _CodeFragmentInfoGet__Output } from './CodeFragmentInfoGet';
 import type { CodeFragmentPluginGet as _CodeFragmentPluginGet, CodeFragmentPluginGet__Output as _CodeFragmentPluginGet__Output } from './CodeFragmentPluginGet';
@@ -9,6 +10,7 @@ import type { CodeFragmentPluginsListGet as _CodeFragmentPluginsListGet, CodeFra
 
 export interface GetRequestInfo {
   'requestType'?: (_RequestType);
+  'getInfo'?: (_google_protobuf_Any | null);
   'codeFragmentGet'?: (_CodeFragmentGet | null);
   'codeFragmentInfoGet'?: (_CodeFragmentInfoGet | null);
   'codeFragmentPluginGet'?: (_CodeFragmentPluginGet | null);
@@ -19,6 +21,7 @@ export interface GetRequestInfo {
 
 export interface GetRequestInfo__Output {
   'requestType'?: (_RequestType__Output);
+  'getInfo'?: (_google_protobuf_Any__Output);
   'codeFragmentGet'?: (_CodeFragmentGet__Output);
   'codeFragmentInfoGet'?: (_CodeFragmentInfoGet__Output);
   'codeFragmentPluginGet'?: (_CodeFragmentPluginGet__Output);

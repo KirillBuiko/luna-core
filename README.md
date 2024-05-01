@@ -74,13 +74,14 @@ GET /get
 </td>
 <td> 
 
-**Multiform**  
+**Multipart**  
 info:
 
 ```
 {
     requestType: "CODE_FRAGMENT_LIST",
     dataType: "JSON",
+    dataValueType: "codeFragmentList",
     codeFragmentList: {
         value: "результат"
     }
@@ -104,6 +105,7 @@ GET /get
 ```
 {
     requestType: "CODE_FRAGMENT_INFO",
+    getInfoType: "codeFragmentInfoGet",
     codeFragmentInfoGet: {
         id: "идентификатор"
     }
@@ -113,17 +115,18 @@ GET /get
 </td>
 <td> 
 
-**Multiform**  
+**Multipart**  
 info:
 
-```
+``` 
 {
     requestType: "CODE_FRAGMENT_INFO",
     dataType: "JSON",
+    dataValueType: "codeFragmentInfo",
     codeFragmentInfo: {
         value: "результат"
     }
-}
+} 
 ```
 
 </td>
@@ -145,12 +148,12 @@ info:
 {
     requestType: "CODE_FRAGMENT",
     dataType: "FILE",
+    dataValueType: "codeFragment",
     codeFragment: {
-        [Если запрос на обновление] getInfo:...,
+        getInfo: {
+            id: "Идентификатор ФК"
+        },
         codeFragmentJson: (json фрагмента кода)
-        fileInfo: {
-            filename: ""
-        }
     }
 }
 ```
@@ -162,9 +165,6 @@ data: файл архива .tar
 ```
 {
     requestType: "CODE_FRAGMENT",
-    codeFragmentGet: {
-        id: "идентификатор"
-    }
 }
 ```
 
@@ -185,6 +185,7 @@ GET /get
 ```
 {
     requestType: "CODE_FRAGMENT",
+    getInfoType: "codeFragmentGet",
     codeFragmentGet: {
         id: "идентификатор"
     }
@@ -200,12 +201,7 @@ info:
 ```
 {
     requestType: "CODE_FRAGMENT",
-    dataType: "FILE",
-    codeFragment: {
-        fileInfo: {
-            filename: ""
-        }
-    }
+    dataType: "FILE"
 }
 ```
 
@@ -227,6 +223,7 @@ GET /get
 ```
 {
     requestType: "CODE_FRAGMENT_PLUGIN_PROCEDURE",
+    getInfoType: "codeFragmentPluginProcedureGet",
     codeFragmentPluginProcedureGet: {
         codeFragmentId: "идентификатор ФК";
         type: "тип выполнения";
@@ -242,14 +239,8 @@ info:
 
 ```
 {
-    requestType: "CODE_FRAGMENT",
+    requestType: "CODE_FRAGMENT_PLUGIN_PROCEDURE",
     dataType: "FILE",
-    codeFragment: {
-        [Если запрос на обновление] get_info:...,
-        fileInfo: {
-            filename: ""
-        }
-    }
 }
 ```
 
@@ -271,6 +262,7 @@ GET /get
 ```
 {
     requestType: "CODE_FRAGMENT_PLUGINS_LIST",
+    getInfoType: "codeFragmentPluginsListGet",
     codeFragmentPluginsListGet: {
         codeFragmentId: "идентификатор"
     }
@@ -280,13 +272,14 @@ GET /get
 </td>
 <td> 
 
-**Multiform**  
+**Multipart**  
 info:
 
 ```
 {
     requestType: "CODE_FRAGMENT_PLUGINS_LIST",
     dataType: "JSON",
+    dataValueType: "codeFragmentPluginsList",
     codeFragmentPluginsList: {
         value: "результат"
     }
@@ -311,13 +304,13 @@ info:
 
 ```
 {
-    requestType: "CODE_FRAGMENT",
+    requestType: "CODE_FRAGMENT_PLUGIN",
     dataType: "FILE",
-    codeFragment: {
-        [Если запрос на обновление] getInfo:...,
-        fileInfo: {
-            filename: ""
-        }
+    dataValueType: "codeFragmentPlugin",
+    codeFragmentPlugin: {
+        getInfo: {
+            pluginId: "идентификатор плагина"
+        },
     }
 }
 ```
@@ -328,11 +321,7 @@ data: файл
 
 ```
 {
-    requestType: "CODE_FRAGMENT_PLUGIN",
-    codeFragmentPluginProcedureGet: {
-        codeFragmentId: "идентификатор ФК";
-        pluginName: "название плагина";
-    }
+    requestType: "CODE_FRAGMENT_PLUGIN"
 }
 ```
 
