@@ -47,7 +47,7 @@ _/set_ за установку значения (создание, обновл�
 </tr>
 </thead>
 <tr>
-<th colspan="4">
+<th colspan="4" style="text-align: center">
 
 ### Библиотека модулей
 
@@ -240,7 +240,11 @@ info:
 ```
 {
     requestType: "CODE_FRAGMENT_PLUGIN_PROCEDURE",
-    dataType: "FILE",
+    dataType: "JSON",
+    dataValueType: "codeFragmentPluginProcedure",
+    codeFragmentPluginProcedure: {
+        value: "результат"
+    }
 }
 ```
 
