@@ -20,8 +20,8 @@ export abstract class AbstractGrpcServer implements IAbstractServer {
                 this.getHandler(call),
             Set: (call, callback) =>
                 this.setHandler(call, callback),
-            Connect: (call) =>
-                this.connectHandler(call)
+            // Connect: (call) =>
+            //     this.connectHandler(call)
         } as DataRequestsHandlers);
     }
 
@@ -53,5 +53,5 @@ export abstract class AbstractGrpcServer implements IAbstractServer {
 
     abstract setHandler: DataRequestsHandlers["Set"];
 
-    abstract connectHandler: DataRequestsHandlers["Connect"];
+    // abstract connectHandler: DataRequestsHandlers["Connect"];
 }

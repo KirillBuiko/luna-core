@@ -4,8 +4,8 @@ import type {
     NarrowedDestinationOptionsType
 } from "@/types/Types";
 import type {RemoteStaticEndpointConfigType} from "@/app/types/RemoteStaticEndpointConfigType";
-import type {GetRequestInfo__Output} from "@grpc-build/GetRequestInfo";
-import type {DataRequestInfo} from "@grpc-build/DataRequestInfo";
+import type {GetInfo__Output} from "@grpc-build/GetInfo";
+import type {DataInfo} from "@grpc-build/DataInfo";
 import {Endpoint} from "@/endpoints/Endpoint";
 import type {ProtocolType} from "@/types/Types";
 import FormData from "form-data";
@@ -16,15 +16,15 @@ import busboy from "busboy";
 export class RestApiEndpoint extends Endpoint {
     status: EndpointStatus = "not-connected";
     protocol: ProtocolType = "REST_API";
-    config: RemoteStaticEndpointConfigType | undefined;
+    config: RemoteStaticEndpointConfigType;
 
-    init(config: RemoteStaticEndpointConfigType): Promise<Error | null> {
+    async init(config: RemoteStaticEndpointConfigType): Promise<Error | null> {
         this.config = config;
         this.status = "connected";
         return null;
     }
 
-    protected getGetHandler(info: GetRequestInfo__Output):
+    protected getGetHandler(info: GetInfo__Output):
         NarrowedDestinationOptionsType<"REST_API", "GET"> {
         const multipart = this.getMultipart({
             url: `${this.config.host}/get?info=${JSON.stringify(info)}`
@@ -48,7 +48,7 @@ export class RestApiEndpoint extends Endpoint {
         }
     }
 
-    protected getSetHandler(info: DataRequestInfo):
+    protected getSetHandler(info: DataInfo):
         NarrowedDestinationOptionsType<"REST_API", "SET"> {
         const {reader, dataWriter} = this.sendMultipart({
             url: `${this.config.host}/set`,
@@ -112,7 +112,7 @@ export class RestApiEndpoint extends Endpoint {
                 let fields: Record<string, string> = {};
                 let stream: Readable;
 
-                const bb = busboy({headers: {"content-type": response.headers.get("content-type")}});
+                const bb = busboy({headers: {"content-type": response.headers.get("content-type") ?? undefined}});
                 Readable.fromWeb(response.body as ReadableStream).pipe(bb);
 
                 function resolvePromise() {

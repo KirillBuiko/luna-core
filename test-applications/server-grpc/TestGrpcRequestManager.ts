@@ -1,13 +1,13 @@
 import type {NarrowedSourceOptionsType} from "@/types/Types";
 import type {IRequestManager} from "@/app/types/IRequestManager";
-import type {GetRequestInfo} from "@grpc-build/GetRequestInfo";
-import type {DataRequestInfo} from "@grpc-build/DataRequestInfo";
+import type {GetInfo} from "@grpc-build/GetInfo";
+import type {DataInfo} from "@grpc-build/DataInfo";
 import fs from "fs";
 import {testConfigs} from "../testConfigs";
 import {testObjects} from "../testObjects";
 
 export class TestGrpcRequestManager implements IRequestManager {
-    register(sourceOptions: NarrowedSourceOptionsType<"GRPC">, info: GetRequestInfo | DataRequestInfo) {
+    register(sourceOptions: NarrowedSourceOptionsType<"GRPC">, info: GetInfo | DataInfo) {
         if (sourceOptions.requestName == "GET") {
             console.log("GET REQUEST");
             const {sourceWriter} = sourceOptions;

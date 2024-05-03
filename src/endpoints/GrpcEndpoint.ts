@@ -7,8 +7,8 @@ import * as protoLoader from "@grpc/proto-loader";
 import {grpcLoadOptions} from "@/grpcLoadOptions";
 import * as grpc from "@grpc/grpc-js";
 import type {ProtoGrpcType} from "@grpc-build/data_requests";
-import type {GetRequestInfo, GetRequestInfo__Output} from "@grpc-build/GetRequestInfo";
-import type {DataRequestInfo} from "@grpc-build/DataRequestInfo";
+import type {GetInfo, GetInfo__Output} from "@grpc-build/GetInfo";
+import type {DataInfo} from "@grpc-build/DataInfo";
 import {type ClientWritableStream, waitForClientReady} from "@grpc/grpc-js";
 import type {DataStream} from "@grpc-build/DataStream";
 import {configs} from "@/configs/configs";
@@ -33,7 +33,7 @@ export class GrpcEndpoint extends Endpoint {
         })
     }
 
-    protected getGetHandler(info: GetRequestInfo):
+    protected getGetHandler(info: GetInfo):
         NarrowedDestinationOptionsType<"GRPC", "GET"> {
         const get = this.client!.get(info);
         return {
@@ -43,15 +43,15 @@ export class GrpcEndpoint extends Endpoint {
         }
     }
 
-    protected getSetHandler(info: DataRequestInfo):
+    protected getSetHandler(info: DataInfo):
         NarrowedDestinationOptionsType<"GRPC", "SET"> {
         let writer: ClientWritableStream<DataStream> | undefined = undefined;
-        const reader = new Promise<GetRequestInfo__Output>((resolve, reject) => {
+        const reader = new Promise<GetInfo__Output>((resolve, reject) => {
             writer = this.client!.set((err, value) => {
                 if (err) {
                     reject(err);
                 } else {
-                    resolve(value as GetRequestInfo__Output);
+                    resolve(value as GetInfo__Output);
                 }
             });
         })

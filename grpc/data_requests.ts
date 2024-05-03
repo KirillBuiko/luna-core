@@ -8,28 +8,24 @@ type SubtypeConstructor<Constructor extends new (...args: any) => any, Subtype> 
 };
 
 export interface ProtoGrpcType {
-  BidiMessage: MessageTypeDefinition
-  CodeFragmentData: MessageTypeDefinition
-  CodeFragmentGet: MessageTypeDefinition
-  CodeFragmentInfoData: MessageTypeDefinition
-  CodeFragmentInfoGet: MessageTypeDefinition
-  CodeFragmentListData: MessageTypeDefinition
-  CodeFragmentPluginData: MessageTypeDefinition
-  CodeFragmentPluginGet: MessageTypeDefinition
-  CodeFragmentPluginProcedureData: MessageTypeDefinition
-  CodeFragmentPluginProcedureGet: MessageTypeDefinition
-  CodeFragmentPluginsListData: MessageTypeDefinition
-  CodeFragmentPluginsListGet: MessageTypeDefinition
-  DataRequestInfo: MessageTypeDefinition
+  CFData: MessageTypeDefinition
+  CFGet: MessageTypeDefinition
+  CFInfoData: MessageTypeDefinition
+  CFInfoGet: MessageTypeDefinition
+  CFListData: MessageTypeDefinition
+  CFPluginData: MessageTypeDefinition
+  CFPluginGet: MessageTypeDefinition
+  CFPluginProcedureData: MessageTypeDefinition
+  CFPluginProcedureGet: MessageTypeDefinition
+  CFPluginsListData: MessageTypeDefinition
+  CFPluginsListGet: MessageTypeDefinition
+  DataInfo: MessageTypeDefinition
   DataRequests: SubtypeConstructor<typeof grpc.Client, _DataRequestsClient> & { service: _DataRequestsDefinition }
   DataStream: MessageTypeDefinition
   DataType: EnumTypeDefinition
   FileInfo: MessageTypeDefinition
-  GetRequestInfo: MessageTypeDefinition
-  HelloInfo: MessageTypeDefinition
+  GetInfo: MessageTypeDefinition
   RequestType: EnumTypeDefinition
-  TaskGet: MessageTypeDefinition
-  VariableGet: MessageTypeDefinition
   google: {
     protobuf: {
       Any: MessageTypeDefinition

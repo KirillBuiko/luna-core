@@ -1,7 +1,7 @@
 import type {SourceOptionsType} from "@/types/Types";
-import type {GetRequestInfo} from "@grpc-build/GetRequestInfo";
-import type{DataRequestInfo} from "@grpc-build/DataRequestInfo";
+import type {GetInfo} from "@grpc-build/GetInfo";
+import type{DataInfo} from "@grpc-build/DataInfo";
 
 export interface IRequestManager {
-    register(sourceOptions: SourceOptionsType, info: GetRequestInfo | DataRequestInfo): void;
+    register(sourceOptions: SourceOptionsType, info: GetInfo | DataInfo): Promise<void>;
 }

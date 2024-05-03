@@ -1,10 +1,10 @@
 // Original file: node_modules/luna-proto-files/set_messages.proto
 
 
-export interface CodeFragmentPluginsListData {
+export interface CFInfoData {
   'value'?: (string);
 }
 
-export interface CodeFragmentPluginsListData__Output {
+export interface CFInfoData__Output {
   'value'?: (string);
 }

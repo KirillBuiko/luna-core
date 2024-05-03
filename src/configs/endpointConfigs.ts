@@ -11,8 +11,8 @@ export const endpointConfigs: EndpointConfigsType =
             {host: process.env.GENERATOR_HOST},
         interpreter:
             {host: process.env.INTERPRETER_HOST},
-        codeFragmentsStorage:
-            {host: process.env.CODE_FRAGMENT_STORAGE_HOST},
+        cfStorage:
+            {host: process.env.CF_STORAGE_HOST},
         planner:
             {host: process.env.PLANNER_HOST},
         variablesStorage:
@@ -31,7 +31,7 @@ export const endpointConfigs: EndpointConfigsType =
             {host: "http://localhost:5003"},
         interpreter:
             {host: "http://localhost:5004"},
-        codeFragmentsStorage:
+        cfStorage:
             {host: "http://localhost:5005"},
         planner:
             {host: "http://localhost:5006"},

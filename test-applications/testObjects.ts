@@ -1,34 +1,34 @@
-import type {GetRequestInfo} from "@grpc-build/GetRequestInfo";
-import type {DataRequestInfo} from "@grpc-build/DataRequestInfo";
+import type {GetInfo} from "@grpc-build/GetInfo";
+import type {DataInfo} from "@grpc-build/DataInfo";
 
-const getProgramInfo: GetRequestInfo = {
-    requestType: "PROGRAM",
-    codeFragmentGet: {
+const getProgramInfo: GetInfo = {
+    requestType: "CF",
+    cfGet: {
         id: "123123"
     }
 }
 
-const setProgramInfo: DataRequestInfo = {
-    requestType: "PROGRAM",
-    dataType: "FILE",
-    codeFragment: {
+const setProgramInfo: DataInfo = {
+    requestType: "CF",
+    dataType: ["FILE"],
+    cf: {
         getInfo: {
             id: "123123"
         }
     }
 }
 
-const getModuleInfo: GetRequestInfo = {
-    requestType: "CODE_FRAGMENT",
-    codeFragmentGet: {
+const getModuleInfo: GetInfo = {
+    requestType: "CF",
+    cfGet: {
          id: "123123"
     }
 }
 
-const setModuleInfo: DataRequestInfo = {
-    requestType: "CODE_FRAGMENT",
-    dataType: "FILE",
-    codeFragment: {
+const setModuleInfo: DataInfo = {
+    requestType: "CF",
+    dataType: ["FILE"],
+    cf: {
         getInfo: {
             id: "123123"
         }

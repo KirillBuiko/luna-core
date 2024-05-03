@@ -1,15 +1,15 @@
 // Original file: node_modules/luna-proto-files/data_requests.proto
 
-import type { DataRequestInfo as _DataRequestInfo, DataRequestInfo__Output as _DataRequestInfo__Output } from './DataRequestInfo';
+import type { DataInfo as _DataInfo, DataInfo__Output as _DataInfo__Output } from './DataInfo';
 
 export interface DataStream {
-  'info'?: (_DataRequestInfo | null);
+  'info'?: (_DataInfo | null);
   'chunkData'?: (Buffer | Uint8Array | string);
   'infoOrData'?: "info"|"chunkData";
 }
 
 export interface DataStream__Output {
-  'info'?: (_DataRequestInfo__Output);
+  'info'?: (_DataInfo__Output);
   'chunkData'?: (Buffer);
   'infoOrData': "info"|"chunkData";
 }

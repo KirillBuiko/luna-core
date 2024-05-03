@@ -1,7 +1,7 @@
 import {Endpoint} from "@/endpoints/Endpoint";
 import type {DataRequestsHandlers} from "@grpc-build/DataRequests";
-import type {GetRequestInfo} from "@grpc-build/GetRequestInfo";
-import type {DataRequestInfo} from "@grpc-build/DataRequestInfo";
+import type {GetInfo} from "@grpc-build/GetInfo";
+import type {DataInfo} from "@grpc-build/DataInfo";
 import type {ProtocolType} from "@/types/Types";
 
 // export class GrpcBidiEndpoint extends Endpoint {
@@ -15,11 +15,11 @@ import type {ProtocolType} from "@/types/Types";
 //         })
 //     }
 //
-//     protected getGetHandler(info: GetRequestInfo) {
+//     protected getGetHandler(info: GetInfo) {
 //
 //     }
 //
-//     protected getSetHandler(info: DataRequestInfo) {
+//     protected getSetHandler(info: DataInfo) {
 //
 //     }
 // }

@@ -1,8 +1,7 @@
 import type {BusboyFileStream} from "@fastify/busboy";
 import type {DataRequestsClient, DataRequestsHandlers} from "@grpc-build/DataRequests";
-import type {GetRequestInfo__Output} from "@grpc-build/GetRequestInfo";
 import type {Readable, Writable} from "node:stream";
-import type {DataRequestInfo} from "@grpc-build/DataRequestInfo";
+import type {DataInfo} from "@grpc-build/DataInfo";
 
 export type ProtocolType =
     | "GRPC"
@@ -11,14 +10,6 @@ export type ProtocolType =
 export type RequestName =
     | "GET"
     | "SET"
-
-export type RequestDirection =
-    | "FROM"
-    | "TO"
-
-export type StreamType =
-    | "READER"
-    | "WRITER"
 
 interface SourceReaderWriterOptions<
     ProtocolT extends ProtocolType, RequestN extends RequestName,
@@ -79,11 +70,7 @@ export type NarrowedDestinationOptionsType<
     ProtocolT extends ProtocolType = ProtocolType, RequestN extends RequestName = RequestName> =
     NarrowedOptionsType<ProtocolT, RequestN, DestinationOptionsType>
 
-export interface RestApiQueryType {
-    info: GetRequestInfo__Output
-}
-
 export interface MultipartTransferObject {
-    info: DataRequestInfo,
+    info: DataInfo,
     data?: Readable
 }

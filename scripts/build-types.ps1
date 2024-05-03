@@ -3,5 +3,5 @@ node ./node_modules/@grpc/proto-loader/build/bin/proto-loader-gen-types.js `
 --outDir=grpc `
 --longs=String `
 --enums=String `
---oneofs `
+--oneofs=true `
 --grpcLib=@grpc/grpc-js

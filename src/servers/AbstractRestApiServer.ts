@@ -27,7 +27,7 @@ export abstract class AbstractRestApiServer implements IAbstractServer {
         return null;
     }
 
-    stop(): Promise<Error | undefined> {
+    async stop(): Promise<Error | undefined> {
         if (this.status == "off") return;
         this.status = "off";
         return this.server.close();

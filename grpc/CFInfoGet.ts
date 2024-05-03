@@ -1,10 +1,10 @@
 // Original file: node_modules/luna-proto-files/get_messages.proto
 
 
-export interface CodeFragmentGet {
+export interface CFInfoGet {
   'id'?: (string);
 }
 
-export interface CodeFragmentGet__Output {
+export interface CFInfoGet__Output {
   'id'?: (string);
 }

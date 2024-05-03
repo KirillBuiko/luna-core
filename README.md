@@ -67,7 +67,7 @@ GET /get
 
 ```
 {
-    requestType: "CODE_FRAGMENT_LIST"
+    requestType: "CF_LIST"
 }
 ```
 
@@ -79,10 +79,10 @@ info:
 
 ```
 {
-    requestType: "CODE_FRAGMENT_LIST",
+    requestType: "CF_LIST",
     dataType: "JSON",
-    dataValueType: "codeFragmentList",
-    codeFragmentList: {
+    dataValueType: "cfList",
+    cfList: {
         value: "результат"
     }
 }
@@ -104,9 +104,9 @@ GET /get
 
 ```
 {
-    requestType: "CODE_FRAGMENT_INFO",
-    getInfoType: "codeFragmentInfoGet",
-    codeFragmentInfoGet: {
+    requestType: "CF_INFO",
+    infoType: "cfInfoGet",
+    cfInfoGet: {
         id: "идентификатор"
     }
 }
@@ -120,10 +120,10 @@ info:
 
 ``` 
 {
-    requestType: "CODE_FRAGMENT_INFO",
+    requestType: "CF_INFO",
     dataType: "JSON",
-    dataValueType: "codeFragmentInfo",
-    codeFragmentInfo: {
+    dataValueType: "cfInfo",
+    cfInfo: {
         value: "результат"
     }
 } 
@@ -146,14 +146,14 @@ info:
 
 ```
 {
-    requestType: "CODE_FRAGMENT",
+    requestType: "CF",
     dataType: "FILE",
-    dataValueType: "codeFragment",
-    codeFragment: {
+    dataValueType: "cf",
+    cf: {
         getInfo: {
             id: "Идентификатор ФК"
         },
-        codeFragmentJson: (json фрагмента кода)
+        cfJson: (json фрагмента кода)
     }
 }
 ```
@@ -164,7 +164,7 @@ data: файл архива .tar
 
 ```
 {
-    requestType: "CODE_FRAGMENT",
+    requestType: "CF",
 }
 ```
 
@@ -184,9 +184,9 @@ GET /get
 
 ```
 {
-    requestType: "CODE_FRAGMENT",
-    getInfoType: "codeFragmentGet",
-    codeFragmentGet: {
+    requestType: "CF",
+    infoType: "cfGet",
+    cfGet: {
         id: "идентификатор"
     }
 }
@@ -200,7 +200,7 @@ info:
 
 ```
 {
-    requestType: "CODE_FRAGMENT",
+    requestType: "CF",
     dataType: "FILE"
 }
 ```
@@ -222,10 +222,10 @@ GET /get
 
 ```
 {
-    requestType: "CODE_FRAGMENT_PLUGIN_PROCEDURE",
-    getInfoType: "codeFragmentPluginProcedureGet",
-    codeFragmentPluginProcedureGet: {
-        codeFragmentId: "идентификатор ФК";
+    requestType: "CF_PLUGIN_PROCEDURE",
+    infoType: "cfPluginProcedureGet",
+    cfPluginProcedureGet: {
+        cfId: "идентификатор ФК";
         type: "тип выполнения";
     }
 }
@@ -239,10 +239,10 @@ info:
 
 ```
 {
-    requestType: "CODE_FRAGMENT_PLUGIN_PROCEDURE",
+    requestType: "CF_PLUGIN_PROCEDURE",
     dataType: "JSON",
-    dataValueType: "codeFragmentPluginProcedure",
-    codeFragmentPluginProcedure: {
+    dataValueType: "cfPluginProcedure",
+    cfPluginProcedure: {
         value: "результат"
     }
 }
@@ -265,10 +265,10 @@ GET /get
 
 ```
 {
-    requestType: "CODE_FRAGMENT_PLUGINS_LIST",
-    getInfoType: "codeFragmentPluginsListGet",
-    codeFragmentPluginsListGet: {
-        codeFragmentId: "идентификатор"
+    requestType: "CF_PLUGINS_LIST",
+    infoType: "cfPluginsListGet",
+    cfPluginsListGet: {
+        cfId: "идентификатор"
     }
 }
 ```
@@ -281,10 +281,10 @@ info:
 
 ```
 {
-    requestType: "CODE_FRAGMENT_PLUGINS_LIST",
+    requestType: "CF_PLUGINS_LIST",
     dataType: "JSON",
-    dataValueType: "codeFragmentPluginsList",
-    codeFragmentPluginsList: {
+    dataValueType: "cfPluginsList",
+    cfPluginsList: {
         value: "результат"
     }
 }
@@ -308,10 +308,10 @@ info:
 
 ```
 {
-    requestType: "CODE_FRAGMENT_PLUGIN",
+    requestType: "CF_PLUGIN",
     dataType: "FILE",
-    dataValueType: "codeFragmentPlugin",
-    codeFragmentPlugin: {
+    dataValueType: "cfPlugin",
+    cfPlugin: {
         getInfo: {
             pluginId: "идентификатор плагина"
         },
@@ -325,7 +325,7 @@ data: файл
 
 ```
 {
-    requestType: "CODE_FRAGMENT_PLUGIN"
+    requestType: "CF_PLUGIN"
 }
 ```
 

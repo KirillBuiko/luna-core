@@ -1,7 +1,7 @@
-import type {GetRequestInfo__Output} from "@grpc-build/GetRequestInfo";
+import type {GetInfo__Output} from "@grpc-build/GetInfo";
 import type {Multipart} from "@fastify/multipart";
 import type {BusboyFileStream} from "@fastify/busboy";
-import type {DataRequestInfo} from "@grpc-build/DataRequestInfo";
+import type {DataInfo} from "@grpc-build/DataInfo";
 import type {sendUnaryData} from "@grpc/grpc-js";
 import type {IRequestManager} from "@/app/types/IRequestManager";
 import type {FastifyReply} from "fastify";
@@ -35,7 +35,7 @@ export class RestApiActions {
             protocol: "REST_API",
             requestName: "GET",
             sourceWriter: callback,
-        }, (JSON.parse((req.query as { info: string }).info) as GetRequestInfo__Output));
+        }, (JSON.parse((req.query as { info: string }).info) as GetInfo__Output));
     }
 
     setHandler = async (req, res) => {
@@ -61,17 +61,21 @@ export class RestApiActions {
         if (!infoString) {
             return this.sendError(res, Status.INVALID_ARGUMENT, "Info not given");
         }
-        const info = JSON.parse(infoString) as DataRequestInfo;
+        const info = JSON.parse(infoString) as DataInfo;
 
-        if (info.dataType != "JSON" && !file) {
-            return this.sendError(res, Status.INVALID_ARGUMENT, "Data not given for not JSON");
+        if (!Array.isArray(info.dataType)) {
+            return this.sendError(res, Status.INVALID_ARGUMENT, "Data type is not array");
+        }
+
+        if ((info.dataType.includes("FILE") && !file)) {
+            return this.sendError(res, Status.INVALID_ARGUMENT, "Data not given for FILE data type");
         }
 
         if (!file) {
             file = new EndedStream() as BusboyFileStream;
         }
 
-        let unaryCallback: sendUnaryData<GetRequestInfo__Output>
+        let unaryCallback: sendUnaryData<GetInfo__Output>
         const promise = new Promise((resolve, reject) => {
             unaryCallback = (error, value) => {
                 if (error) {
