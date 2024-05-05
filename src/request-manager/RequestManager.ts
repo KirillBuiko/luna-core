@@ -12,18 +12,25 @@ import {PipeErrorHandler} from "@/pipe-builder/PipeErrorHandler";
 import {ErrorMessage} from "@/utils/ErrorMessage";
 import {Status} from "@grpc/grpc-js/build/src/constants";
 import {RootRouter} from "@/request-manager/RootRouter";
+import type {IPipeBuilder} from "@/request-manager/types/IPipeBuilder";
+import type {EndpointName} from "@/app/types/RemoteStaticEndpointConfigType";
 
 export class RequestManager implements IRequestManager {
     router: RequestRouter;
-    pipeBuilder = new PipeBuilder();
+    pipeBuilder: IPipeBuilder = new PipeBuilder();
 
     constructor(private deps: { endpointsManager: IEndpointsManager }) {
         this.router = new RootRouter({requestManager: this, ...deps});
     }
 
     async register(sourceOptions: SourceOptionsType, info: GetInfo | DataInfo) {
-        const destName =
-            await this.router.getEndpointName(info.requestType as RequestType__Output, sourceOptions.requestName);
+        let destName: EndpointName | null = null;
+        try {
+            destName =
+                await this.router.getEndpointName(info.requestType as RequestType__Output, sourceOptions.requestName);
+        } catch (e) {
+            console.log(e);
+        }
         console.log(`Request ${sourceOptions.requestName} of type ${info.requestType} ` +
             `from ${sourceOptions.protocol} to ${destName}`);
 
@@ -38,10 +45,11 @@ export class RequestManager implements IRequestManager {
                 .createSendHandler(sourceOptions.requestName, info);
             this.pipeBuilder.buildPipe(sourceOptions, destOptions);
         } catch (e) {
-            (new PipeErrorHandler()).sourceErrorEmit(sourceOptions,
-                ErrorMessage.create(Status.UNAVAILABLE, `Couldn't connect to endpoint ${destName}: ${e}`));
             console.log(`Failed to ${sourceOptions.requestName} ` +
                 `${info.requestType} from ${sourceOptions.protocol} to ${destName}: ${e}`);
+            (new PipeErrorHandler()).sourceErrorEmit(sourceOptions,
+                ErrorMessage.create(Status.UNAVAILABLE, `Couldn't connect to endpoint ${destName}: ${e}`));
+
         }
     }
 }

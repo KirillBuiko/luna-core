@@ -1,16 +1,17 @@
 import type {DataInfo__Output} from "@grpc-build/DataInfo";
 import type {GetInfo__Output} from "@grpc-build/GetInfo";
 import {RestApiEndpoint} from "@/endpoints/RestApiEndpoint";
-import type {MultipartTransferObject, NarrowedDestinationOptionsType, ProtocolType, RequestName} from "@/types/Types";
+import type {MultipartTransferObject, NarrowedDestination, ProtocolType, RequestName} from "@/types/Types";
 import type {RequestType__Output} from "@grpc-build/RequestType";
 import {PassThrough} from "node:stream";
 
-type CPN = "REST_API";
+const p = "REST_API";
+type P = typeof p;
 
 type SelectByName<M extends string, T extends string> =
     { [key in T]: key extends `${M}${infer R}` ? key : never }[T];
 type SpecHandlerReturnType<P extends ProtocolType, R extends RequestName> =
-    Pick<NarrowedDestinationOptionsType<P, R>, "destReader" | "destWriter">;
+    Pick<NarrowedDestination<P, R>, "destReader" | "destWriter">;
 type SpecRequestFunction<P extends ProtocolType, R extends RequestName> =
     (info: R extends "GET" ? GetInfo__Output : DataInfo__Output) => SpecHandlerReturnType<P, R>
 
@@ -18,7 +19,7 @@ type SpecRequestFunctions<P extends ProtocolType, R extends RequestName, RT exte
     { [request in SelectByName<RT, RequestType__Output>]?: SpecRequestFunction<P, R> }
 
 export class CfStorageEndpoint extends RestApiEndpoint {
-    getMapper: SpecRequestFunctions<CPN, "GET", "CF"> = {
+    getMapper: SpecRequestFunctions<P, "GET", "CF"> = {
         CF: this.cfGetHandler,
         CF_LIST: this.cfListGetHandler,
         CF_INFO: this.cfInfoHandler,
@@ -26,73 +27,80 @@ export class CfStorageEndpoint extends RestApiEndpoint {
         CF_PLUGIN_PROCEDURE: this.cfPluginProcedureGetHandler,
     } as const;
 
-    setMapper: SpecRequestFunctions<CPN, "SET", "CF"> = {
+    setMapper: SpecRequestFunctions<P, "SET", "CF"> = {
         CF: this.cfSetHandler,
         CF_PLUGIN: this.cfPluginSetHandler,
     } as const;
 
-    protected getGetHandler(info: GetInfo__Output): NarrowedDestinationOptionsType<"REST_API", "GET"> {
+    protected getGetHandler(info: GetInfo__Output): NarrowedDestination<P, "GET"> {
         if (!(info.requestType && info.requestType in this.getMapper)) throw "Request type is not supported";
-        const handlers: SpecHandlerReturnType<"REST_API", "GET"> =
+        const handlers: SpecHandlerReturnType<P, "GET"> =
             (this.getMapper[info.requestType].bind(this))(info);
         return {
             requestName: "GET",
-            protocol: "REST_API",
+            protocol: p,
             ...handlers
         }
     }
 
-    protected getSetHandler(info: DataInfo__Output): NarrowedDestinationOptionsType<CPN, "SET"> {
+    protected getSetHandler(info: DataInfo__Output): NarrowedDestination<P, "SET"> {
         if (!(info.requestType && info.requestType in this.setMapper)) throw "Request type is not supported";
-        const handlers: SpecHandlerReturnType<"REST_API", "SET"> =
+        const handlers: SpecHandlerReturnType<P, "SET"> =
             (this.setMapper[info.requestType].bind(this))(info);
         return {
             requestName: "SET",
-            protocol: "REST_API",
+            protocol: p,
             ...handlers
         }
     }
 
-    protected cfGetHandler(info: GetInfo__Output): SpecHandlerReturnType<CPN, "GET"> {
+    protected cfGetHandler(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
         // /{className}/target_code
         // const name: keyof DataInfo__Output = "cf";
         const getInfo = info["cfGet"];
         const reader = (async (): Promise<MultipartTransferObject> => {
             if (!getInfo) throw "getInfo is not provided";
-            const stream = await this.getFile({
-                url: `${this.config.host}/${getInfo.id}/target_code`
-            });
-            return {
-                info: {
-                    requestType: info.requestType,
-                    dataType: ["FILE"]
-                },
-                data: stream
+            try {
+                const stream = await this.getFile({
+                    url: `${this.config.host}/${getInfo.id}/target_code`
+                });
+                return {
+                    info: {
+                        requestType: info.requestType,
+                        dataType: ["FILE"]
+                    },
+                    data: stream
+                }
+            } catch (e) {
+                throw e;
             }
         })()
+
         return {
             destReader: reader
         }
     }
 
-    protected cfInfoHandler(info: GetInfo__Output): SpecHandlerReturnType<CPN, "GET"> {
+    protected cfInfoHandler(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
         // /{cf_id}/info
         const name: keyof DataInfo__Output = "cfInfo";
         const getInfo = info["cfInfoGet"];
         const reader = (async (): Promise<MultipartTransferObject> => {
             if (!getInfo) throw "getInfo is not provided";
-            const json = await this.getText({
-                url: `${this.config.host}/${getInfo.id}/info`
-            })
-            return {
-                info: {
-                    requestType: info.requestType,
-                    dataType: ["JSON"],
-                    dataValueType: name,
-                    [name]: {
-                        value: json
+            try {
+                const json = await this.getText({
+                    url: `${this.config.host}/${getInfo.id}/info`
+                })
+                return {
+                    info: {
+                        requestType: info.requestType,
+                        dataType: ["JSON"],
+                        dataValueType: name,
+                        [name]: {value: json}
                     }
                 }
+            } catch (e) {
+                throw e;
             }
         })()
         return {
@@ -100,23 +108,25 @@ export class CfStorageEndpoint extends RestApiEndpoint {
         }
     }
 
-    protected cfListGetHandler(info: GetInfo__Output): SpecHandlerReturnType<CPN, "GET"> {
+    protected cfListGetHandler(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
         // /CFs
         const name: keyof DataInfo__Output = "cfList";
         // const getInfo = info["cfListGet"];
         const reader = (async (): Promise<MultipartTransferObject> => {
-            const json = await this.getText({
-                url: `${this.config.host}/code_fragments`
-            })
-            return {
-                info: {
-                    requestType: info.requestType,
-                    dataType: ["JSON"],
-                    dataValueType: name,
-                    [name]: {
-                        value: json
+            try {
+                const json = await this.getText({
+                    url: `${this.config.host}/code_fragments`
+                })
+                return {
+                    info: {
+                        requestType: info.requestType,
+                        dataType: ["JSON"],
+                        dataValueType: name,
+                        [name]: {value: json}
                     }
                 }
+            } catch (e) {
+                throw e;
             }
         })()
         return {
@@ -124,23 +134,25 @@ export class CfStorageEndpoint extends RestApiEndpoint {
         }
     }
 
-    protected cfPluginsListGetHandler(info: GetInfo__Output): SpecHandlerReturnType<CPN, "GET"> {
+    protected cfPluginsListGetHandler(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
         // /plugins
         const name: keyof DataInfo__Output = "cfPluginsList";
         // const getInfo = info["cfPluginsListGet"];
         const reader = (async (): Promise<MultipartTransferObject> => {
-            const json = await this.getText({
-                url: `${this.config.host}/plugins`
-            })
-            return {
-                info: {
-                    requestType: info.requestType,
-                    dataType: ["JSON"],
-                    dataValueType: name,
-                    [name]: {
-                        value: json
+            try {
+                const json = await this.getText({
+                    url: `${this.config.host}/plugins`
+                })
+                return {
+                    info: {
+                        requestType: info.requestType,
+                        dataType: ["JSON"],
+                        dataValueType: name,
+                        [name]: {value: json}
                     }
                 }
+            } catch (e) {
+                throw e;
             }
         })()
         return {
@@ -148,25 +160,27 @@ export class CfStorageEndpoint extends RestApiEndpoint {
         }
     }
 
-    protected cfPluginProcedureGetHandler(info: GetInfo__Output): SpecHandlerReturnType<CPN, "GET"> {
+    protected cfPluginProcedureGetHandler(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
         // /{cf_id}/pluginProcedure
         const name: keyof DataInfo__Output = "cfPluginProcedure";
         const getInfo = info["cfPluginProcedureGet"];
         const reader = (async (): Promise<MultipartTransferObject> => {
             if (!getInfo) throw "getInfo is not provided";
-            const value = await this.getText({
-                url: `${this.config.host}/${getInfo.cfId}` +
-                    `/pluginProcedure?type=${getInfo.type}`
-            });
-            return {
-                info: {
-                    requestType: info.requestType,
-                    dataType: ["JSON"],
-                    dataValueType: name,
-                    [name]: {
-                        value: value
+            try {
+                const value = await this.getText({
+                    url: `${this.config.host}/${getInfo.cfId}` +
+                        `/pluginProcedure?type=${getInfo.type}`
+                });
+                return {
+                    info: {
+                        requestType: info.requestType,
+                        dataType: ["JSON"],
+                        dataValueType: name,
+                        [name]: {value: value}
                     }
                 }
+            } catch(e) {
+                throw e;
             }
         })()
         return {
@@ -174,7 +188,7 @@ export class CfStorageEndpoint extends RestApiEndpoint {
         }
     }
 
-    protected cfSetHandler(info: DataInfo__Output): SpecHandlerReturnType<CPN, "SET"> {
+    protected cfSetHandler(info: DataInfo__Output): SpecHandlerReturnType<P, "SET"> {
         // /add_CF
         // const name: keyof DataInfo__Output = "cf";
         const setInfo = info["cf"];
@@ -217,7 +231,7 @@ export class CfStorageEndpoint extends RestApiEndpoint {
         }
     }
 
-    protected cfPluginSetHandler(info: DataInfo__Output): SpecHandlerReturnType<CPN, "SET"> {
+    protected cfPluginSetHandler(info: DataInfo__Output): SpecHandlerReturnType<P, "SET"> {
         // /add_plugin
         // const name: keyof DataInfo__Output = "cfPlugin";
         const setInfo = info["cfPlugin"];

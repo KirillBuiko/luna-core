@@ -12,9 +12,9 @@ export class TestGrpcClient extends GrpcEndpoint {
 
     get(info: GetInfo) {
         const {destReader: reader} = this.getGetHandler(info);
-        reader
+        reader!
             .on("data", (data: DataStream__Output) =>
-                console.log(data.infoOrData == "info" ? JSON.stringify(data.info) : data.chunkData.toString()))
+                console.log(data.infoOrData == "info" ? JSON.stringify(data.info) : data.chunkData!.toString()))
             .on("error", (err) => {
                 console.log(err);
             })
@@ -23,10 +23,10 @@ export class TestGrpcClient extends GrpcEndpoint {
     set(info: DataInfo) {
         const {destReader: reader, destWriter: writer} = this.getSetHandler(info);
         fs.createReadStream(testConfigs.dataPath)
-            .on("data", data => writer.write({chunkData: data}))
-            .on("error", (err) => writer.destroy(err))
-            .on("end", () => writer.end());
-        reader.then((data) => {
+            .on("data", data => writer!.write({chunkData: data}))
+            .on("error", (err) => writer!.destroy(err))
+            .on("end", () => writer!.end());
+        reader!.then((data) => {
             console.log(data);
         }).catch(err => console.log(err));
     }

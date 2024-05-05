@@ -1,14 +1,14 @@
 import {Endpoint} from "@/endpoints/Endpoint";
-import type {DataRequestsHandlers} from "@grpc-build/DataRequests";
+import type {MainRequestsHandlers} from "@grpc-build/MainRequests";
 import type {GetInfo} from "@grpc-build/GetInfo";
 import type {DataInfo} from "@grpc-build/DataInfo";
 import type {ProtocolType} from "@/types/Types";
 
 // export class GrpcBidiEndpoint extends Endpoint {
 //     protocol: ProtocolType = "GRPC";
-//     call: Parameters<DataRequestsHandlers["Connect"]>[0];
+//     call: Parameters<MainRequestsHandlers["Connect"]>[0];
 //
-//     init(call: Parameters<DataRequestsHandlers["Connect"]>[0]): void {
+//     init(call: Parameters<MainRequestsHandlers["Connect"]>[0]): void {
 //         this.call = call;
 //         call.on("data", (data) => {
 //             data

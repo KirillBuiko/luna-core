@@ -1,4 +1,4 @@
-// Original file: node_modules/luna-proto-files/set_messages.proto
+// Original file: node_modules/luna-proto-files/data_messages.proto
 
 import type { CFGet as _CFGet, CFGet__Output as _CFGet__Output } from './CFGet';
 

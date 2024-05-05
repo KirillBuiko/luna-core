@@ -1,4 +1,4 @@
-// Original file: node_modules/luna-proto-files/set_messages.proto
+// Original file: node_modules/luna-proto-files/data_messages.proto
 
 
 export interface CFListData {

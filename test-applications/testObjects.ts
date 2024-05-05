@@ -1,8 +1,9 @@
-import type {GetInfo} from "@grpc-build/GetInfo";
+import type {GetInfo, GetInfo__Output} from "@grpc-build/GetInfo";
 import type {DataInfo} from "@grpc-build/DataInfo";
 
 const getProgramInfo: GetInfo = {
     requestType: "CF",
+    infoType: "cfGet",
     cfGet: {
         id: "123123"
     }
@@ -11,6 +12,7 @@ const getProgramInfo: GetInfo = {
 const setProgramInfo: DataInfo = {
     requestType: "CF",
     dataType: ["FILE"],
+    dataValueType: "cf",
     cf: {
         getInfo: {
             id: "123123"
@@ -18,8 +20,9 @@ const setProgramInfo: DataInfo = {
     }
 }
 
-const getModuleInfo: GetInfo = {
+const getModuleInfo: GetInfo__Output = {
     requestType: "CF",
+    infoType: "cfGet",
     cfGet: {
          id: "123123"
     }
@@ -28,10 +31,12 @@ const getModuleInfo: GetInfo = {
 const setModuleInfo: DataInfo = {
     requestType: "CF",
     dataType: ["FILE"],
+    dataValueType: "cf",
     cf: {
         getInfo: {
             id: "123123"
-        }
+        },
+        value: "wwdqwd3"
     }
 }
 

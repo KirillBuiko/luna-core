@@ -1,5 +1,5 @@
 import type {BusboyFileStream} from "@fastify/busboy";
-import type {DataRequestsClient, DataRequestsHandlers} from "@grpc-build/DataRequests";
+import type {MainRequestsClient, MainRequestsHandlers} from "@grpc-build/MainRequests";
 import type {Readable, Writable} from "node:stream";
 import type {DataInfo} from "@grpc-build/DataInfo";
 
@@ -31,42 +31,40 @@ interface DestinationReaderWriterOptions<
 
 export type SourceOptionsType =
     | SourceReaderWriterOptions<"GRPC", "GET",
-    void, Parameters<DataRequestsHandlers["Get"]>[0]>
+    void, Parameters<MainRequestsHandlers["Get"]>[0]>
 
     | SourceReaderWriterOptions<"REST_API", "GET",
     void, (error, value?: MultipartTransferObject) => void>
 
     | SourceReaderWriterOptions<"GRPC", "SET",
-    Parameters<DataRequestsHandlers["Set"]>[0], Parameters<DataRequestsHandlers["Set"]>[1]>
+    Parameters<MainRequestsHandlers["Set"]>[0], Parameters<MainRequestsHandlers["Set"]>[1]>
 
     | SourceReaderWriterOptions<"REST_API", "SET",
-    BusboyFileStream, Parameters<DataRequestsHandlers["Set"]>[1]>
+    BusboyFileStream, Parameters<MainRequestsHandlers["Set"]>[1]>
 
 export type DestinationOptionsType =
     | DestinationReaderWriterOptions<"GRPC", "GET",
-    ReturnType<DataRequestsClient["Get"]>, void>
+    ReturnType<MainRequestsClient["Get"]>, void>
 
     | DestinationReaderWriterOptions<"GRPC", "SET",
-    Promise<NonNullable<Parameters<Parameters<DataRequestsClient["Set"]>[0]>[1]>>, ReturnType<DataRequestsClient["Set"]>>
+    Promise<NonNullable<Parameters<Parameters<MainRequestsClient["Set"]>[0]>[1]>>, ReturnType<MainRequestsClient["Set"]>>
 
     | DestinationReaderWriterOptions<"REST_API", "GET",
     Promise<MultipartTransferObject>, void>
 
     | DestinationReaderWriterOptions<"REST_API", "SET",
-    Promise<NonNullable<Parameters<Parameters<DataRequestsClient["Set"]>[0]>[1]>>, Writable>
-
-// TODO: add rest destination types
+    Promise<NonNullable<Parameters<Parameters<MainRequestsClient["Set"]>[0]>[1]>>, Writable>
 
 export type NarrowedOptionsType<
     ProtocolT extends ProtocolType, RequestN extends RequestName, OptionsT> =
     OptionsT extends { protocol: ProtocolT, requestName: RequestN }
         ? OptionsT : never;
 
-export type NarrowedSourceOptionsType<
+export type NarrowedSource<
     ProtocolT extends ProtocolType = ProtocolType, RequestN extends RequestName = RequestName> =
     NarrowedOptionsType<ProtocolT, RequestN, SourceOptionsType>
 
-export type NarrowedDestinationOptionsType<
+export type NarrowedDestination<
     ProtocolT extends ProtocolType = ProtocolType, RequestN extends RequestName = RequestName> =
     NarrowedOptionsType<ProtocolT, RequestN, DestinationOptionsType>
 

@@ -1,4 +1,4 @@
-// Original file: node_modules/luna-proto-files/set_messages.proto
+// Original file: node_modules/luna-proto-files/data_messages.proto
 
 import type { CFPluginGet as _CFPluginGet, CFPluginGet__Output as _CFPluginGet__Output } from './CFPluginGet';
 

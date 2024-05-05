@@ -1,4 +1,4 @@
-// Original file: node_modules/luna-proto-files/data_requests.proto
+// Original file: node_modules/luna-proto-files/requests.proto
 
 import type { RequestType as _RequestType, RequestType__Output as _RequestType__Output } from './RequestType';
 import type { DataType as _DataType, DataType__Output as _DataType__Output } from './DataType';

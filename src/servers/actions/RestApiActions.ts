@@ -31,11 +31,12 @@ export class RestApiActions {
                 res.headers(formData.getHeaders()).send(formData);
             }
         }
+
         this.requestManager!.register({
             protocol: "REST_API",
             requestName: "GET",
             sourceWriter: callback,
-        }, (JSON.parse((req.query as { info: string }).info) as GetInfo__Output));
+        }, (JSON.parse((req.query as { info: string }).info) as GetInfo__Output))
     }
 
     setHandler = async (req, res) => {
@@ -49,8 +50,8 @@ export class RestApiActions {
             return this.sendError(res, Status.INVALID_ARGUMENT, "Body is not multipart");
         }
 
-        let infoString: string;
-        let file: BusboyFileStream;
+        let infoString = "";
+        let file: BusboyFileStream | undefined = undefined;
         for (let i = 0; i < 2; i++) {
             const part = (await parts.next()).value as Multipart;
             if (!part) continue;
@@ -75,7 +76,7 @@ export class RestApiActions {
             file = new EndedStream() as BusboyFileStream;
         }
 
-        let unaryCallback: sendUnaryData<GetInfo__Output>
+        let unaryCallback: sendUnaryData<GetInfo__Output> | undefined = undefined;
         const promise = new Promise((resolve, reject) => {
             unaryCallback = (error, value) => {
                 if (error) {
@@ -86,12 +87,12 @@ export class RestApiActions {
             }
         })
 
-        this.requestManager!.register({
+        await this.requestManager!.register({
             protocol: "REST_API",
             requestName: "SET",
             sourceReader: file,
             sourceWriter: unaryCallback
-        }, info);
+        }, info)
 
         return promise;
     }

@@ -4,23 +4,23 @@ export const endpointConfigs: EndpointConfigsType =
     process.env.NODE_ENV == "production"
     ? {
         computationModelsStorage:
-            {host: process.env.COMPUTATION_MODELS_STORAGE_HOST},
+            {host: process.env.COMPUTATION_MODELS_STORAGE_HOST || ""},
         executor:
-            {host: process.env.EXECUTOR_HOST},
+            {host: process.env.EXECUTOR_HOST || ""},
         generator:
-            {host: process.env.GENERATOR_HOST},
+            {host: process.env.GENERATOR_HOST || ""},
         interpreter:
-            {host: process.env.INTERPRETER_HOST},
+            {host: process.env.INTERPRETER_HOST || ""},
         cfStorage:
-            {host: process.env.CF_STORAGE_HOST},
+            {host: process.env.CF_STORAGE_HOST || ""},
         planner:
-            {host: process.env.PLANNER_HOST},
+            {host: process.env.PLANNER_HOST || ""},
         variablesStorage:
-            {host: process.env.VARIABLES_STORAGE_HOST},
+            {host: process.env.VARIABLES_STORAGE_HOST || ""},
         programsStorage:
-            {host: process.env.PROGRAMS_STORAGE_HOST},
+            {host: process.env.PROGRAMS_STORAGE_HOST || ""},
         tasksStorage:
-            {host: process.env.TASKS_STORAGE_HOST}
+            {host: process.env.TASKS_STORAGE_HOST || ""}
     }
     : {
         computationModelsStorage:

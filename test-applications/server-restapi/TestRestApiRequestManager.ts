@@ -1,4 +1,4 @@
-import type {NarrowedSourceOptionsType} from "@/types/Types";
+import type {NarrowedSource} from "@/types/Types";
 import type {IRequestManager} from "@/app/types/IRequestManager";
 import type {GetInfo} from "@grpc-build/GetInfo";
 import type {DataInfo} from "@grpc-build/DataInfo";
@@ -7,7 +7,7 @@ import fs from "fs";
 import {testConfigs} from "../testConfigs";
 
 export class TestRestApiRequestManager implements IRequestManager {
-    async register(sourceOptions: NarrowedSourceOptionsType<"REST_API">, info: GetInfo | DataInfo) {
+    async register(sourceOptions: NarrowedSource<"REST_API">, info: GetInfo | DataInfo) {
         if (sourceOptions.requestName == "GET") {
             const {sourceWriter} = sourceOptions;
             sourceWriter!(null, {

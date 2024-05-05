@@ -6,7 +6,7 @@ import {endpointConfigs} from "@/configs/endpointConfigs";
 
 const serversManager = new ServersManager();
 const endpointsManager = new EndpointsManager();
-const requestsManager = new RequestManager(endpointsManager);
+const requestsManager = new RequestManager({endpointsManager});
 
 async function main() {
     try {

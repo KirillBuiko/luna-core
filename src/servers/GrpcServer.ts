@@ -1,5 +1,5 @@
 import type {IServer} from "@/app/types/IServer";
-import type {DataRequestsHandlers} from "@grpc-build/DataRequests";
+import type {MainRequestsHandlers} from "@grpc-build/MainRequests";
 import type {IRequestManager} from "@/app/types/IRequestManager";
 
 import {AbstractGrpcServer} from "@/servers/AbstractGrpcServer";
@@ -21,15 +21,15 @@ export class GrpcServer extends AbstractGrpcServer implements IServer {
         return super.defaultStart(config);
     }
 
-    getHandler: DataRequestsHandlers["Get"] = (call) => {
+    getHandler: MainRequestsHandlers["Get"] = (call) => {
         return this.grpcActions.getHandler(call);
     }
 
-    setHandler: DataRequestsHandlers["Set"] = (call, callback) => {
+    setHandler: MainRequestsHandlers["Set"] = (call, callback) => {
         return this.grpcActions.setHandler(call, callback);
     }
 
-    connectHandler: DataRequestsHandlers["Connect"] = () => {
+    connectHandler: MainRequestsHandlers["Connect"] = () => {
         // TODO: write creating grpc connect handler
     }
 }

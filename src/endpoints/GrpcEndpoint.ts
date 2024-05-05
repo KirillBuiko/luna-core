@@ -1,12 +1,12 @@
 import type {EndpointStatus} from "@/app/types/IEndpoint";
 import type {
-    NarrowedDestinationOptionsType, ProtocolType
+    NarrowedDestination, ProtocolType
 } from "@/types/Types";
 import type {RemoteStaticEndpointConfigType} from "@/app/types/RemoteStaticEndpointConfigType";
 import * as protoLoader from "@grpc/proto-loader";
 import {grpcLoadOptions} from "@/grpcLoadOptions";
 import * as grpc from "@grpc/grpc-js";
-import type {ProtoGrpcType} from "@grpc-build/data_requests";
+import type {ProtoGrpcType} from "@grpc-build/requests";
 import type {GetInfo, GetInfo__Output} from "@grpc-build/GetInfo";
 import type {DataInfo} from "@grpc-build/DataInfo";
 import {type ClientWritableStream, waitForClientReady} from "@grpc/grpc-js";
@@ -17,12 +17,12 @@ import {Endpoint} from "@/endpoints/Endpoint";
 export class GrpcEndpoint extends Endpoint {
     status: EndpointStatus = "not-connected"
     protocol: ProtocolType = "GRPC";
-    client: InstanceType<ProtoGrpcType["DataRequests"]> | undefined;
+    client: InstanceType<ProtoGrpcType["MainRequests"]> | undefined;
 
     init(config: RemoteStaticEndpointConfigType): Promise<Error | null> {
         const packageDefinition = protoLoader.loadSync(configs.PROTO_PATH, grpcLoadOptions);
         const proto = grpc.loadPackageDefinition(packageDefinition) as unknown as ProtoGrpcType;
-        this.client = new proto.DataRequests(config.host, grpc.credentials.createInsecure());
+        this.client = new proto.MainRequests(config.host, grpc.credentials.createInsecure());
         return new Promise(resolve => {
             waitForClientReady(this.client!, Date.now() + configs.ENDPOINT_CONNECTION_DEADLINE, error => {
                 if (!error) {
@@ -34,7 +34,7 @@ export class GrpcEndpoint extends Endpoint {
     }
 
     protected getGetHandler(info: GetInfo):
-        NarrowedDestinationOptionsType<"GRPC", "GET"> {
+        NarrowedDestination<"GRPC", "GET"> {
         const get = this.client!.get(info);
         return {
             requestName: "GET",
@@ -44,7 +44,7 @@ export class GrpcEndpoint extends Endpoint {
     }
 
     protected getSetHandler(info: DataInfo):
-        NarrowedDestinationOptionsType<"GRPC", "SET"> {
+        NarrowedDestination<"GRPC", "SET"> {
         let writer: ClientWritableStream<DataStream> | undefined = undefined;
         const reader = new Promise<GetInfo__Output>((resolve, reject) => {
             writer = this.client!.set((err, value) => {
@@ -56,7 +56,7 @@ export class GrpcEndpoint extends Endpoint {
             });
         })
 
-        writer.write({
+        writer!.write({
             info: info
         });
 

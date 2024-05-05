@@ -1,7 +1,7 @@
 import type {EndpointStatus} from "@/app/types/IEndpoint";
 import type {
     MultipartTransferObject,
-    NarrowedDestinationOptionsType
+    NarrowedDestination
 } from "@/types/Types";
 import type {RemoteStaticEndpointConfigType} from "@/app/types/RemoteStaticEndpointConfigType";
 import type {GetInfo__Output} from "@grpc-build/GetInfo";
@@ -25,7 +25,7 @@ export class RestApiEndpoint extends Endpoint {
     }
 
     protected getGetHandler(info: GetInfo__Output):
-        NarrowedDestinationOptionsType<"REST_API", "GET"> {
+        NarrowedDestination<"REST_API", "GET"> {
         const multipart = this.getMultipart({
             url: `${this.config.host}/get?info=${JSON.stringify(info)}`
         })
@@ -49,7 +49,7 @@ export class RestApiEndpoint extends Endpoint {
     }
 
     protected getSetHandler(info: DataInfo):
-        NarrowedDestinationOptionsType<"REST_API", "SET"> {
+        NarrowedDestination<"REST_API", "SET"> {
         const {reader, dataWriter} = this.sendMultipart({
             url: `${this.config.host}/set`,
             streamName: "data",
@@ -75,10 +75,8 @@ export class RestApiEndpoint extends Endpoint {
         const response = await fetch(options.url, {
             method: "GET",
         });
-        if (response.status !== 200) {
-            Readable.fromWeb(response.body as ReadableStream).on("data", (value) => {
-                throw (value.toString());
-            });
+        if (!response.ok) {
+            throw JSON.stringify(await response.json());
         }
         return Readable.fromWeb(response.body as ReadableStream);
     }
@@ -87,10 +85,8 @@ export class RestApiEndpoint extends Endpoint {
         const response = await fetch(options.url, {
             method: "GET",
         });
-        if (response.status !== 200) {
-            Readable.fromWeb(response.body as ReadableStream).on("data", (value) => {
-                throw (value.toString());
-            });
+        if (!response.ok) {
+            throw JSON.stringify(await response.json());
         }
         return response.text();
     }
@@ -102,10 +98,8 @@ export class RestApiEndpoint extends Endpoint {
                 const response = await fetch(options.url, {
                     method: "GET",
                 });
-                if (response.status !== 200) {
-                    Readable.fromWeb(response.body as ReadableStream).on("data", (value) => {
-                        reject(value.toString());
-                    })
+                if (!response.ok) {
+                    reject(JSON.stringify(await response.json()));
                     return;
                 }
 
@@ -133,12 +127,12 @@ export class RestApiEndpoint extends Endpoint {
                     resolvePromise();
                 });
             } catch (err) {
-                reject(err);
+                reject("Endpoint is not available");
             }
         })
     }
 
-    sendMultipart(options: {url: string, fields: Record<string, string>, streamName: string}) {
+    sendMultipart(options: { url: string, fields: Record<string, string>, streamName: string }) {
         const multipartPass = new PassThrough();
         const form = new FormData();
         Object.entries(options.fields).forEach((v) => form.append(...v));
@@ -146,10 +140,10 @@ export class RestApiEndpoint extends Endpoint {
         const reader = new Promise<string>((resolve, reject) =>
             form.submit(options.url, (err, res) => {
                 if (err) {
-                    reject(err);
+                    reject("Endpoint is not available");
                 } else {
                     res.on("data", (data) => {
-                        res.statusCode != 200 ? reject(data) : resolve(data);
+                        res.statusCode != 200 ? reject(data.toString()) : resolve(data);
                     })
                 }
             }))

@@ -1,33 +1,34 @@
-import type {NarrowedDestinationOptionsType} from "@/types/Types";
-import type {NarrowedSourceOptionsType, RequestName} from "@/types/Types";
+import type {NarrowedDestination} from "@/types/Types";
+import type {NarrowedSource, RequestName} from "@/types/Types";
 import {ErrorMessage} from "@/utils/ErrorMessage";
 import {Status} from "@grpc/grpc-js/build/src/constants";
 import type {DataStream, DataStream__Output} from "@grpc-build/DataStream";
-import {PipeHandler} from "@/pipe-builder/PipeHandler";
+import {AbstractPipe} from "@/pipe-builder/pipes/AbstractPipe";
 
+type S = "GRPC";
+type D = "GRPC";
 
-type SourceOptions<RequestN extends RequestName = RequestName> =
-    NarrowedSourceOptionsType<"GRPC", RequestN>;
-type DestinationOptions<RequestN extends RequestName = RequestName> =
-    NarrowedDestinationOptionsType<"GRPC", RequestN>;
-
-export class GrpcToGrpcPipe extends PipeHandler<SourceOptions, DestinationOptions> {
-    protected getHandler(sourceOptions: SourceOptions<"GET">, destOptions: DestinationOptions<"GET">) {
+export class GrpcToGrpcPipe extends AbstractPipe<S, D> {
+    protected pipeGet(sourceOptions: NarrowedSource<S, "GET">,
+                      destOptions: NarrowedDestination<D, "GET">) {
         const {sourceWriter} = sourceOptions;
         const {destReader} = destOptions;
+        if (!destReader) return;
         destReader
             .on("data", (data: DataStream__Output) =>
-                sourceWriter.write(data))
+                sourceWriter!.write(data))
             .on("close", () =>
-                sourceWriter.destroy())
+                sourceWriter!.destroy())
             .on("error", err =>
                 this.pipeErrorHandler.sourceErrorEmit(sourceOptions,
                     ErrorMessage.create(Status.ABORTED, JSON.stringify(err))));
     }
 
-    protected setHandler(sourceOptions: SourceOptions<"SET">, destOptions: DestinationOptions<"SET">) {
+    protected pipeSet(sourceOptions: NarrowedSource<S, "SET">,
+                      destOptions: NarrowedDestination<D, "SET">) {
         const {sourceWriter, sourceReader} = sourceOptions;
         const {destWriter, destReader} = destOptions;
+        if (!(destReader && destWriter && sourceWriter && sourceReader)) return;
 
         sourceReader
             .on("data", (data: DataStream) =>

@@ -1,4 +1,4 @@
-import type {DataRequestsHandlers} from "@grpc-build/DataRequests";
+import type {MainRequestsHandlers} from "@grpc-build/MainRequests";
 import {ErrorMessage} from "@/utils/ErrorMessage";
 import {Status} from "@grpc/grpc-js/build/src/constants";
 import type {IRequestManager} from "@/app/types/IRequestManager";
@@ -6,7 +6,7 @@ import type {IRequestManager} from "@/app/types/IRequestManager";
 export class GrpcActions {
     constructor(private requestManager: IRequestManager){};
 
-    getHandler: DataRequestsHandlers["Get"] = (call) => {
+    getHandler: MainRequestsHandlers["Get"] = (call) => {
         this.requestManager?.register({
             protocol: "GRPC",
             requestName: "GET",
@@ -15,7 +15,7 @@ export class GrpcActions {
         }, call.request);
     }
 
-    setHandler: DataRequestsHandlers["Set"] = (call, callback) => {
+    setHandler: MainRequestsHandlers["Set"] = (call, callback) => {
         call.once("data", info => {
             if (info.infoOrData === "info") {
                 this.requestManager?.register({

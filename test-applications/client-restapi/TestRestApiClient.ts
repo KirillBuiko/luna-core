@@ -12,13 +12,13 @@ export class TestRestApiClient extends RestApiEndpoint {
     async get(info: GetInfo__Output) {
         const options = super.getGetHandler(info);
         const result = await options.destReader;
-        console.log(result.info);
+        console.log(result!.info);
         let file = "";
-        if (result.data) {
-            result.data.on("data", (value) => {
+        if (result!.data) {
+            result!.data.on("data", (value) => {
                 file += value;
             });
-            result.data.on("end", () => {
+            result!.data.on("end", () => {
                 console.log(file);
                 console.log("END");
             })
@@ -30,7 +30,7 @@ export class TestRestApiClient extends RestApiEndpoint {
         // options.destWriter.end();
         options.destWriter && fs.createReadStream(testConfigs.dataPath).pipe(options.destWriter);
         options.destReader?.then(data => {
-            console.log(data);
-        }).catch(err => console.log(err));
+            console.log(data.toString());
+        }).catch(err => console.log(err.toString()));
     }
 }

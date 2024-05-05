@@ -1,4 +1,4 @@
-// Original file: node_modules/luna-proto-files/data_requests.proto
+// Original file: node_modules/luna-proto-files/requests.proto
 
 import type { DataInfo as _DataInfo, DataInfo__Output as _DataInfo__Output } from './DataInfo';
 
