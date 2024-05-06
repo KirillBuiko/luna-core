@@ -49,7 +49,8 @@ _/set_ за установку значения (создание, обновл�
 <tr>
 <th colspan="4" style="text-align: center">
 
-### Библиотека модулей
+### Библиотека модулей  
+[Документация компонента](https://gitlab.com/ansab3/codefragmentcontrolsystem/-/blob/main/USE.md?ref_type=heads)
 
 </th>
 </tr>
@@ -80,10 +81,10 @@ info:
 ```
 {
     requestType: "CF_LIST",
-    dataType: "JSON",
+    dataType: ["JSON"],
     dataValueType: "cfList",
     cfList: {
-        value: "результат"
+        value: "json результат"
     }
 }
 ```
@@ -121,10 +122,10 @@ info:
 ``` 
 {
     requestType: "CF_INFO",
-    dataType: "JSON",
+    dataType: ["JSON"],
     dataValueType: "cfInfo",
     cfInfo: {
-        value: "результат"
+        value: "json результат"
     }
 } 
 ```
@@ -147,13 +148,13 @@ info:
 ```
 {
     requestType: "CF",
-    dataType: "FILE",
+    dataType: ["JSON", "FILE"],
     dataValueType: "cf",
     cf: {
         getInfo: {
             id: "Идентификатор ФК"
         },
-        cfJson: (json фрагмента кода)
+        value: "json фрагмента кода"
     }
 }
 ```
@@ -165,6 +166,8 @@ data: файл архива .tar
 ```
 {
     requestType: "CF",
+    infoType: "response",
+    response: "ответ"
 }
 ```
 
@@ -201,7 +204,7 @@ info:
 ```
 {
     requestType: "CF",
-    dataType: "FILE"
+    dataType: ["FILE"]
 }
 ```
 
@@ -240,7 +243,7 @@ info:
 ```
 {
     requestType: "CF_PLUGIN_PROCEDURE",
-    dataType: "JSON",
+    dataType: ["JSON"],
     dataValueType: "cfPluginProcedure",
     cfPluginProcedure: {
         value: "результат"
@@ -282,7 +285,7 @@ info:
 ```
 {
     requestType: "CF_PLUGINS_LIST",
-    dataType: "JSON",
+    dataType: ["JSON"],
     dataValueType: "cfPluginsList",
     cfPluginsList: {
         value: "результат"
@@ -309,12 +312,12 @@ info:
 ```
 {
     requestType: "CF_PLUGIN",
-    dataType: "FILE",
+    dataType: ["FILE"],
     dataValueType: "cfPlugin",
     cfPlugin: {
         getInfo: {
             pluginId: "идентификатор плагина"
-        },
+        }
     }
 }
 ```
@@ -325,7 +328,9 @@ data: файл
 
 ```
 {
-    requestType: "CF_PLUGIN"
+    requestType: "CF_PLUGIN",
+    infoType: "response",
+    response: "ответ"
 }
 ```
 
