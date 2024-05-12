@@ -6,6 +6,7 @@ export const DataType = {
   TEXT: 'TEXT',
   JSON: 'JSON',
   LINK: 'LINK',
+  BYTES: 'BYTES',
 } as const;
 
 export type DataType =
@@ -19,5 +20,7 @@ export type DataType =
   | 30
   | 'LINK'
   | 40
+  | 'BYTES'
+  | 50
 
 export type DataType__Output = typeof DataType[keyof typeof DataType]

@@ -8,17 +8,17 @@ type SubtypeConstructor<Constructor extends new (...args: any) => any, Subtype> 
 };
 
 export interface ProtoGrpcType {
-  CFData: MessageTypeDefinition
-  CFGet: MessageTypeDefinition
-  CFInfoData: MessageTypeDefinition
-  CFInfoGet: MessageTypeDefinition
-  CFListData: MessageTypeDefinition
-  CFPluginData: MessageTypeDefinition
-  CFPluginGet: MessageTypeDefinition
-  CFPluginProcedureData: MessageTypeDefinition
-  CFPluginProcedureGet: MessageTypeDefinition
-  CFPluginsListData: MessageTypeDefinition
-  CFPluginsListGet: MessageTypeDefinition
+  CodeFData: MessageTypeDefinition
+  CodeFGet: MessageTypeDefinition
+  CodeFInfoData: MessageTypeDefinition
+  CodeFInfoGet: MessageTypeDefinition
+  CodeFListData: MessageTypeDefinition
+  CodeFPluginData: MessageTypeDefinition
+  CodeFPluginGet: MessageTypeDefinition
+  CodeFPluginProcedureData: MessageTypeDefinition
+  CodeFPluginProcedureGet: MessageTypeDefinition
+  CodeFPluginsListData: MessageTypeDefinition
+  CodeFPluginsListGet: MessageTypeDefinition
   DataInfo: MessageTypeDefinition
   DataStream: MessageTypeDefinition
   DataType: EnumTypeDefinition

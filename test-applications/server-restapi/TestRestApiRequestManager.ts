@@ -13,7 +13,7 @@ export class TestRestApiRequestManager implements IRequestManager {
             sourceWriter!(null, {
                 info: {
                     requestType: info.requestType,
-                    dataType: ["FILE"]
+                    dataType: "BYTES"
                 },
                 data: fs.createReadStream(testConfigs.dataPath)
             })

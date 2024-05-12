@@ -1,10 +1,10 @@
 // Original file: node_modules/luna-proto-files/get_messages.proto
 
 
-export interface codeFPluginGet {
+export interface CodeFPluginGet {
   'pluginId'?: (string);
 }
 
-export interface codeFPluginGet__Output {
+export interface CodeFPluginGet__Output {
   'pluginId'?: (string);
 }

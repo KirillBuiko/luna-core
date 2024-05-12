@@ -68,7 +68,7 @@ GET /get
 
 ```
 {
-    requestType: "CF_LIST"
+    requestType: "CODE_F_LIST"
 }
 ```
 
@@ -80,10 +80,10 @@ info:
 
 ```
 {
-    requestType: "CF_LIST",
-    dataType: ["JSON"],
-    dataValueType: "cfList",
-    cfList: {
+    requestType: "CODE_F_LIST",
+    dataType: "JSON",
+    dataValueType: "codeFList",
+    codeFList: {
         value: "json результат"
     }
 }
@@ -105,9 +105,9 @@ GET /get
 
 ```
 {
-    requestType: "CF_INFO",
-    infoType: "cfInfoGet",
-    cfInfoGet: {
+    requestType: "CODE_F_INFO",
+    infoType: "codeFInfoGet",
+    codeFInfoGet: {
         id: "идентификатор"
     }
 }
@@ -121,10 +121,10 @@ info:
 
 ``` 
 {
-    requestType: "CF_INFO",
-    dataType: ["JSON"],
-    dataValueType: "cfInfo",
-    cfInfo: {
+    requestType: "CODE_F_INFO",
+    dataType: "JSON",
+    dataValueType: "codeFInfo",
+    codeFInfo: {
         value: "json результат"
     }
 } 
@@ -147,10 +147,10 @@ info:
 
 ```
 {
-    requestType: "CF",
-    dataType: ["JSON", "FILE"],
-    dataValueType: "cf",
-    cf: {
+    requestType: "CODE_F",
+    dataType: "BYTES",
+    dataValueType: "codeF",
+    codeF: {
         getInfo: {
             id: "Идентификатор ФК"
         },
@@ -165,7 +165,7 @@ data: файл архива .tar
 
 ```
 {
-    requestType: "CF",
+    requestType: "CODE_F",
     infoType: "response",
     response: "ответ"
 }
@@ -187,9 +187,9 @@ GET /get
 
 ```
 {
-    requestType: "CF",
-    infoType: "cfGet",
-    cfGet: {
+    requestType: "CODE_F",
+    infoType: "codeFGet",
+    codeFGet: {
         id: "идентификатор"
     }
 }
@@ -203,8 +203,8 @@ info:
 
 ```
 {
-    requestType: "CF",
-    dataType: ["FILE"]
+    requestType: "CODE_F",
+    dataType: "BYTES"
 }
 ```
 
@@ -225,10 +225,10 @@ GET /get
 
 ```
 {
-    requestType: "CF_PLUGIN_PROCEDURE",
-    infoType: "cfPluginProcedureGet",
-    cfPluginProcedureGet: {
-        cfId: "идентификатор ФК";
+    requestType: "CODE_F_PLUGIN_PROCEDURE",
+    infoType: "codeFPluginProcedureGet",
+    codeFPluginProcedureGet: {
+        codeFId: "идентификатор ФК";
         type: "тип выполнения";
     }
 }
@@ -242,10 +242,10 @@ info:
 
 ```
 {
-    requestType: "CF_PLUGIN_PROCEDURE",
-    dataType: ["JSON"],
-    dataValueType: "cfPluginProcedure",
-    cfPluginProcedure: {
+    requestType: "CODE_F_PLUGIN_PROCEDURE",
+    dataType: "JSON",
+    dataValueType: "codeFPluginProcedure",
+    codeFPluginProcedure: {
         value: "результат"
     }
 }
@@ -268,10 +268,10 @@ GET /get
 
 ```
 {
-    requestType: "CF_PLUGINS_LIST",
-    infoType: "cfPluginsListGet",
-    cfPluginsListGet: {
-        cfId: "идентификатор"
+    requestType: "CODE_F_PLUGINS_LIST",
+    infoType: "codeFPluginsListGet",
+    codeFPluginsListGet: {
+        codeFId: "идентификатор"
     }
 }
 ```
@@ -284,10 +284,10 @@ info:
 
 ```
 {
-    requestType: "CF_PLUGINS_LIST",
-    dataType: ["JSON"],
-    dataValueType: "cfPluginsList",
-    cfPluginsList: {
+    requestType: "CODE_F_PLUGINS_LIST",
+    dataType: "JSON",
+    dataValueType: "codeFPluginsList",
+    codeFPluginsList: {
         value: "результат"
     }
 }
@@ -311,10 +311,10 @@ info:
 
 ```
 {
-    requestType: "CF_PLUGIN",
-    dataType: ["FILE"],
-    dataValueType: "cfPlugin",
-    cfPlugin: {
+    requestType: "CODE_F_PLUGIN",
+    dataType: "BYTES",
+    dataValueType: "codeFPlugin",
+    codeFPlugin: {
         getInfo: {
             pluginId: "идентификатор плагина"
         }
@@ -328,7 +328,7 @@ data: файл
 
 ```
 {
-    requestType: "CF_PLUGIN",
+    requestType: "CODE_F_PLUGIN",
     infoType: "response",
     response: "ответ"
 }

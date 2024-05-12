@@ -1,10 +1,10 @@
 // Original file: node_modules/luna-proto-files/data_messages.proto
 
 
-export interface codeFListData {
+export interface CodeFPluginsListData {
   'value'?: (string);
 }
 
-export interface codeFListData__Output {
+export interface CodeFPluginsListData__Output {
   'value'?: (string);
 }

@@ -2,33 +2,33 @@
 
 import type { RequestType as _RequestType, RequestType__Output as _RequestType__Output } from './RequestType';
 import type { DataType as _DataType, DataType__Output as _DataType__Output } from './DataType';
-import type { CFData as _CFData, CFData__Output as _CFData__Output } from './CFData';
-import type { CFInfoData as _CFInfoData, CFInfoData__Output as _CFInfoData__Output } from './CFInfoData';
-import type { CFListData as _CFListData, CFListData__Output as _CFListData__Output } from './CFListData';
-import type { CFPluginsListData as _CFPluginsListData, CFPluginsListData__Output as _CFPluginsListData__Output } from './CFPluginsListData';
-import type { CFPluginProcedureData as _CFPluginProcedureData, CFPluginProcedureData__Output as _CFPluginProcedureData__Output } from './CFPluginProcedureData';
-import type { CFPluginData as _CFPluginData, CFPluginData__Output as _CFPluginData__Output } from './CFPluginData';
+import type { CodeFData as _CodeFData, CodeFData__Output as _CodeFData__Output } from './CodeFData';
+import type { CodeFInfoData as _CodeFInfoData, CodeFInfoData__Output as _CodeFInfoData__Output } from './CodeFInfoData';
+import type { CodeFListData as _CodeFListData, CodeFListData__Output as _CodeFListData__Output } from './CodeFListData';
+import type { CodeFPluginsListData as _CodeFPluginsListData, CodeFPluginsListData__Output as _CodeFPluginsListData__Output } from './CodeFPluginsListData';
+import type { CodeFPluginProcedureData as _CodeFPluginProcedureData, CodeFPluginProcedureData__Output as _CodeFPluginProcedureData__Output } from './CodeFPluginProcedureData';
+import type { CodeFPluginData as _CodeFPluginData, CodeFPluginData__Output as _CodeFPluginData__Output } from './CodeFPluginData';
 
 export interface DataInfo {
   'requestType'?: (_RequestType);
-  'dataType'?: (_DataType)[];
-  'cf'?: (_CFData | null);
-  'cfInfo'?: (_CFInfoData | null);
-  'cfList'?: (_CFListData | null);
-  'cfPluginsList'?: (_CFPluginsListData | null);
-  'cfPluginProcedure'?: (_CFPluginProcedureData | null);
-  'cfPlugin'?: (_CFPluginData | null);
-  'dataValueType'?: "cf"|"cfInfo"|"cfList"|"cfPluginsList"|"cfPluginProcedure"|"cfPlugin";
+  'dataType'?: (_DataType);
+  'codeF'?: (_CodeFData | null);
+  'codeFInfo'?: (_CodeFInfoData | null);
+  'codeFList'?: (_CodeFListData | null);
+  'codeFPluginsList'?: (_CodeFPluginsListData | null);
+  'codeFPluginProcedure'?: (_CodeFPluginProcedureData | null);
+  'codeFPlugin'?: (_CodeFPluginData | null);
+  'dataValueType'?: "codeF"|"codeFInfo"|"codeFList"|"codeFPluginsList"|"codeFPluginProcedure"|"codeFPlugin";
 }
 
 export interface DataInfo__Output {
   'requestType'?: (_RequestType__Output);
-  'dataType'?: (_DataType__Output)[];
-  'cf'?: (_CFData__Output);
-  'cfInfo'?: (_CFInfoData__Output);
-  'cfList'?: (_CFListData__Output);
-  'cfPluginsList'?: (_CFPluginsListData__Output);
-  'cfPluginProcedure'?: (_CFPluginProcedureData__Output);
-  'cfPlugin'?: (_CFPluginData__Output);
-  'dataValueType': "cf"|"cfInfo"|"cfList"|"cfPluginsList"|"cfPluginProcedure"|"cfPlugin";
+  'dataType'?: (_DataType__Output);
+  'codeF'?: (_CodeFData__Output);
+  'codeFInfo'?: (_CodeFInfoData__Output);
+  'codeFList'?: (_CodeFListData__Output);
+  'codeFPluginsList'?: (_CodeFPluginsListData__Output);
+  'codeFPluginProcedure'?: (_CodeFPluginProcedureData__Output);
+  'codeFPlugin'?: (_CodeFPluginData__Output);
+  'dataValueType': "codeF"|"codeFInfo"|"codeFList"|"codeFPluginsList"|"codeFPluginProcedure"|"codeFPlugin";
 }

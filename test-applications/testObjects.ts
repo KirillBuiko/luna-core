@@ -2,18 +2,18 @@ import type {GetInfo, GetInfo__Output} from "@grpc-build/GetInfo";
 import type {DataInfo} from "@grpc-build/DataInfo";
 
 const getProgramInfo: GetInfo = {
-    requestType: "CF",
-    infoType: "cfGet",
-    cfGet: {
+    requestType: "CODE_F",
+    infoType: "codeFGet",
+    codeFGet: {
         id: "123123"
     }
 }
 
 const setProgramInfo: DataInfo = {
-    requestType: "CF",
-    dataType: ["FILE"],
-    dataValueType: "cf",
-    cf: {
+    requestType: "CODE_F",
+    dataType: "BYTES",
+    dataValueType: "codeF",
+    codeF: {
         getInfo: {
             id: "123123"
         }
@@ -21,18 +21,18 @@ const setProgramInfo: DataInfo = {
 }
 
 const getModuleInfo: GetInfo__Output = {
-    requestType: "CF",
-    infoType: "cfGet",
-    cfGet: {
+    requestType: "CODE_F",
+    infoType: "codeFGet",
+    codeFGet: {
          id: "123123"
     }
 }
 
 const setModuleInfo: DataInfo = {
-    requestType: "CF",
-    dataType: ["FILE"],
-    dataValueType: "cf",
-    cf: {
+    requestType: "CODE_F",
+    dataType: "BYTES",
+    dataValueType: "codeF",
+    codeF: {
         getInfo: {
             id: "123123"
         },

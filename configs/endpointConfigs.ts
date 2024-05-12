@@ -11,8 +11,8 @@ export const endpointConfigs: EndpointConfigsType =
             {host: process.env.GENERATOR_HOST || ""},
         interpreter:
             {host: process.env.INTERPRETER_HOST || ""},
-        cfStorage:
-            {host: process.env.CF_STORAGE_HOST || ""},
+        codeFStorage:
+            {host: process.env.CODE_F_STORAGE_HOST || ""},
         planner:
             {host: process.env.PLANNER_HOST || ""},
         variablesStorage:
@@ -26,17 +26,17 @@ export const endpointConfigs: EndpointConfigsType =
         computationModelsStorage:
             {host: "http://localhost:5001"},
         executor:
-            {host: "http://localhost:5002"},
+            {host: "http://localhost:9876"},
         generator:
-            {host: "http://localhost:5003"},
+            {host: "http://localhost:5555"},
         interpreter:
             {host: "http://localhost:5004"},
-        cfStorage:
-            {host: "http://localhost:5005"},
+        codeFStorage:
+            {host: "http://localhost:12345"},
         planner:
             {host: "http://localhost:5006"},
         variablesStorage:
-            {host: "http://localhost:5007"},
+            {host: "http://localhost:8111"},
         programsStorage:
             {host: "http://localhost:5008"},
         tasksStorage:

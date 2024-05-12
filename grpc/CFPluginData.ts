@@ -1,13 +1,13 @@
 // Original file: node_modules/luna-proto-files/data_messages.proto
 
-import type { CFPluginGet as _CFPluginGet, CFPluginGet__Output as _CFPluginGet__Output } from './CFPluginGet';
+import type { codeFPluginGet as _codeFPluginGet, codeFPluginGet__Output as _codeFPluginGet__Output } from './codeFPluginGet';
 
-export interface CFPluginData {
-  'getInfo'?: (_CFPluginGet | null);
+export interface codeFPluginData {
+  'getInfo'?: (_codeFPluginGet | null);
   '_getInfo'?: "getInfo";
 }
 
-export interface CFPluginData__Output {
-  'getInfo'?: (_CFPluginGet__Output);
+export interface codeFPluginData__Output {
+  'getInfo'?: (_codeFPluginGet__Output);
   '_getInfo': "getInfo";
 }

@@ -8,7 +8,7 @@ export type EndpointName =
     | "interpreter"
     | "planner"
     | "variablesStorage"
-    | "cfStorage"
+    | "codeFStorage"
     | "computationModelsStorage"
     | "tasksStorage"
     | "programsStorage"

@@ -29,28 +29,28 @@ export class RootRouter extends RequestRouter {
                 GET: null,
                 SET: null
             },
-            CF: {
-                GET: "cfStorage",
-                SET: "cfStorage"
+            CODE_F: {
+                GET: "codeFStorage",
+                SET: "codeFStorage"
             },
-            CF_LIST: {
-                GET: "cfStorage",
+            CODE_F_LIST: {
+                GET: "codeFStorage",
                 SET: null
             },
-            CF_INFO: {
-                GET: "cfStorage",
+            CODE_F_INFO: {
+                GET: "codeFStorage",
                 SET: null
             },
-            CF_PLUGIN: {
-                GET: "cfStorage",
-                SET: "cfStorage"
+            CODE_F_PLUGIN: {
+                GET: "codeFStorage",
+                SET: "codeFStorage"
             },
-            CF_PLUGINS_LIST: {
-                GET: "cfStorage",
+            CODE_F_PLUGINS_LIST: {
+                GET: "codeFStorage",
                 SET: null
             },
-            CF_PLUGIN_PROCEDURE: {
-                GET: "cfStorage",
+            CODE_F_PLUGIN_PROCEDURE: {
+                GET: "codeFStorage",
                 SET: null
             },
             // VARIABLE: {

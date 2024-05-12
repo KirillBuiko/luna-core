@@ -68,7 +68,7 @@ export class RestApiActions {
             return this.sendError(res, Status.INVALID_ARGUMENT, "Data type is not array");
         }
 
-        if ((info.dataType.includes("FILE") && !file)) {
+        if ((info.dataType.includes("BYTES") && !file)) {
             return this.sendError(res, Status.INVALID_ARGUMENT, "Data not given for FILE data type");
         }
 

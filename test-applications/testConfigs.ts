@@ -7,7 +7,7 @@ export const testConfigs = {
 }
 
 export const testServerConfigs = {
-    restServer: {host: "0.0.0.0", port: Number(endpointConfigs.cfStorage.host.split(":").at(-1))},
+    restServer: {host: "0.0.0.0", port: Number(endpointConfigs.codeFStorage.host.split(":").at(-1))},
     grpcServer: {host: "0.0.0.0", port: Number(endpointConfigs.programsStorage.host.split(":").at(-1))},
 };
 
