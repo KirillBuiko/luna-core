@@ -11,7 +11,7 @@ import type {GetInfo, GetInfo__Output} from "@grpc-build/GetInfo";
 import type {DataInfo} from "@grpc-build/DataInfo";
 import {type ClientWritableStream, waitForClientReady} from "@grpc/grpc-js";
 import type {DataStream} from "@grpc-build/DataStream";
-import {configs} from "@/configs/configs";
+import {configs} from "../../configs/configs";
 import {Endpoint} from "@/endpoints/Endpoint";
 
 export class GrpcEndpoint extends Endpoint {

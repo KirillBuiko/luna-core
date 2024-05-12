@@ -1,5 +1,5 @@
-import {endpointConfigs} from "@/configs/endpointConfigs";
-import {serverConfigs} from "@/configs/serverConfigs";
+import {endpointConfigs} from "../configs/endpointConfigs";
+import {serverConfigs} from "../configs/serverConfigs";
 import path from "path";
 
 export const testConfigs = {

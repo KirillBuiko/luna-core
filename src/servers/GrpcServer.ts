@@ -3,7 +3,7 @@ import type {MainRequestsHandlers} from "@grpc-build/MainRequests";
 import type {IRequestManager} from "@/app/types/IRequestManager";
 
 import {AbstractGrpcServer} from "@/servers/AbstractGrpcServer";
-import {configs} from "@/configs/configs";
+import {configs} from "../../configs/configs";
 import type {ServerConfigType} from "@/app/types/ServerConfigType";
 import {GrpcActions} from "@/servers/actions/GrpcActions";
 
