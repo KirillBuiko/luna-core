@@ -36,7 +36,7 @@ export class RestApiActions {
             protocol: "REST_API",
             requestName: "GET",
             sourceWriter: callback,
-        }, (JSON.parse((req.query as { info: string }).info) as GetInfo__Output))
+        }, (JSON.parse(req.body) as GetInfo__Output))
     }
 
     setHandler = async (req, res) => {

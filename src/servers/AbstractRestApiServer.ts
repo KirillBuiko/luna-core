@@ -9,7 +9,7 @@ export abstract class AbstractRestApiServer implements IAbstractServer {
 
     protected constructor() {
         this.server.register(require('@fastify/multipart')).then(() => {
-            this.server.get('/get', this.getHandler.bind(this));
+            this.server.post('/get', this.getHandler.bind(this));
             this.server.post('/set', this.setHandler.bind(this));
         });
     }

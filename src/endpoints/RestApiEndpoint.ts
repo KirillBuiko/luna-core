@@ -27,7 +27,8 @@ export class RestApiEndpoint extends Endpoint {
     protected getGetHandler(info: GetInfo__Output):
         NarrowedDestination<"REST_API", "GET"> {
         const multipart = this.getMultipart({
-            url: `${this.config.host}/get?info=${JSON.stringify(info)}`
+            url: `${this.config.host}/get`,
+            body: JSON.stringify(info)
         })
 
         const reader = (async (): Promise<MultipartTransferObject> => {
@@ -72,34 +73,45 @@ export class RestApiEndpoint extends Endpoint {
     }
 
     async getFile(options: { url: string }) {
-        const response = await fetch(options.url, {
+        return fetch(options.url, {
             method: "GET",
-        });
-        if (!response.ok) {
-            throw JSON.stringify(await response.json());
-        }
-        return Readable.fromWeb(response.body as ReadableStream);
+        }).catch(err => {
+            console.log("Endpoint is not available: " + err);
+            throw "Endpoint is not available: " + err;
+        }).then(response => {
+            if (!response.ok) {
+                return response.json().then((err) => {
+                    throw JSON.stringify(err);
+                });
+            }
+            return Readable.fromWeb(response.body as ReadableStream);
+        })
     }
 
     async getText(options: { url: string }) {
-        const response = await fetch(options.url, {
+        return fetch(options.url, {
             method: "GET",
+        }).catch(err => {
+            throw "Endpoint is not available: " + err;
+        }).then(async (response) => {
+            if (!response.ok) {
+                throw await response.json();
+            }
+            return await response.text();
         });
-        if (!response.ok) {
-            throw JSON.stringify(await response.json());
-        }
-        return response.text();
     }
 
-    getMultipart(options: { url: string }) {
+    getMultipart(options: { url: string, body: string }) {
         return new Promise<{ fields: Record<string, string>, stream: Readable }>
         (async (resolve, reject) => {
             try {
                 const response = await fetch(options.url, {
-                    method: "GET",
+                    method: "POST",
+                    body: options.body
                 });
                 if (!response.ok) {
-                    reject(JSON.stringify(await response.json()));
+                    const message = await response.json();
+                    reject(JSON.stringify(message));
                     return;
                 }
 
@@ -127,7 +139,7 @@ export class RestApiEndpoint extends Endpoint {
                     resolvePromise();
                 });
             } catch (err) {
-                reject("Endpoint is not available");
+                reject("Endpoint is not available: " + err);
             }
         })
     }
@@ -140,7 +152,7 @@ export class RestApiEndpoint extends Endpoint {
         const reader = new Promise<string>((resolve, reject) =>
             form.submit(options.url, (err, res) => {
                 if (err) {
-                    reject("Endpoint is not available");
+                    reject("Endpoint is not available: " + err);
                 } else {
                     res.on("data", (data) => {
                         res.statusCode != 200 ? reject(data.toString()) : resolve(data);
