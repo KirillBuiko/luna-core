@@ -20,7 +20,6 @@ export class EndpointsManager implements IEndpointsManager {
                     console.log(`The endpoint "${endpointName}" connected to host ${config.host}`);
                 }
             } catch (err) {
-                console.log(err);
                 throw err;
             }
         });

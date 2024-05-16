@@ -13,13 +13,9 @@ export class TestRestApiClient extends RestApiEndpoint {
         const options = super.getGetHandler(info);
         const result = await options.destReader;
         console.log(result!.info);
-        let file = "";
         if (result!.data) {
-            result!.data.on("data", (value) => {
-                file += value;
-            });
+            result!.data.pipe(fs.createWriteStream("test.gz"))
             result!.data.on("end", () => {
-                console.log(file);
                 console.log("END");
             })
         }

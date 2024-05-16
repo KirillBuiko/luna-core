@@ -1,0 +1,9 @@
+POST http://localhost:5051/get
+Content-Type: application/json
+
+{
+  "requestType": "CODE_F_INFO",
+  "codeFInfoGet": {
+    "id": "c"
+  }
+}

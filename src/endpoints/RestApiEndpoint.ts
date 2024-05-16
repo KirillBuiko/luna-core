@@ -11,7 +11,9 @@ import type {ProtocolType} from "@/types/Types";
 import FormData from "form-data";
 import {PassThrough, Readable} from "node:stream";
 import type {ReadableStream} from "stream/web";
-import busboy from "busboy";
+import busboy, {Busboy} from "busboy";
+
+type FetchOptions = { url: string, body?: string, contentType?: string }
 
 export class RestApiEndpoint extends Endpoint {
     status: EndpointStatus = "not-connected";
@@ -72,75 +74,78 @@ export class RestApiEndpoint extends Endpoint {
         }
     }
 
-    async getFile(options: { url: string }) {
+    async baseFetch<T>(options: FetchOptions): Promise<Response> {
+        options.contentType = options.body && (options.contentType || "application/json");
         return fetch(options.url, {
-            method: "GET",
+            method: options.body ? "POST" : "GET",
+            body: options.body,
+            headers: {...(options.contentType ? {'Content-Type': options.contentType} : {})}
         }).catch(err => {
-            console.log("Endpoint is not available: " + err);
             throw "Endpoint is not available: " + err;
-        }).then(response => {
+        }).then(async response => {
             if (!response.ok) {
-                return response.json().then((err) => {
-                    throw JSON.stringify(err);
-                });
+                throw await response.text();
             }
+            return response;
+        })
+    }
+
+    async getFile(options: FetchOptions) {
+        return this.baseFetch(options).then(async (response) => {
             return Readable.fromWeb(response.body as ReadableStream);
         })
     }
 
-    async getText(options: { url: string }) {
-        return fetch(options.url, {
-            method: "GET",
-        }).catch(err => {
-            throw "Endpoint is not available: " + err;
-        }).then(async (response) => {
-            if (!response.ok) {
-                throw await response.json();
-            }
+    async getText(options: FetchOptions) {
+        return this.baseFetch(options).then(async (response) => {
             return await response.text();
-        });
+        })
     }
 
-    getMultipart(options: { url: string, body: string }) {
+    async getJson(options: FetchOptions) {
+        return this.baseFetch(options).then(async (response) => {
+            return await response.json();
+        })
+    }
+
+    getMultipart(options: FetchOptions) {
         return new Promise<{ fields: Record<string, string>, stream: Readable }>
         (async (resolve, reject) => {
+            let response: Response;
             try {
-                const response = await fetch(options.url, {
-                    method: "POST",
-                    body: options.body
-                });
-                if (!response.ok) {
-                    const message = await response.json();
-                    reject(JSON.stringify(message));
-                    return;
-                }
-
-                let fields: Record<string, string> = {};
-                let stream: Readable;
-
-                const bb = busboy({headers: {"content-type": response.headers.get("content-type") ?? undefined}});
-                Readable.fromWeb(response.body as ReadableStream).pipe(bb);
-
-                function resolvePromise() {
-                    resolve({
-                        fields,
-                        stream
-                    });
-                }
-
-                bb.on("field", (name, value) => {
-                    fields[name] = value;
-                }).on("file", (name, value) => {
-                    stream = value;
-                    resolvePromise();
-                }).on("error", (err) => {
-                    reject(err);
-                }).on("close", () => {
-                    resolvePromise();
-                });
-            } catch (err) {
-                reject("Endpoint is not available: " + err);
+                response = await this.baseFetch(options);
+            } catch (e) {
+                return reject(e);
             }
+
+            let fields: Record<string, string> = {};
+            let stream: Readable;
+            let bb: Busboy;
+
+            try {
+                bb = busboy({headers: {"content-type": response.headers.get("content-type") ?? undefined}});
+                Readable.fromWeb(response.body as ReadableStream).pipe(bb);
+            } catch (err) {
+                return reject("Multipart handling error: " + err);
+            }
+
+            function resolvePromise() {
+                resolve({
+                    fields,
+                    stream
+                });
+            }
+
+            bb.on("field", (name, value) => {
+                fields[name] = value;
+            }).on("file", (name, value) => {
+                stream = value;
+                resolvePromise();
+            }).on("error", (err) => {
+                reject(err);
+            }).on("close", () => {
+                resolvePromise();
+            });
         })
     }
 

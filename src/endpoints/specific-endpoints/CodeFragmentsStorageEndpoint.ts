@@ -57,9 +57,10 @@ export class codeFStorageEndpoint extends RestApiEndpoint {
     protected codeFGetHandler(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
         // /{className}/target_code
         // const name: keyof DataInfo__Output = "codeF";
-        const getInfo = info["codeFGet"];
+        const getInfoName = "codeFGet";
+        const getInfo = info[getInfoName];
         const reader = (async (): Promise<MultipartTransferObject> => {
-            if (!getInfo) throw "getInfo is not provided";
+            if (!getInfo) throw `${getInfoName} is not provided`;
             try {
                 const stream = await this.getFile({
                     url: `${this.config.host}/${getInfo.id}/target_code`
@@ -84,11 +85,12 @@ export class codeFStorageEndpoint extends RestApiEndpoint {
     protected codeFInfoHandler(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
         // /{codeF_id}/info
         const name: keyof DataInfo__Output = "codeFInfo";
-        const getInfo = info["codeFInfoGet"];
+        const getInfoName = "codeFInfoGet";
+        const getInfo = info[getInfoName];
         const reader = (async (): Promise<MultipartTransferObject> => {
-            if (!getInfo) throw "getInfo is not provided";
+            if (!getInfo) throw `${getInfoName} is not provided`;
             try {
-                const json = await this.getText({
+                const json = await this.getJson({
                     url: `${this.config.host}/${getInfo.id}/info`
                 })
                 return {
@@ -114,7 +116,7 @@ export class codeFStorageEndpoint extends RestApiEndpoint {
         // const getInfo = info["codeFListGet"];
         const reader = (async (): Promise<MultipartTransferObject> => {
             try {
-                const json = await this.getText({
+                const json = await this.getJson({
                     url: `${this.config.host}/code_fragments`
                 })
                 return {
@@ -140,7 +142,7 @@ export class codeFStorageEndpoint extends RestApiEndpoint {
         // const getInfo = info["codeFPluginsListGet"];
         const reader = (async (): Promise<MultipartTransferObject> => {
             try {
-                const json = await this.getText({
+                const json = await this.getJson({
                     url: `${this.config.host}/plugins`
                 })
                 return {
@@ -163,11 +165,12 @@ export class codeFStorageEndpoint extends RestApiEndpoint {
     protected codeFPluginProcedureGetHandler(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
         // /{codeF_id}/pluginProcedure
         const name: keyof DataInfo__Output = "codeFPluginProcedure";
-        const getInfo = info["codeFPluginProcedureGet"];
+        const getInfoName = "codeFPluginProcedureGet";
+        const getInfo = info[getInfoName];
         const reader = (async (): Promise<MultipartTransferObject> => {
-            if (!getInfo) throw "getInfo is not provided";
+            if (!getInfo) throw `${getInfoName} is not provided`;
             try {
-                const value = await this.getText({
+                const value = await this.getJson({
                     url: `${this.config.host}/${getInfo.codeFId}` +
                         `/pluginProcedure?type=${getInfo.type}`
                 });

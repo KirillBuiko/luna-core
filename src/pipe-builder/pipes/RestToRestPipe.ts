@@ -37,7 +37,6 @@ export class RestToRestPipe extends AbstractPipe<S, D> {
         destReader.then(data => {
             sourceWriter(null, data);
         }).catch(err => {
-            console.log(err);
             this.pipeErrorHandler.sourceErrorEmit(sourceOptions,
                 ErrorMessage.create(Status.ABORTED, err));
         })

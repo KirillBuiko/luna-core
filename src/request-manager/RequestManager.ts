@@ -29,7 +29,6 @@ export class RequestManager implements IRequestManager {
             destName =
                 await this.router.getEndpointName(info.requestType as RequestType__Output, sourceOptions.requestName);
         } catch (e) {
-            console.log(e);
         }
         console.log(`Request ${sourceOptions.requestName} of type ${info.requestType} ` +
             `from ${sourceOptions.protocol} to ${destName}`);

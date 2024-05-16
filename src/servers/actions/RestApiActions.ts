@@ -15,13 +15,19 @@ export class RestApiActions {
     constructor(private requestManager: IRequestManager){};
 
     sendError(res: FastifyReply, code: Status, message: string) {
-        res.code(500).send(ErrorMessage.create(code, message));
+        res.code(500).headers({
+            "Content-Type": "application/json"
+        }).send(ErrorMessage.create(code, message));
     }
 
     getHandler = (req, res: FastifyReply) => {
+        if (req.headers['content-type'] != "application/json") {
+            return this.sendError(res, Status.INVALID_ARGUMENT, "Content-Type is not json");
+        }
+
         const callback = (error, value: MultipartTransferObject) => {
             if (error) {
-                res.code(500).send(error);
+                return this.sendError(res, Status.ABORTED, error);
             } else {
                 const formData = new FormData();
                 formData.append("info", JSON.stringify(value.info));
@@ -36,7 +42,7 @@ export class RestApiActions {
             protocol: "REST_API",
             requestName: "GET",
             sourceWriter: callback,
-        }, (JSON.parse(req.body) as GetInfo__Output))
+        }, (req.body as GetInfo__Output))
     }
 
     setHandler = async (req, res) => {
