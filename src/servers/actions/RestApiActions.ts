@@ -12,7 +12,8 @@ import FormData from "form-data";
 import type {MultipartTransferObject} from "@/types/Types";
 
 export class RestApiActions {
-    constructor(private requestManager: IRequestManager){};
+    constructor(private requestManager: IRequestManager) {
+    };
 
     sendError(res: FastifyReply, code: Status, message: string) {
         res.code(500).headers({
@@ -56,26 +57,25 @@ export class RestApiActions {
             return this.sendError(res, Status.INVALID_ARGUMENT, "Body is not multipart");
         }
 
-        let infoString = "";
+        let info: DataInfo | undefined = undefined;
         let file: BusboyFileStream | undefined = undefined;
         for (let i = 0; i < 2; i++) {
             const part = (await parts.next()).value as Multipart;
             if (!part) continue;
-            if (part.type == "field" && part.fieldname == "info") infoString = part.value as string;
+            if (part.type == "field" && part.fieldname == "info") info = part.value as DataInfo;
             if (part.type == "file") file = part.file;
         }
 
-        if (!infoString) {
+        if (!info) {
             return this.sendError(res, Status.INVALID_ARGUMENT, "Info not given");
         }
-        const info = JSON.parse(infoString) as DataInfo;
-
-        if (!Array.isArray(info.dataType)) {
-            return this.sendError(res, Status.INVALID_ARGUMENT, "Data type is not array");
+        if (typeof info != "object") {
+            return this.sendError(res, Status.INVALID_ARGUMENT, "Info is not JSON or wrong content-type");
         }
 
-        if ((info.dataType.includes("BYTES") && !file)) {
-            return this.sendError(res, Status.INVALID_ARGUMENT, "Data not given for FILE data type");
+
+        if ((info.dataType == "BYTES" && !file)) {
+            return this.sendError(res, Status.INVALID_ARGUMENT, "Data not given for BYTES data type");
         }
 
         if (!file) {
@@ -101,5 +101,37 @@ export class RestApiActions {
         }, info)
 
         return promise;
+    }
+
+    debugHandler = async (req, res) => {
+        console.log(req.headers);
+        if ((req.headers["content-type"] as string)?.includes("multipart")) {
+            let parts: AsyncIterableIterator<Multipart>;
+            parts = req.parts();
+            for (let i = 0; i < 10; i++) {
+                const next = (await parts.next());
+                if (next.done) {
+                    res.send(200);
+                    return;
+                }
+                const part = next.value as Multipart;
+                console.log(part.type, part.fieldname, part.mimetype);
+                if (part.type == "field") {
+                    console.log(part.value);
+                } else if (part.type == "file") {
+                    let counter = 0;
+                    part.file.on("data", (data) => {
+                        console.log("[PACK]", data);
+                        counter += data.length;
+                    }).on("end", () => {
+                        console.log("Length ",counter);
+                    })
+                }
+            }
+        } else {
+            console.log(req.body)
+            res.send(200);
+        }
+        await res;
     }
 }

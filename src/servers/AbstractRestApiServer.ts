@@ -8,9 +8,14 @@ export abstract class AbstractRestApiServer implements IAbstractServer {
     server = Fastify();
 
     protected constructor() {
-        this.server.register(require('@fastify/multipart')).then(() => {
+        this.server.register(require('@fastify/multipart'), {
+            limits: {
+                fileSize: 10_000_000_000
+            }
+        }).then(() => {
             this.server.post('/get', this.getHandler.bind(this));
             this.server.post('/set', this.setHandler.bind(this));
+            // this.server.post('/*', this.debugHandler.bind(this));
         });
     }
 
@@ -36,4 +41,6 @@ export abstract class AbstractRestApiServer implements IAbstractServer {
     protected abstract getHandler: RouteHandlerMethod;
 
     protected abstract setHandler: RouteHandlerMethod;
+
+    protected abstract debugHandler: RouteHandlerMethod;
 }

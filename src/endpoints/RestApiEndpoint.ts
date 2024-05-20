@@ -12,8 +12,10 @@ import FormData from "form-data";
 import {PassThrough, Readable} from "node:stream";
 import type {ReadableStream} from "stream/web";
 import busboy, {Busboy} from "busboy";
+import {randomBoundary} from "@/utils/randomBoundary";
 
 type FetchOptions = { url: string, body?: string, contentType?: string }
+export type FieldType = { key: string, value: string, contentType?: string }
 
 export class RestApiEndpoint extends Endpoint {
     status: EndpointStatus = "not-connected";
@@ -56,9 +58,9 @@ export class RestApiEndpoint extends Endpoint {
         const {reader, dataWriter} = this.sendMultipart({
             url: `${this.config.host}/set`,
             streamName: "data",
-            fields: {
-                info: JSON.stringify(info)
-            }
+            fields: [
+                {key: "info", value: JSON.stringify(info), contentType: "application/json"}
+            ]
         })
 
         const transformedReader = (async () => {
@@ -149,18 +151,25 @@ export class RestApiEndpoint extends Endpoint {
         })
     }
 
-    sendMultipart(options: { url: string, fields: Record<string, string>, streamName: string }) {
+    sendMultipart(options: { url: string, fields: FieldType[], streamName: string }) {
         const multipartPass = new PassThrough();
         const form = new FormData();
-        Object.entries(options.fields).forEach((v) => form.append(...v));
+        form.setBoundary(randomBoundary(24, 16));
+        options.fields.forEach((f) => {
+            form.append(f.key, f.value, {
+                contentType: f.contentType
+            })
+        });
+        // console.log(form.getLengthSync());
         form.append(options.streamName, multipartPass);
+        // console.log(form.getBoundary());
         const reader = new Promise<string>((resolve, reject) =>
             form.submit(options.url, (err, res) => {
                 if (err) {
                     reject("Endpoint is not available: " + err);
                 } else {
                     res.on("data", (data) => {
-                        res.statusCode != 200 ? reject(data.toString()) : resolve(data);
+                        res.statusCode != 200 ? reject(data.toString()) : resolve(data.toString());
                     })
                 }
             }))

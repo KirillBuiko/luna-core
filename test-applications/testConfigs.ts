@@ -3,7 +3,7 @@ import {serverConfigs} from "../configs/serverConfigs";
 import path from "path";
 
 export const testConfigs = {
-    dataPath: path.join(__dirname, "test-data.txt")
+    dataPath: path.join(__dirname, "test-data/Convolution/src.tar")
 }
 
 export const testServerConfigs = {

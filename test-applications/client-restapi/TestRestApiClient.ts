@@ -23,10 +23,10 @@ export class TestRestApiClient extends RestApiEndpoint {
 
     async set(info: DataInfo) {
         const options = super.getSetHandler(info);
-        // options.destWriter.end();
+        // options.destWriter?.end();
         options.destWriter && fs.createReadStream(testConfigs.dataPath).pipe(options.destWriter);
         options.destReader?.then(data => {
-            console.log(data.toString());
+            console.log(JSON.stringify(data));
         }).catch(err => console.log(err.toString()));
     }
 }

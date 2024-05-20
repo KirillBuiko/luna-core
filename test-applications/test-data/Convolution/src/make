@@ -1,0 +1,2 @@
+corr.exe: corr.cpp
+	g++ corr.cpp -o corr.out

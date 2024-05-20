@@ -182,7 +182,7 @@ export class codeFStorageEndpoint extends RestApiEndpoint {
                         [name]: {value: value}
                     }
                 }
-            } catch(e) {
+            } catch (e) {
                 throw e;
             }
         })()
@@ -210,13 +210,15 @@ export class codeFStorageEndpoint extends RestApiEndpoint {
             }
         }
 
+        // console.log(setInfo.getInfo.id);
+
         const {reader, dataWriter} = this.sendMultipart({
-            url: `${this.config.host}/add_codeF`,
+            url: `${this.config.host}/add_code_fragment`,
             streamName: "file",
-            fields: {
-                id: setInfo.getInfo.id,
-                json: setInfo.value
-            }
+            fields: [
+                {key: "id", value: setInfo.getInfo.id, contentType: "text/plain"},
+                {key: "json", value: setInfo.value, contentType: "application/json"}
+            ]
         })
 
         const transformedReader = (async (): Promise<GetInfo__Output> => {
@@ -256,9 +258,9 @@ export class codeFStorageEndpoint extends RestApiEndpoint {
         const {reader, dataWriter} = this.sendMultipart({
             url: `${this.config.host}/add_plugin`,
             streamName: "file",
-            fields: {
-                id: setInfo.getInfo.pluginId,
-            }
+            fields: [
+                {key: "id", value: setInfo.getInfo.pluginId},
+            ]
         })
 
         const transformedReader = (async (): Promise<GetInfo__Output> => {

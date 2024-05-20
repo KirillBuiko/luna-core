@@ -1,5 +1,7 @@
 import type {GetInfo, GetInfo__Output} from "@grpc-build/GetInfo";
 import type {DataInfo} from "@grpc-build/DataInfo";
+import fs from "fs";
+import path from "path";
 
 const getProgramInfo: GetInfo = {
     requestType: "CODE_F",
@@ -15,8 +17,9 @@ const setProgramInfo: DataInfo = {
     dataValueType: "codeF",
     codeF: {
         getInfo: {
-            id: "123123"
-        }
+            id: "test_Convolution"
+        },
+        value: fs.readFileSync(path.join(__dirname, "./test-data/Convolution/description.json"), 'utf-8')
     }
 }
 
@@ -24,7 +27,7 @@ const getModuleInfo: GetInfo__Output = {
     requestType: "CODE_F",
     infoType: "codeFGet",
     codeFGet: {
-         id: "123123"
+         id: "Convolution"
     }
 }
 
@@ -34,9 +37,9 @@ const setModuleInfo: DataInfo = {
     dataValueType: "codeF",
     codeF: {
         getInfo: {
-            id: "123123"
+            id: "test_Convolution"
         },
-        value: "wwdqwd3"
+        value: fs.readFileSync(path.join(__dirname, "./test-data/Convolution/description.json"), 'utf-8')
     }
 }
 

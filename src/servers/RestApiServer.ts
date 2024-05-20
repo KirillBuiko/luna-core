@@ -31,4 +31,8 @@ export class RestApiServer extends AbstractRestApiServer implements IServer {
     setHandler: RouteHandlerMethod = async (req, res) => {
         return this.restApiActions.setHandler(req, res);
     }
+
+    debugHandler: RouteHandlerMethod = async (req, res) => {
+        return this.restApiActions.debugHandler(req, res);
+    }
 }
