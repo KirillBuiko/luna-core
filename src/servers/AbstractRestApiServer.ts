@@ -2,6 +2,7 @@ import type {IAbstractServer} from "@/app/types/IServer";
 import type {ServerStatus} from "@/app/types/IServer";
 import Fastify, {RouteHandlerMethod} from "fastify";
 import type {ServerConfigType} from "@/app/types/ServerConfigType";
+import {configs} from "../../configs/configs";
 
 export abstract class AbstractRestApiServer implements IAbstractServer {
     status: ServerStatus = "off";
@@ -12,9 +13,17 @@ export abstract class AbstractRestApiServer implements IAbstractServer {
             limits: {
                 fileSize: 10_000_000_000
             }
+        }).register(require('@fastify/http-proxy'), {
+            upstream: configs.UI_HOST,
+            prefix: "/ui",
+            rewritePrefix: "/"
+        }).register(require('@fastify/http-proxy'), {
+            upstream: configs.UI_HOST,
+            prefix: "/static",
+            rewritePrefix: "/static"
         }).then(() => {
-            this.server.post('/get', this.getHandler.bind(this));
-            this.server.post('/set', this.setHandler.bind(this));
+            this.server.post('/api/v1/get', this.getHandler.bind(this));
+            this.server.post('/api/v1/set', this.setHandler.bind(this));
             // this.server.post('/*', this.debugHandler.bind(this));
         });
     }

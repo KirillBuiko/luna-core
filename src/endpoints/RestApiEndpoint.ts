@@ -31,7 +31,7 @@ export class RestApiEndpoint extends Endpoint {
     protected getGetHandler(info: GetInfo__Output):
         NarrowedDestination<"REST_API", "GET"> {
         const multipart = this.getMultipart({
-            url: `${this.config.host}/get`,
+            url: `${this.config.host}/api/v1/get`,
             body: JSON.stringify(info)
         })
 
@@ -56,7 +56,7 @@ export class RestApiEndpoint extends Endpoint {
     protected getSetHandler(info: DataInfo):
         NarrowedDestination<"REST_API", "SET"> {
         const {reader, dataWriter} = this.sendMultipart({
-            url: `${this.config.host}/set`,
+            url: `${this.config.host}/api/v1/set`,
             streamName: "data",
             fields: [
                 {key: "info", value: JSON.stringify(info), contentType: "application/json"}
