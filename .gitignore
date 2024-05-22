@@ -3,3 +3,6 @@ node_modules
 .idea
 web/*
 !web/app.py
+*.zip
+*.pid
+*.out

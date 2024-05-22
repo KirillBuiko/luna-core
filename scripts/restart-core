@@ -1,0 +1,5 @@
+#!/bin/bash
+if [ -f core.pid ]; then
+    kill `cat core.pid`
+fi
+nohup npm run start-core > core.out &
