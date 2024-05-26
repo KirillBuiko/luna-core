@@ -12,8 +12,7 @@ export abstract class AbstractPipe<S extends ProtocolType = ProtocolType, D exte
 
     buildPipe(sourceOptions: NarrowedSource<S>,
               destOptions: NarrowedDestination<D>) {
-        if ((Boolean(sourceOptions.sourceWriter) != Boolean(destOptions.destReader)) ||
-            (Boolean(sourceOptions.sourceReader) != Boolean(destOptions.destWriter))) {
+        if (Boolean(sourceOptions.sourceWriter) != Boolean(destOptions.destReader)) {
             this.pipeErrorHandler.bothErrorEmit(sourceOptions, destOptions,
                 ErrorMessage.create(Status.UNAVAILABLE, "Error in routing or endpoint is not available"));
             return;

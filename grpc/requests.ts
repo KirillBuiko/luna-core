@@ -26,6 +26,11 @@ export interface ProtoGrpcType {
   GetInfo: MessageTypeDefinition
   MainRequests: SubtypeConstructor<typeof grpc.Client, _MainRequestsClient> & { service: _MainRequestsDefinition }
   RequestType: EnumTypeDefinition
+  VarData: MessageTypeDefinition
+  VarGet: MessageTypeDefinition
+  VarValueData: MessageTypeDefinition
+  VarValueGet: MessageTypeDefinition
+  VarValueType: EnumTypeDefinition
   google: {
     protobuf: {
       Any: MessageTypeDefinition

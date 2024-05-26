@@ -1,4 +1,4 @@
-// Original file: node_modules/luna-proto-files/api/v1/get_messages.proto
+// Original file: node_modules/luna-proto-files/get_messages.proto
 
 
 export interface CodeFPluginProcedureGet {

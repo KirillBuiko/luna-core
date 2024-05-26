@@ -1,24 +1,14 @@
 import type {DataInfo__Output} from "@grpc-build/DataInfo";
 import type {GetInfo__Output} from "@grpc-build/GetInfo";
 import {RestApiEndpoint} from "@/endpoints/RestApiEndpoint";
-import type {MultipartTransferObject, NarrowedDestination, ProtocolType, RequestName} from "@/types/Types";
-import type {RequestType__Output} from "@grpc-build/RequestType";
+import type {MultipartTransferObject, NarrowedDestination} from "@/types/Types";
 import {PassThrough} from "node:stream";
+import type {SpecHandlerReturnType, SpecRequestFunctions} from "@/endpoints/specific-endpoints/types";
 
 const p = "REST_API";
 type P = typeof p;
 
-type SelectByName<M extends string, T extends string> =
-    { [key in T]: key extends `${M}${infer R}` ? key : never }[T];
-type SpecHandlerReturnType<P extends ProtocolType, R extends RequestName> =
-    Pick<NarrowedDestination<P, R>, "destReader" | "destWriter">;
-type SpecRequestFunction<P extends ProtocolType, R extends RequestName> =
-    (info: R extends "GET" ? GetInfo__Output : DataInfo__Output) => SpecHandlerReturnType<P, R>
-
-type SpecRequestFunctions<P extends ProtocolType, R extends RequestName, RT extends string> =
-    { [request in SelectByName<RT, RequestType__Output>]?: SpecRequestFunction<P, R> }
-
-export class codeFStorageEndpoint extends RestApiEndpoint {
+export class CodeFStorageEndpoint extends RestApiEndpoint {
     getMapper: SpecRequestFunctions<P, "GET", "CODE_F"> = {
         CODE_F: this.codeFGetHandler,
         CODE_F_LIST: this.codeFListGetHandler,

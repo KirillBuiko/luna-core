@@ -18,7 +18,7 @@ export class RootRouter extends RequestRouter {
     async getEndpointName(requestType: RequestType__Output, requestName: RequestName): Promise<EndpointName | null> {
         const route: null | EndpointName | RequestRouter =
             (this.routes && this.routes[requestType] && this.routes[requestType]![requestName]) || null;
-        if ("string" == typeof route) return route;
+        if (typeof route == "string") return route;
         if (route) return route.getEndpointName(requestType, requestName);
         return null;
     }
@@ -29,6 +29,9 @@ export class RootRouter extends RequestRouter {
                 GET: null,
                 SET: null
             },
+
+            // CODE FRAGMENTS STORAGE
+
             CODE_F: {
                 GET: "codeFStorage",
                 SET: "codeFStorage"
@@ -53,50 +56,33 @@ export class RootRouter extends RequestRouter {
                 GET: "codeFStorage",
                 SET: null
             },
-            // VARIABLE: {
-            //     GET: "variablesStorage",
-            //     SET: "variablesStorage"
-            // },
-            // VARIABLE_LIST: {
-            //     GET: "variablesStorage",
-            //     SET: null
-            // },
-            // PROGRAM: {
-            //     GET: "programsStorage",
-            //     SET: "programsStorage"
-            // },
-            // PROGRAM_EXECUTE: {
-            //     GET: "executor",
-            //     SET: null
-            // },
-            // PROGRAM_GENERATE: {
-            //     GET: "generator",
-            //     SET: null
-            // },
-            // PROGRAM_INTERPRET: {
-            //     GET: "interpreter",
-            //     SET: null
-            // },
-            // COMPUTATIONAL_MODEL: {
-            //     GET: "computationModelsStorage",
-            //     SET: "computationModelsStorage"
-            // },
-            // COMPUTATIONAL_MODEL_LIST: {
-            //     GET: "computationModelsStorage",
-            //     SET: null
-            // },
-            // TASK: {
-            //     GET: "tasksStorage",
-            //     SET: "tasksStorage"
-            // },
-            // TASK_LIST: {
-            //     GET: "tasksStorage",
-            //     SET: null
-            // },
-            // TASK_PLAN: {
-            //     GET: "planner",
-            //     SET: null
-            // },
+
+            // VARIABLE STORAGE
+
+            VAR: {
+                GET: "variablesStorage",
+                SET: "variablesStorage"
+            },
+            VAR_DELETE: {
+                GET: "variablesStorage",
+                SET: null
+            },
+            VAR_VALUE: {
+                GET: "variablesStorage",
+                SET: "variablesStorage"
+            },
+            VAR_VALUE_DELETE: {
+                GET: "variablesStorage",
+                SET: null
+            },
+            VAR_ADD_FILE: {
+                GET: null,
+                SET: "variablesStorage"
+            },
+            VAR_SET_FILE: {
+                GET: null,
+                SET: "variablesStorage"
+            }
         }
     }
 }

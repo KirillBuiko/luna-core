@@ -1,10 +1,10 @@
 // Original file: node_modules/luna-proto-files/get_messages.proto
 
 
-export interface CodeFGet {
+export interface VarValueGet {
   'id'?: (string);
 }
 
-export interface CodeFGet__Output {
+export interface VarValueGet__Output {
   'id'?: (string);
 }

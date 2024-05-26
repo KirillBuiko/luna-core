@@ -8,6 +8,12 @@ export const RequestType = {
   CODE_F_PLUGIN: 'CODE_F_PLUGIN',
   CODE_F_PLUGINS_LIST: 'CODE_F_PLUGINS_LIST',
   CODE_F_PLUGIN_PROCEDURE: 'CODE_F_PLUGIN_PROCEDURE',
+  VAR: 'VAR',
+  VAR_DELETE: 'VAR_DELETE',
+  VAR_VALUE: 'VAR_VALUE',
+  VAR_VALUE_DELETE: 'VAR_VALUE_DELETE',
+  VAR_ADD_FILE: 'VAR_ADD_FILE',
+  VAR_SET_FILE: 'VAR_SET_FILE',
 } as const;
 
 export type RequestType =
@@ -25,5 +31,17 @@ export type RequestType =
   | 210
   | 'CODE_F_PLUGIN_PROCEDURE'
   | 212
+  | 'VAR'
+  | 302
+  | 'VAR_DELETE'
+  | 304
+  | 'VAR_VALUE'
+  | 306
+  | 'VAR_VALUE_DELETE'
+  | 308
+  | 'VAR_ADD_FILE'
+  | 310
+  | 'VAR_SET_FILE'
+  | 312
 
 export type RequestType__Output = typeof RequestType[keyof typeof RequestType]
