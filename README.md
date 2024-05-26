@@ -37,303 +37,32 @@ _/api/v1/get_ отвечает за получение данных во все�
 (получение из хранилища, генерацию, исполнение и т.д.).
 _/api/v1/set_ за установку значения (создание, обновление, удаление).
 Эти запросы отличаются подходом к формированию и передаче данных.
-<table>
-<thead>
-<tr>
-<th> Описание </th>
-<th> Запрос </th>
-<th> Тело запроса </th>
-<th> Ответ </th>
-</tr>
-</thead>
-<tr>
-<th colspan="4" style="text-align: center">
 
-### Библиотека модулей  
+### Библиотека модулей
 [Документация компонента](https://gitlab.com/ansab3/codefragmentcontrolsystem/-/blob/main/USE.md?ref_type=heads)
 
-</th>
-</tr>
-<tr>
-<td>
+| Описание                                             | Запрос           | Тело запроса                                                                                                                                                                                                                                                                                         | Ответ                                                                                                                                                                                                                                   |
+|------------------------------------------------------|------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Запрос списка <br>фрагментов кода**                | POST /api/v1/get | <pre>{<br>   "requestType": "CODE_F_LIST"<br>}</pre>                                                                                                                                                                                                                                                 | **Multipart**<br>info: <pre>{<br>   "requestType": "CODE_F_LIST",<br>   "dataType": "JSON",<br>   "dataValueType": "codeFList",<br>   "codeFList": {<br>      "value": "json результат"<br>   }<br>}</pre>                              |
+| **Запрос информации <br>о фрагменте кода**           | POST /api/v1/get | <pre>{<br>   "requestType": "CODE_F_INFO",<br>   "infoType": "codeFInfoGet",<br>   "codeFInfoGet": {<br>      "id": "идентификатор"<br>   }<br>}</pre>                                                                                                                                               | **Multipart**<br>info: <pre>{<br>   "requestType": "CODE_F_INFO",<br>   "dataType": "JSON",<br>   "dataValueType": "codeFInfo",<br>   "codeFInfo": {<br>      "value": "json результат"<br>   }<br>}</pre>                              |
+| **Добавить фрагмент кода**                           | POST /api/v1/set | **Multipart**<br>info: <pre>{<br>   "requestType": "CODE_F",<br>   "dataType": "BYTES",<br>   "dataValueType": "codeF",<br>   "codeF": {<br>      "getInfo": {<br>         "id": "Идентификатор ФК"<br>      },<br>      "value": "json фрагмента кода"<br>   }<br>}</pre><br>data: файл архива .tar | <pre>{<br>   "requestType": "CODE_F",<br>   "infoType": "response",<br>   "response": "ответ"<br>}</pre>                                                                                                                                |
+| **Получить файлы <br>фрагмента кода**                | POST /api/v1/get | <pre>{<br>   "requestType": "CODE_F",<br>   "infoType": "codeFGet",<br>   "codeFGet": {<br>      "id": "идентификатор"<br>   }<br>}</pre>                                                                                                                                                            | **Multipart**<br>info: <pre>{<br>   "requestType": "CODE_F",<br>   "dataType": "BYTES"<br>}</pre><br>data: файл архива .tar                                                                                                             |
+| **Получить обработанный <br>плагином фрагмент кода** | POST /api/v1/get | <pre>{<br>   "requestType": "CODE_F_PLUGIN_PROCEDURE",<br>   "infoType": "codeFPluginProcedureGet",<br>   "codeFPluginProcedureGet": {<br>      "codeFId": "идентификатор ФК",<br>      "type": "тип выполнения"<br>   }<br>}</pre>                                                                  | **Multipart**<br>info: <pre>{<br>   "requestType": "CODE_F_PLUGIN_PROCEDURE",<br>   "dataType": "JSON",<br>   "dataValueType": "codeFPluginProcedure",<br>   "codeFPluginProcedure": {<br>      "value": "результат"<br>   }<br>}</pre> |
+| **Получить список <br>плагинов ФК**                  | POST /api/v1/get | <pre>{<br>   "requestType": "CODE_F_PLUGINS_LIST",<br>   "infoType": "codeFPluginsListGet",<br>   "codeFPluginsListGet": {<br>      "codeFId": "идентификатор"<br>   }<br>}</pre>                                                                                                                    | **Multipart**<br>info: <pre>{<br>   "requestType": "CODE_F_PLUGINS_LIST",<br>   "dataType": "JSON",<br>   "dataValueType": "codeFPluginsList",<br>   "codeFPluginsList": {<br>      "value": "результат"<br>   }<br>}</pre>             |
+| **Добавить плагин**                                  | POST /api/v1/set | **Multipart**<br>info: <pre>{<br>   "requestType": "CODE_F_PLUGIN",<br>   "dataType": "BYTES",<br>   "dataValueType": "codeFPlugin",<br>   "codeFPlugin": {<br>      "getInfo": {<br>         "pluginId": "идентификатор плагина"<br>      }<br>   }<br>}</pre><br>data: файл архива .tar            | <pre>{<br>   "requestType": "CODE_F_PLUGIN",<br>   "infoType": "response",<br>   "response": "ответ"<br>}</pre>                                                                                                                         |
 
-**Запрос списка  
-фрагментов кода**
-</td>
-<td> 
+### Хранилище переменных
+[Документация компонента](https://t.me/c/1845197994/663/723)
 
-POST /api/v1/get
-</td>
-<td> 
-
-```
-{
-    requestType: "CODE_F_LIST"
-}
-```
-
-</td>
-<td> 
-
-**Multipart**  
-info:
-
-```
-{
-    requestType: "CODE_F_LIST",
-    dataType: "JSON",
-    dataValueType: "codeFList",
-    codeFList: {
-        value: "json результат"
-    }
-}
-```
-
-</td>
-</tr>
-<tr>
-<td>
-
-**Запрос информации  
-о фрагменте кода**
-</td>
-<td> 
-
-POST /api/v1/get
-</td>
-<td> 
-
-```
-{
-    requestType: "CODE_F_INFO",
-    infoType: "codeFInfoGet",
-    codeFInfoGet: {
-        id: "идентификатор"
-    }
-}
-```
-
-</td>
-<td> 
-
-**Multipart**  
-info:
-
-``` 
-{
-    requestType: "CODE_F_INFO",
-    dataType: "JSON",
-    dataValueType: "codeFInfo",
-    codeFInfo: {
-        value: "json результат"
-    }
-} 
-```
-
-</td>
-<tr>
-<td>
-
-**Добавить фрагмент кода**
-</td>
-<td> 
-
-POST /api/v1/set
-</td>
-<td> 
-
-**Multipart**  
-info:
-
-```
-{
-    requestType: "CODE_F",
-    dataType: "BYTES",
-    dataValueType: "codeF",
-    codeF: {
-        getInfo: {
-            id: "Идентификатор ФК"
-        },
-        value: "json фрагмента кода"
-    }
-}
-```
-
-data: файл архива .tar
-</td>
-<td> 
-
-```
-{
-    requestType: "CODE_F",
-    infoType: "response",
-    response: "ответ"
-}
-```
-
-</td>
-</tr>
-<tr>
-<td>
-
-**Получить файлы  
-фрагмента кода**
-</td>
-<td> 
-
-POST /api/v1/get
-</td>
-<td> 
-
-```
-{
-    requestType: "CODE_F",
-    infoType: "codeFGet",
-    codeFGet: {
-        id: "идентификатор"
-    }
-}
-```
-
-</td>
-<td> 
-
-**Multipart**  
-info:
-
-```
-{
-    requestType: "CODE_F",
-    dataType: "BYTES"
-}
-```
-
-data: файл архива .tar
-</td>
-</tr>
-<tr>
-<td>
-
-**Получить обработанный  
-плагином фрагмент кода**
-</td>
-<td> 
-
-POST /api/v1/get
-</td>
-<td> 
-
-```
-{
-    requestType: "CODE_F_PLUGIN_PROCEDURE",
-    infoType: "codeFPluginProcedureGet",
-    codeFPluginProcedureGet: {
-        codeFId: "идентификатор ФК";
-        type: "тип выполнения";
-    }
-}
-```
-
-</td>
-<td> 
-
-**Multipart**  
-info:
-
-```
-{
-    requestType: "CODE_F_PLUGIN_PROCEDURE",
-    dataType: "JSON",
-    dataValueType: "codeFPluginProcedure",
-    codeFPluginProcedure: {
-        value: "результат"
-    }
-}
-```
-
-data: файл
-</td>
-</tr>
-<tr>
-<td>
-
-**Получить список  
-плагинов ФК**
-</td>
-<td> 
-
-POST /api/v1/get
-</td>
-<td> 
-
-```
-{
-    requestType: "CODE_F_PLUGINS_LIST",
-    infoType: "codeFPluginsListGet",
-    codeFPluginsListGet: {
-        codeFId: "идентификатор"
-    }
-}
-```
-
-</td>
-<td> 
-
-**Multipart**  
-info:
-
-```
-{
-    requestType: "CODE_F_PLUGINS_LIST",
-    dataType: "JSON",
-    dataValueType: "codeFPluginsList",
-    codeFPluginsList: {
-        value: "результат"
-    }
-}
-```
-
-</td>
-</tr>
-<tr>
-<td>
-
-**Добавить плагин**
-</td>
-<td> 
-
-POST /api/v1/set
-</td>
-<td> 
-
-**Multipart**  
-info:
-
-```
-{
-    requestType: "CODE_F_PLUGIN",
-    dataType: "BYTES",
-    dataValueType: "codeFPlugin",
-    codeFPlugin: {
-        getInfo: {
-            pluginId: "идентификатор плагина"
-        }
-    }
-}
-```
-
-data: файл
-</td>
-<td> 
-
-```
-{
-    requestType: "CODE_F_PLUGIN",
-    infoType: "response",
-    response: "ответ"
-}
-```
-
-</td>
-</tr>
-</table>
+| Описание                         | Запрос           | Тело запроса                                                                                                                                                                                                                                                                                                                                                                                                        | Ответ                                                                                                                                                                                                                                                                                                                                                                       |
+|----------------------------------|------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Получить переменную**          | POST /api/v1/get | <pre>{<br>   "requestType": "VAR",<br>   "infoType": "varGet",<br>   "varGet": {<br>      "id": "ID переменной"<br>   }<br>}</pre>                                                                                                                                                                                                                                                                                  | **Multipart**<br>info: <pre>{<br>   "requestType": "VAR",<br>   "dataType": "JSON",<br>   "dataValueType": "var",<br>   "var": {<br>      "getInfo": {<br>         "id": "ID переменной"<br>      },<br>      "value": {<br>         "name": "имя",<br>         "type": "string / file",<br>         "value": "строка / ссылка"<br>      }<br>   }<br>}</pre>               |
+| **Добавить переменную**          | POST /api/v1/set | **Multipart**<br>info: <pre>{<br>   "requestType": "VAR",<br>   "dataType": "JSON",<br>   "dataValueType": "var",<br>   "var": {<br>      "value": {<br>         "name": "имя",<br>         "type": "string / file",<br>         "value": "строка / ссылка",<br>         "value_id": "ID значения (вместо value)"<br>      }<br>   }<br>}</pre>                                                                     | <pre>{<br>   "requestType": "VAR",<br>   "infoType": "varGet",<br>   "varGet": {<br>      "id": "ID переменной"<br>   }<br>}</pre>                                                                                                                                                                                                                                          |
+| **Обновить переменную**          | POST /api/v1/set | **Multipart**<br>info: <pre>{<br>   "requestType": "VAR",<br>   "dataType": "JSON",<br>   "dataValueType": "var",<br>   "var": {<br>      "getInfo": {<br>         "id": "ID переменной"<br>      },<br>      "value": {<br>         "name": "имя",<br>         "type": "string / file",<br>         "value": "строка / ссылка",<br>         "value_id": "ID значения (вместо value)"<br>      }<br>   }<br>}</pre> | <pre>{<br>   "requestType": "VAR",<br>   "infoType": "varGet",<br>   "varGet": {<br>      "id": "ID переменной"<br>   }<br>}</pre>                                                                                                                                                                                                                                          |
+| **Удалить переменную**           | POST /api/v1/get | <pre>{<br>   "requestType": "VAR_DELETE",<br>   "infoType": "varGet",<br>   "varGet": {<br>      "id": "ID переменной"<br>   }<br>}</pre>                                                                                                                                                                                                                                                                           | **Multipart**<br>info: <pre>{<br>   "requestType": "VAR_DELETE",<br>   "dataValueType": "var",<br>   "var": {<br>      "getInfo": {<br>         "id": "ID переменной"<br>      }<br>   }<br>}</pre>                                                                                                                                                                         | 
+| **Получить значение переменной** | POST /api/v1/get | <pre>{<br>   "requestType": "VAR_VALUE",<br>   "infoType": "varValueGet",<br>   "varValueGet": {<br>      "id": "ID значения"<br>   }<br>}</pre>                                                                                                                                                                                                                                                                    | **Multipart**<br>info: <pre>{<br>   "requestType": "VAR_VALUE",<br>   "dataType": "JSON",<br>   "dataValueType": "varValue",<br>   "varValue": {<br>      "getInfo": {<br>         "id": "ID значения"<br>      },<br>      "value": {<br>         "name": "имя",<br>         "type": "string / file",<br>         "value": "строка / ссылка"<br>      }<br>   }<br>}</pre> |
+| **Добавить значение переменной** | POST /api/v1/set | **Multipart**<br>info: <pre>{<br>   "requestType": "VAR_VALUE",<br>   "dataType": "JSON",<br>   "dataValueType": "varValue",<br>   "varValue": {<br>      "value": {<br>         "name": "имя",<br>         "type": "string / file",<br>         "value": "строка / ссылка",<br>      }<br>   }<br>}</pre>                                                                                                          | <pre>{<br>   "requestType": "VAR_VALUE",<br>   "infoType": "varValueGet",<br>   "varValueGet": {<br>      "id": "ID значения"<br>   }<br>}</pre>                                                                                                                                                                                                                            |
+| **Обновить значение переменной** | POST /api/v1/set | **Multipart**<br>info: <pre>{<br>   "requestType": "VAR_VALUE",<br>   "dataType": "JSON",<br>   "dataValueType": "varValue",<br>   "varValue": {<br>      "getInfo": {<br>         "id": "ID значения"<br>      },<br>      "value": {<br>         "name": "имя",<br>         "type": "string / file",<br>         "value": "строка / ссылка",<br>      }<br>   }<br>}</pre>                                        | <pre>{<br>   "requestType": "VAR_VALUE",<br>   "infoType": "varValueGet",<br>   "varValueGet": {<br>      "id": "ID значения"<br>   }<br>}</pre>                                                                                                                                                                                                                            |
+| **Удалить значение переменной**  | POST /api/v1/get | <pre>{<br>   "requestType": "VAR_VALUE_DELETE",<br>   "infoType": "varValueGet",<br>   "varValueGet": {<br>      "id": "ID значения"<br>   }<br>}</pre>                                                                                                                                                                                                                                                             | **Multipart**<br>info: <pre>{<br>   "requestType": "VAR_VALUE_DELETE",<br>   "dataValueType": "varValue",<br>   "varValue": {<br>      "getInfo": {<br>         "id": "ID значения"<br>      }<br>   }<br>}</pre>                                                                                                                                                           | 
+| **Загрузить файл**               | POST /api/v1/set | **Multipart**<br>info: <pre>{<br>   "requestType": "VAR_ADD_FILE",<br>   "dataType": "BYTES"<br>}</pre><br>data: файл                                                                                                                                                                                                                                                                                               | <pre>{<br>   "requestType": "VAR_ADD_FILE",<br>   "infoType": "response",<br>   "response": "ссылка"<br>}</pre>                                                                                                                                                                                                                                                             |
+| **Загрузить и сохранить файл**   | POST /api/v1/set | **Multipart**<br>info: <pre>{<br>   "requestType": "VAR_SET_FILE",<br>   "dataType": "BYTES",<br>   "dataValueType": "var",<br>   "var": {<br>      "getInfo": {<br>         "id": "ID переменной (если обновление)"<br>      },<br>      "value": {<br>         "name": "имя"<br>      }<br>   }<br>}</pre><br>data: файл                                                                                          | <pre>{<br>   "requestType": "VAR_SET_FILE",<br>   "infoType": "varGet",<br>   "varGet": {<br>      "id": "ID переменной"<br>   }<br>}</pre>                                                                                                                                                                                                                                 |
