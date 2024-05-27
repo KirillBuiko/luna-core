@@ -66,6 +66,7 @@ export class VariableStorageEndpoint extends RestApiEndpoint {
                                 name: json.name,
                                 value: json.value,
                                 type: json.type,
+                                valueId: json.value_id
                             }
                         }
                     }
@@ -131,7 +132,7 @@ export class VariableStorageEndpoint extends RestApiEndpoint {
             }
         }
 
-        const reader = this.getText({
+        const reader = this.getJson({
             url: `${this.config.host}/storage/vars/set`,
             contentType: "application/json",
             body: JSON.stringify({
@@ -141,18 +142,18 @@ export class VariableStorageEndpoint extends RestApiEndpoint {
                 value: setInfo.value.value,
                 value_id: setInfo.value.valueId
             } as VariableSend)
-        })
+        });
 
-        const transformedReader = (async (): Promise<GetInfo__Output> => {
-            const response = await reader;
+        const transformedReader = reader.then(async (response: VariableReceive): Promise<GetInfo__Output> => {
+            console.log(response)
             return {
                 requestType: info.requestType,
                 infoType: "varGet",
                 varGet: {
-                    id: response
+                    id: response.id
                 }
             }
-        })()
+        })
 
         return {
             destReader: transformedReader
@@ -176,7 +177,7 @@ export class VariableStorageEndpoint extends RestApiEndpoint {
             }
         }
 
-        const reader = this.getText({
+        const reader = this.getJson({
             url: `${this.config.host}/storage/values/set`,
             contentType: "application/json",
             body: JSON.stringify({
@@ -187,16 +188,13 @@ export class VariableStorageEndpoint extends RestApiEndpoint {
             } as VariableValueSend)
         })
 
-        const transformedReader = (async (): Promise<GetInfo__Output> => {
-            const response = await reader;
-            return {
-                requestType: info.requestType,
-                infoType: "varValueGet",
-                varValueGet: {
-                    id: response
-                }
+        const transformedReader = reader.then(async (response: VariableValueReceive): Promise<GetInfo__Output> => ({
+            requestType: info.requestType,
+            infoType: "varValueGet",
+            varValueGet: {
+                id: response.id
             }
-        })()
+        }))
 
         return {
             destReader: transformedReader
@@ -204,17 +202,16 @@ export class VariableStorageEndpoint extends RestApiEndpoint {
     }
 }
 
-interface VariableReceive {
+interface VariableSend {
     id: string;
     name: string;
     value: string;
     type: "string" | "file";
-}
-
-interface VariableSend extends VariableReceive {
     value_id: string;
 }
 
-type VariableValueSend = VariableReceive;
+type VariableReceive = VariableSend;
 
-type VariableValueReceive = VariableReceive;
+type VariableValueSend = Omit<VariableReceive, "value_id">;
+
+type VariableValueReceive = VariableValueSend;

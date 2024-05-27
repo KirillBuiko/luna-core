@@ -24,21 +24,21 @@ export const endpointConfigs: EndpointConfigsType =
     }
     : {
         computationModelsStorage:
-            {host: "http://localhost:5001"},
+            {host: "http://192.168.12.29:5001"},
         executor:
-            {host: "http://localhost:9876"},
+            {host: "http://192.168.12.29:9876"},
         generator:
-            {host: "http://localhost:5555"},
+            {host: "http://192.168.12.29:5555"},
         interpreter:
-            {host: "http://localhost:5004"},
+            {host: "http://192.168.12.29:5004"},
         codeFStorage:
-            {host: "http://localhost:12345"},
+            {host: "http://192.168.12.29:12345"},
         planner:
-            {host: "http://localhost:5006"},
+            {host: "http://192.168.12.29:5006"},
         variablesStorage:
-            {host: "http://localhost:8111"},
+            {host: "http://192.168.12.29:8111"},
         programsStorage:
-            {host: "http://localhost:5008"},
+            {host: "http://192.168.12.29:5008"},
         tasksStorage:
-            {host: "http://localhost:5009"}
+            {host: "http://192.168.12.29:5009"}
     }

@@ -1,0 +1,8 @@
+POST http://192.168.12.29:8111/storage/values/set
+Content-Type: application/json
+
+{
+  "name": "core-test-3",
+  "type": "string",
+  "value": "12346"
+}

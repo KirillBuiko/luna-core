@@ -25,21 +25,22 @@ export class RestToRestPipe extends AbstractPipe<S, D> {
                       destOptions: NarrowedDestination<D, "SET">) {
         const {sourceWriter, sourceReader} = sourceOptions;
         const {destWriter, destReader} = destOptions;
-        if (!(destReader && destWriter && sourceWriter && sourceReader)) return;
-        sourceReader
-            .on("data", data => {
-                destWriter.write(data)
-            })
-            .on("end", () => {
-                destWriter.end()
-            })
-            .on("error", err => {
-                this.pipeErrorHandler.destinationErrorEmit(destOptions,
-                    ErrorMessage.create(Status.ABORTED, err));
-            });
+        if (sourceReader && destWriter) {
+            sourceReader
+                .on("data", data => {
+                    destWriter.write(data)
+                })
+                .on("end", () => {
+                    destWriter.end()
+                })
+                .on("error", err => {
+                    this.pipeErrorHandler.destinationErrorEmit(destOptions,
+                        ErrorMessage.create(Status.ABORTED, err));
+                });
+        }
 
-        destReader.then(data => {
-            sourceWriter(null, data);
+        destReader!.then(data => {
+            sourceWriter!(null, data);
         }).catch(err => {
             this.pipeErrorHandler.sourceErrorEmit(sourceOptions,
                 ErrorMessage.create(Status.ABORTED, err));
