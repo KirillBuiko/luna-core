@@ -11,7 +11,7 @@ Content-Type: application/json
   "dataValueType": "var",
   "var": {
     "getInfo": {
-      "id": "6654145aebf6c48a24c8f5b4"
+      "id": "66543b2debf6c48a24c8f5b6"
     },
     "value": {
       "name": "core-test-5",

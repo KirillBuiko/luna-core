@@ -2,7 +2,7 @@ POST http://localhost:5051/api/v1/get
 Content-Type: application/json
 
 {
-  "requestType": "VAR",
+  "requestType": "VAR_DELETE",
   "infoType": "varGet",
   "varGet": {
     "id": "66543b2debf6c48a24c8f5b6"

@@ -14,7 +14,7 @@ import type {ReadableStream} from "stream/web";
 import busboy, {Busboy} from "busboy";
 import {randomBoundary} from "@/utils/randomBoundary";
 
-type FetchOptions = { url: string, body?: string, contentType?: string }
+type FetchOptions = { url: string, method?: string, body?: string, contentType?: string }
 export type FieldType = { key: string, value: string, contentType?: string }
 
 export class RestApiEndpoint extends Endpoint {
@@ -79,7 +79,7 @@ export class RestApiEndpoint extends Endpoint {
     async baseFetch<T>(options: FetchOptions): Promise<Response> {
         options.contentType = options.body && (options.contentType || "application/json");
         return fetch(options.url, {
-            method: options.body ? "POST" : "GET",
+            method: options.method ? options.method : (options.body ? "POST" : "GET"),
             body: options.body,
             headers: {...(options.contentType ? {'Content-Type': options.contentType} : {})}
         }).catch(err => {

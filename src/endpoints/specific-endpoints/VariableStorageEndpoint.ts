@@ -11,8 +11,8 @@ export class VariableStorageEndpoint extends RestApiEndpoint {
     getMapper: SpecRequestFunctions<P, "GET", "VAR"> = {
         VAR: this.varGetHandler,
         VAR_VALUE: this.varValueGetHandler,
-        // VAR_DELETE: this.codeFInfoHandler,
-        // VAR_VALUE_DELETE: this.codeFInfoHandler,
+        VAR_DELETE: this.varDeleteHandler,
+        VAR_VALUE_DELETE: this.varValueDeleteHandler,
     } as const;
 
     setMapper: SpecRequestFunctions<P, "SET", "VAR"> = {
@@ -198,6 +198,66 @@ export class VariableStorageEndpoint extends RestApiEndpoint {
 
         return {
             destReader: transformedReader
+        }
+    }
+
+    protected varDeleteHandler(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
+        // /storage/vars/get?id
+        const name: keyof DataInfo__Output = "var";
+        const getInfoName = "varGet";
+        const getInfo = info[getInfoName];
+        const reader = (async (): Promise<MultipartTransferObject> => {
+            if (!getInfo) throw `${getInfoName} is not provided`;
+            try {
+                const text = await this.getText({
+                    url: `${this.config.host}/storage/vars/delete?id=${getInfo.id}`,
+                    method: "POST"
+                });
+                return {
+                    info: {
+                        requestType: info.requestType,
+                        dataValueType: name,
+                        [name]: {
+                            getInfo: {id: text},
+                        }
+                    }
+                }
+            } catch (e) {
+                throw e;
+            }
+        })()
+        return {
+            destReader: reader
+        }
+    }
+
+    protected varValueDeleteHandler(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
+        // /storage/vars/get?id
+        const name: keyof DataInfo__Output = "varValue";
+        const getInfoName = "varValueGet";
+        const getInfo = info[getInfoName];
+        const reader = (async (): Promise<MultipartTransferObject> => {
+            if (!getInfo) throw `${getInfoName} is not provided`;
+            try {
+                const text = await this.getText({
+                    url: `${this.config.host}/storage/values/delete?id=${getInfo.id}`,
+                    method: "POST"
+                });
+                return {
+                    info: {
+                        requestType: info.requestType,
+                        dataValueType: name,
+                        [name]: {
+                            getInfo: {id: text},
+                        }
+                    }
+                }
+            } catch (e) {
+                throw e;
+            }
+        })()
+        return {
+            destReader: reader
         }
     }
 }

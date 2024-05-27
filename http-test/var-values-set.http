@@ -1,8 +1,23 @@
-POST http://192.168.12.29:8111/storage/values/set
+POST http://localhost:5051/api/v1/set
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data;name="info"
 Content-Type: application/json
 
 {
-  "name": "core-test-3",
-  "type": "string",
-  "value": "12346"
+  "requestType": "VAR_VALUE",
+  "dataType": "JSON",
+  "dataValueType": "varValue",
+  "varValue": {
+    "getInfo": {
+      "id": "665437c7ebf6c48a24c8f5b5"
+    },
+    "value": {
+      "name": "core-test-5",
+      "type": "string",
+      "value": "54321"
+    }
+  }
 }
+
