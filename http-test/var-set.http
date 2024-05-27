@@ -1,4 +1,4 @@
-POST http://localhost:5051/api/v1/set
+POST http://{{host}}:5051/api/v1/set
 Content-Type: multipart/form-data; boundary=boundary
 
 --boundary
@@ -10,8 +10,8 @@ Content-Type: application/json
   "dataType": "JSON",
   "dataValueType": "var",
   "var": {
-    "getInfo": {
-      "id": "66543b2debf6c48a24c8f5b6"
+    "getInfo1": {
+      "id": "66543efbebf6c48a24c8f5b7"
     },
     "value": {
       "name": "core-test-5",

@@ -1,10 +1,10 @@
-POST http://localhost:5051/api/v1/get
+POST http://{{host}}:5051/api/v1/get
 Content-Type: application/json
 
 {
   "requestType": "VAR",
   "infoType": "varGet",
   "varGet": {
-    "id": "66543b2debf6c48a24c8f5b6"
+    "id": "66543efbebf6c48a24c8f5b7"
   }
 }

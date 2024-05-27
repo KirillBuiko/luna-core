@@ -1,4 +1,4 @@
-POST http://localhost:5051/api/v1/set
+POST http://{{host}}:5051/api/v1/set
 Content-Type: multipart/form-data; boundary=boundary
 
 --boundary
