@@ -31,7 +31,9 @@ export class RestApiActions {
                 return this.sendError(res, Status.ABORTED, error);
             } else {
                 const formData = new FormData();
-                formData.append("info", JSON.stringify(value.info));
+                formData.append("info", JSON.stringify(value.info), {
+                    contentType: "application/json"
+                });
                 if (value && value.data) {
                     formData.append("data", value.data);
                 }
