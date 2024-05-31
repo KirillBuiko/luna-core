@@ -1,6 +1,6 @@
-import type {ServerStatus} from "@/app/types/IServer";
+import type {ServerStatus} from "@/app/types/ICoreServer";
 import type {ServerConfigType} from "@/app/types/ServerConfigType";
-import type {IRequestManager} from "@/app/types/IRequestManager";
+import type {IRequestManager} from "@/request-manager/types/IRequestManager";
 
 export class DummyServer {
     status: ServerStatus = "off";

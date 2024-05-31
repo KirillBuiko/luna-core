@@ -1,4 +1,4 @@
-import type {IEndpointsManager} from "@/app/types/IEndpointsManager";
+import type {IEndpointsManager} from "@/request-manager/types/IEndpointsManager";
 import type {EndpointConfigsType, EndpointName} from "@/app/types/RemoteStaticEndpointConfigType";
 import {endpoints} from "./index";
 

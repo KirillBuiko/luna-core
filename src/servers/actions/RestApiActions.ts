@@ -3,7 +3,7 @@ import type {Multipart} from "@fastify/multipart";
 import type {BusboyFileStream} from "@fastify/busboy";
 import type {DataInfo} from "@grpc-build/DataInfo";
 import type {sendUnaryData} from "@grpc/grpc-js";
-import type {IRequestManager} from "@/app/types/IRequestManager";
+import type {IRequestManager} from "@/request-manager/types/IRequestManager";
 import type {FastifyReply} from "fastify";
 import {Status} from "@grpc/grpc-js/build/src/constants";
 import {EndedStream} from "@/utils/EndedStream";

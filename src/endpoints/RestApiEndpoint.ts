@@ -1,4 +1,4 @@
-import type {EndpointStatus} from "@/app/types/IEndpoint";
+import type {EndpointStatus} from "@/request-manager/types/IEndpoint";
 import type {
     MultipartTransferObject,
     NarrowedDestination
@@ -92,7 +92,7 @@ export class RestApiEndpoint extends Endpoint {
         })
     }
 
-    async getFile(options: FetchOptions) {
+    async getStream(options: FetchOptions) {
         return this.baseFetch(options).then(async (response) => {
             return Readable.fromWeb(response.body as ReadableStream);
         })

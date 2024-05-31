@@ -1,17 +1,12 @@
 import type {ServerConfigType} from "@/app/types/ServerConfigType";
-import type {IRequestManager} from "@/app/types/IRequestManager";
+import type {IRequestManager} from "@/request-manager/types/IRequestManager";
 
 export type ServerStatus = "on" | "off";
 
-export interface IAbstractServer {
+export interface IServer {
+    requestManager: IRequestManager | undefined;
     status: ServerStatus;
 
-    defaultStart(config: ServerConfigType): Promise<Error | null>;
     stop(): Promise<Error | undefined>;
-}
-
-export interface IServer extends IAbstractServer {
-    requestManager: IRequestManager | undefined;
-
     start(config: ServerConfigType, requestManager: IRequestManager): Promise<Error | null>;
 }

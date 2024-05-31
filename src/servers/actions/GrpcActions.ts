@@ -1,7 +1,7 @@
 import type {MainRequestsHandlers} from "@grpc-build/MainRequests";
 import {ErrorMessage} from "@/utils/ErrorMessage";
 import {Status} from "@grpc/grpc-js/build/src/constants";
-import type {IRequestManager} from "@/app/types/IRequestManager";
+import type {IRequestManager} from "@/request-manager/types/IRequestManager";
 
 export class GrpcActions {
     constructor(private requestManager: IRequestManager){};

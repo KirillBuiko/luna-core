@@ -1,5 +1,5 @@
 import type {NarrowedSource} from "@/types/Types";
-import type {IRequestManager} from "@/app/types/IRequestManager";
+import type {IRequestManager} from "@/request-manager/types/IRequestManager";
 import type {GetInfo} from "@grpc-build/GetInfo";
 import type {DataInfo} from "@grpc-build/DataInfo";
 import {testObjects} from "../testObjects";

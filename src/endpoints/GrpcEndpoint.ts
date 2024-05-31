@@ -1,4 +1,4 @@
-import type {EndpointStatus} from "@/app/types/IEndpoint";
+import type {EndpointStatus} from "@/request-manager/types/IEndpoint";
 import type {
     NarrowedDestination, ProtocolType
 } from "@/types/Types";

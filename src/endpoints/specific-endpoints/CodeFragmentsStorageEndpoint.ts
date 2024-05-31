@@ -52,7 +52,7 @@ export class CodeFStorageEndpoint extends RestApiEndpoint {
         const reader = (async (): Promise<MultipartTransferObject> => {
             if (!getInfo) throw `${getInfoName} is not provided`;
             try {
-                const stream = await this.getFile({
+                const stream = await this.getStream({
                     url: `${this.config.host}/${getInfo.id}/target_code`
                 });
                 return {

@@ -36,7 +36,7 @@ export const endpointConfigs: EndpointConfigsType =
         planner:
             {host: "http://192.168.12.29:5006"},
         variablesStorage:
-            {host: "http://192.168.12.29:8111"},
+            {host: "http://192.168.12.29:8112"},
         programsStorage:
             {host: "http://192.168.12.29:5008"},
         tasksStorage:

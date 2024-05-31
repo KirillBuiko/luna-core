@@ -1,7 +1,7 @@
 import type {ServerConfigsType, ServerName} from "@/app/types/ServerConfigType";
 import {servers} from "./index";
 import type {IServersManager} from "@/app/types/IServersManager";
-import type {IRequestManager} from "@/app/types/IRequestManager";
+import type {IRequestManager} from "@/request-manager/types/IRequestManager";
 
 export class ServersManager implements IServersManager {
     constructor() {}
