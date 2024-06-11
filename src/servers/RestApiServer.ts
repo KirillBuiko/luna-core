@@ -6,6 +6,7 @@ import {RestApiActions} from "@/servers/actions/RestApiActions";
 import {configs} from "../../configs/configs";
 import type {ServerStatus} from "@/app/types/ICoreServer";
 import Fastify from "fastify";
+import {getV1Router} from "@/servers/routes/v1";
 
 export class RestApiServer implements IServer {
     requestManager: IRequestManager | undefined;
@@ -26,14 +27,11 @@ export class RestApiServer implements IServer {
             upstream: configs.UI_HOST,
             prefix: "/static",
             rewritePrefix: "/static"
-        }).then(() => {
-            this.server.post('/api/v1/get', this.getHandler.bind(this));
-            this.server.post('/api/v1/set', this.setHandler.bind(this));
-            // this.server.post('/*', this.debugHandler.bind(this));
         });
     }
 
     async start(config: ServerConfigType, requestManager: IRequestManager): Promise<Error | null> {
+        this.server.register(getV1Router(requestManager), {prefix: "/api/v1"})
         this.requestManager = requestManager;
         this.restApiActions = new RestApiActions(requestManager);
         try {
