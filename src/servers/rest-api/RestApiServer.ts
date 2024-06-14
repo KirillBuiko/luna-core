@@ -1,16 +1,14 @@
 import type {IServer} from "@/app/types/ICoreServer";
 import type {ServerConfigType} from "@/app/types/ServerConfigType";
-import type {RouteHandlerMethod} from "fastify";
 import type {IRequestManager} from "@/request-manager/types/IRequestManager";
-import {RestApiActions} from "@/servers/actions/RestApiActions";
-import {configs} from "../../configs/configs";
+import {configs} from "../../../configs/configs";
 import type {ServerStatus} from "@/app/types/ICoreServer";
 import Fastify from "fastify";
-import {getV1Router} from "@/servers/routes/v1";
+import {getV1Router} from "@/servers/rest-api/v1";
+import {getV2Router} from "@/servers/rest-api/v2";
 
 export class RestApiServer implements IServer {
     requestManager: IRequestManager | undefined;
-    restApiActions: RestApiActions;
     status: ServerStatus = "off";
     server = Fastify();
 
@@ -31,9 +29,9 @@ export class RestApiServer implements IServer {
     }
 
     async start(config: ServerConfigType, requestManager: IRequestManager): Promise<Error | null> {
-        this.server.register(getV1Router(requestManager), {prefix: "/api/v1"})
+        this.server.register(getV1Router(requestManager), {prefix: "/api/v1"});
+        this.server.register(getV2Router(requestManager), {prefix: "/api/v2"});
         this.requestManager = requestManager;
-        this.restApiActions = new RestApiActions(requestManager);
         try {
             await this.server.listen({
                 port: config.port,
@@ -50,17 +48,5 @@ export class RestApiServer implements IServer {
         if (this.status == "off") return;
         this.status = "off";
         return this.server.close();
-    }
-
-    protected getHandler: RouteHandlerMethod = (req, res) => {
-        return this.restApiActions.getHandler(req, res);
-    }
-
-    protected setHandler: RouteHandlerMethod = async (req, res) => {
-        return this.restApiActions.setHandler(req, res);
-    }
-
-    protected debugHandler: RouteHandlerMethod = async (req, res) => {
-        return this.restApiActions.debugHandler(req, res);
     }
 }

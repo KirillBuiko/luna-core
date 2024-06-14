@@ -1,5 +1,5 @@
 import {testServerConfigs} from "../testConfigs";
-import {GrpcServer} from "@/servers/GrpcServer";
+import {GrpcServer} from "@/servers/grpc/GrpcServer";
 import {TestGrpcRequestManager} from "./TestGrpcRequestManager";
 
 

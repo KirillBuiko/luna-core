@@ -68,7 +68,7 @@ export type NarrowedDestination<
     ProtocolT extends ProtocolType = ProtocolType, RequestN extends RequestName = RequestName> =
     NarrowedOptionsType<ProtocolT, RequestN, DestinationOptionsType>
 
-export interface MultipartTransferObject {
-    info: DataInfo,
-    data?: Readable
+export interface MultipartTransferObject<D = DataInfo, S = Readable> {
+    info: D,
+    data?: S
 }

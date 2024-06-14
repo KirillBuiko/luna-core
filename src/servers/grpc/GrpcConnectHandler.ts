@@ -1,6 +1,6 @@
 import type {IEndpointsManager} from "@/request-manager/types/IEndpointsManager";
 import type {IRequestManager} from "@/request-manager/types/IRequestManager";
-import {GrpcActions} from "@/servers/actions/GrpcActions";
+import {GrpcActions} from "@/servers/grpc/GrpcActions";
 
 export class GrpcConnectHandler {
     grpcActions: GrpcActions;

@@ -1,5 +1,5 @@
 import {testServerConfigs} from "../testConfigs";
-import {RestApiServer} from "@/servers/RestApiServer";
+import {RestApiServer} from "@/servers/rest-api/RestApiServer";
 import {TestRestApiRequestManager} from "./TestRestApiRequestManager";
 
 
