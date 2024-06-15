@@ -6,7 +6,7 @@ import type {FastifyReply, FastifyRequest} from "fastify";
 import type {DataInfo} from "@grpc-build/DataInfo";
 import type {MultipartTransferObject} from "@/types/Types";
 import {ErrorMessage} from "@/utils/ErrorMessage";
-import {handleMultipart} from "@/servers/rest-api/utils";
+import {baseHandleMultipart, MultipartParts} from "@/servers/rest-api/utils";
 import type {CodeFGet} from "@grpc-build/CodeFGet";
 
 export function V2RestApiActions(requestManager: IRequestManager) {
@@ -16,15 +16,13 @@ export function V2RestApiActions(requestManager: IRequestManager) {
 
     function multipartReply(opts: { res: FastifyReply, code: number, value: MultipartTransferObject }) {
         const formData = new FormData();
-        const cutInfo: DataInfo = {
-            dataType: opts.value.info.dataType
-        }
-        formData.append("info", JSON.stringify(cutInfo), {
+        const meta = {}
+        formData.append("info", JSON.stringify(meta), {
             contentType: "application/json"
         });
         const dataInfo = opts.value.info.dataValueType && opts.value.info.dataValueType in opts.value.info &&
             opts.value.info[opts.value.info.dataValueType];
-        if (dataInfo && "value" in dataInfo) {
+        if (dataInfo && ("value" in dataInfo)) {
             const str = typeof dataInfo["value"] == "string" ? dataInfo["value"] : JSON.stringify(dataInfo["value"]);
             formData.append("data", Buffer.from(str), {
                 contentType: "application/octet-stream"
@@ -37,7 +35,8 @@ export function V2RestApiActions(requestManager: IRequestManager) {
         opts.res.headers(formData.getHeaders()).code(opts.code).send(formData);
     }
 
-    function basicReply(opts: { res: FastifyReply, code: number, contentType: string, value?: string | object }) {
+    function basicReply(opts: { res: FastifyReply, code: number,
+        contentType: string, value?: string | object | undefined }) {
         opts.res.code(opts.code).type(opts.contentType).send(opts.value);
     }
 
@@ -45,6 +44,30 @@ export function V2RestApiActions(requestManager: IRequestManager) {
         res.code(httpCode).headers({
             "Content-Type": "application/json"
         }).send(ErrorMessage.createMessage(message));
+    }
+
+    async function handleMultipart(req: FastifyRequest) {
+        let parts: MultipartParts | undefined = undefined;
+        try {
+            parts = await baseHandleMultipart(req);
+        } catch (e) {
+            throw e;
+        }
+
+        const meta = parts.fields["meta"].value as object | undefined;
+
+        if (meta && typeof meta != "object") {
+            throw "Meta is not JSON or wrong content-type";
+        }
+
+        if (!parts.stream) {
+            throw "Data is not provided or content-type is not 'application/octet-stream'"
+        }
+
+        return {
+            meta: meta,
+            stream: parts.stream
+        }
     }
 
     function defaultGetHandler(opts: {
@@ -69,11 +92,13 @@ export function V2RestApiActions(requestManager: IRequestManager) {
         if (opts.error || !opts.value) {
             sendError(opts.res, opts.desc.failCode, opts.error)
         } else {
+            const info = opts.value.infoType &&
+                opts.value[opts.value.infoType] || undefined;
             basicReply({
                 res: opts.res,
                 code: opts.desc.successCode,
                 contentType: "application/json",
-                value: opts.value
+                value: info
             })
         }
     }
@@ -103,8 +128,8 @@ export function V2RestApiActions(requestManager: IRequestManager) {
                 try {
                     const multipart = await handleMultipart(req);
                     const dataInfo: DataInfo = {
-                        ...multipart.info,
                         requestType: desc.requestType,
+                        dataType: "BYTES",
                         dataValueType: "codeF",
                         codeF: {
                             getInfo: params as CodeFGet

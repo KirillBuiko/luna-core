@@ -7,13 +7,47 @@ import {Status} from "@grpc/grpc-js/build/src/constants";
 import {ErrorMessage} from "@/utils/ErrorMessage";
 import FormData from "form-data";
 import type {MultipartTransferObject} from "@/types/Types";
-import {handleMultipart} from "@/servers/rest-api/utils";
+import {baseHandleMultipart, MultipartParts} from "@/servers/rest-api/utils";
+import type {DataInfo} from "@grpc-build/DataInfo";
+import {EndedStream} from "@/utils/EndedStream";
+import type {BusboyFileStream} from "@fastify/busboy";
 
 export function V1RestApiActions(requestManager: IRequestManager) {
     function sendError(res: FastifyReply, code: Status, message: string) {
         res.code(500).headers({
             "Content-Type": "application/json"
         }).send(ErrorMessage.create(code, message));
+    }
+
+    async function handleMultipart(req: FastifyRequest) {
+        let parts: MultipartParts | undefined = undefined;
+        try {
+            parts = await baseHandleMultipart(req);
+        } catch (e) {
+            throw e;
+        }
+
+        const info = parts.fields["info"].value as DataInfo | undefined;
+
+        if (!info) {
+            throw "Info not given";
+        }
+        if (typeof info != "object") {
+            throw "Info is not JSON or wrong content-type";
+        }
+
+        if (info.dataType == "BYTES" && !parts.stream) {
+            throw "Data not given for BYTES data type";
+        }
+
+        if (!parts.stream) {
+            parts.stream = new EndedStream() as BusboyFileStream;
+        }
+
+        return {
+            info: info,
+            stream: parts.stream
+        }
     }
 
     function getHandler (req, res: FastifyReply) {

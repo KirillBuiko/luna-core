@@ -4,6 +4,11 @@ import {RestApiEndpoint} from "@/endpoints/RestApiEndpoint";
 import type {MultipartTransferObject, NarrowedDestination} from "@/types/Types";
 import {PassThrough} from "node:stream";
 import type {SpecHandlerReturnType, SpecRequestFunctions} from "@/endpoints/specific-endpoints/types";
+import type {CodeFGet} from "@grpc-build/CodeFGet";
+import type {CodeFInfoGet} from "@grpc-build/CodeFInfoGet";
+import type {CodeFPluginProcedureGet} from "@grpc-build/CodeFPluginProcedureGet";
+import type {CodeFData} from "@grpc-build/CodeFData";
+import type {CodeFPluginData} from "@grpc-build/CodeFPluginData";
 
 const p = "REST_API";
 type P = typeof p;
@@ -48,7 +53,7 @@ export class CodeFStorageEndpoint extends RestApiEndpoint {
         // /{className}/target_code
         // const name: keyof DataInfo__Output = "codeF";
         const getInfoName = "codeFGet";
-        const getInfo = info[getInfoName];
+        const getInfo = info[info.infoType || ""] as CodeFGet;
         const reader = (async (): Promise<MultipartTransferObject> => {
             if (!getInfo) throw `${getInfoName} is not provided`;
             try {
@@ -76,7 +81,7 @@ export class CodeFStorageEndpoint extends RestApiEndpoint {
         // /{codeF_id}/info
         const name: keyof DataInfo__Output = "codeFInfo";
         const getInfoName = "codeFInfoGet";
-        const getInfo = info[getInfoName];
+        const getInfo = info[info.infoType || ""] as CodeFInfoGet;
         const reader = (async (): Promise<MultipartTransferObject> => {
             if (!getInfo) throw `${getInfoName} is not provided`;
             try {
@@ -129,7 +134,7 @@ export class CodeFStorageEndpoint extends RestApiEndpoint {
     protected codeFPluginsListGetHandler(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
         // /plugins
         const name: keyof DataInfo__Output = "codeFPluginsList";
-        // const getInfo = info["codeFPluginsListGet"];
+        // const getInfo = info[info.infoType || ""] as CodeFPluginsListGet;;
         const reader = (async (): Promise<MultipartTransferObject> => {
             try {
                 const json = await this.getJson({
@@ -156,7 +161,7 @@ export class CodeFStorageEndpoint extends RestApiEndpoint {
         // /{codeF_id}/pluginProcedure
         const name: keyof DataInfo__Output = "codeFPluginProcedure";
         const getInfoName = "codeFPluginProcedureGet";
-        const getInfo = info[getInfoName];
+        const getInfo = info[info.infoType || ""] as CodeFPluginProcedureGet;
         const reader = (async (): Promise<MultipartTransferObject> => {
             if (!getInfo) throw `${getInfoName} is not provided`;
             try {
@@ -184,7 +189,7 @@ export class CodeFStorageEndpoint extends RestApiEndpoint {
     protected codeFSetHandler(info: DataInfo__Output): SpecHandlerReturnType<P, "SET"> {
         // /add_codeF
         // const name: keyof DataInfo__Output = "codeF";
-        const setInfo = info["codeF"];
+        const setInfo = info[info.dataValueType || ""] as CodeFData;
 
         if (!setInfo) {
             return {
@@ -229,7 +234,7 @@ export class CodeFStorageEndpoint extends RestApiEndpoint {
     protected codeFPluginSetHandler(info: DataInfo__Output): SpecHandlerReturnType<P, "SET"> {
         // /add_plugin
         // const name: keyof DataInfo__Output = "codeFPlugin";
-        const setInfo = info["codeFPlugin"];
+        const setInfo = info[info.dataValueType] as CodeFPluginData;
 
         if (!setInfo) {
             return {
