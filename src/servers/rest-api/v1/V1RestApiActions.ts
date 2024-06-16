@@ -3,7 +3,6 @@ import type {Multipart} from "@fastify/multipart";
 import type {sendUnaryData} from "@grpc/grpc-js";
 import type {IRequestManager} from "@/request-manager/types/IRequestManager";
 import type {FastifyReply, FastifyRequest} from "fastify";
-import {Status} from "@grpc/grpc-js/build/src/constants";
 import {ErrorMessage} from "@/utils/ErrorMessage";
 import FormData from "form-data";
 import type {MultipartTransferObject} from "@/types/Types";
@@ -11,12 +10,13 @@ import {baseHandleMultipart, MultipartParts} from "@/servers/rest-api/utils";
 import type {DataInfo} from "@grpc-build/DataInfo";
 import {EndedStream} from "@/utils/EndedStream";
 import type {BusboyFileStream} from "@fastify/busboy";
+import {ErrorDto} from "@/endpoints/ErrorDto";
 
 export function V1RestApiActions(requestManager: IRequestManager) {
-    function sendError(res: FastifyReply, code: Status, message: string) {
+    function sendError(res: FastifyReply, error: ErrorDto) {
         res.code(500).headers({
             "Content-Type": "application/json"
-        }).send(ErrorMessage.create(code, message));
+        }).send(ErrorMessage.create(error));
     }
 
     async function handleMultipart(req: FastifyRequest) {
@@ -30,14 +30,14 @@ export function V1RestApiActions(requestManager: IRequestManager) {
         const info = parts.fields["info"].value as DataInfo | undefined;
 
         if (!info) {
-            throw "Info not given";
+            throw new ErrorDto("invalid-argument", "Info not given in multipart");
         }
         if (typeof info != "object") {
-            throw "Info is not JSON or wrong content-type";
+            throw new ErrorDto("invalid-argument", "Info is not JSON or wrong content-type");
         }
 
         if (info.dataType == "BYTES" && !parts.stream) {
-            throw "Data not given for BYTES data type";
+            throw new ErrorDto("invalid-argument", "Data not given for BYTES data type");
         }
 
         if (!parts.stream) {
@@ -52,12 +52,12 @@ export function V1RestApiActions(requestManager: IRequestManager) {
 
     function getHandler (req, res: FastifyReply) {
         if (req.headers['content-type'] != "application/json") {
-            return sendError(res, Status.INVALID_ARGUMENT, "Content-Type is not json");
+            return sendError(res, new ErrorDto("invalid-argument", "Content-Type is not json"));
         }
 
-        const callback = (error, value: MultipartTransferObject) => {
+        const callback = (error: ErrorDto, value: MultipartTransferObject) => {
             if (error) {
-                return sendError(res, Status.ABORTED, error);
+                return sendError(res, error);
             } else {
                 const formData = new FormData();
                 formData.append("info", JSON.stringify(value.info), {
@@ -100,7 +100,7 @@ export function V1RestApiActions(requestManager: IRequestManager) {
 
             return promise;
         } catch (err) {
-            sendError(res, Status.INVALID_ARGUMENT, err);
+            sendError(res, err);
         }
     }
 

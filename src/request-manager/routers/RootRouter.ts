@@ -3,7 +3,7 @@ import type {RequestType__Output} from "@grpc-build/RequestType";
 import type {EndpointName} from "@/app/types/RemoteStaticEndpointConfigType";
 
 import type {RequestName} from "@/types/Types";
-import {RequestRouter} from "@/request-manager/RequestRouter";
+import {RequestRouter} from "@/request-manager/routers/RequestRouter";
 import type {IRequestManager} from "@/request-manager/types/IRequestManager";
 import type {IEndpointsManager} from "@/request-manager/types/IEndpointsManager";
 

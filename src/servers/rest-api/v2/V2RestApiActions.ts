@@ -8,6 +8,8 @@ import type {MultipartTransferObject} from "@/types/Types";
 import {ErrorMessage} from "@/utils/ErrorMessage";
 import {baseHandleMultipart, MultipartParts} from "@/servers/rest-api/utils";
 import type {CodeFGet} from "@grpc-build/CodeFGet";
+import {ErrorDto} from "@/endpoints/ErrorDto";
+import {reasonToHttpCode} from "@/servers/rest-api/v2/constants";
 
 export function V2RestApiActions(requestManager: IRequestManager) {
     function getURL(desc: V2RouteDescriptor) {
@@ -40,10 +42,11 @@ export function V2RestApiActions(requestManager: IRequestManager) {
         opts.res.code(opts.code).type(opts.contentType).send(opts.value);
     }
 
-    function sendError(res: FastifyReply, httpCode: number, message: string) {
-        res.code(httpCode).headers({
+    function sendError(res: FastifyReply, error: ErrorDto) {
+        const code = reasonToHttpCode[error.reason];
+        res.code(code).headers({
             "Content-Type": "application/json"
-        }).send(ErrorMessage.createMessage(message));
+        }).send(ErrorMessage.create(error));
     }
 
     async function handleMultipart(req: FastifyRequest) {
@@ -57,11 +60,12 @@ export function V2RestApiActions(requestManager: IRequestManager) {
         const meta = parts.fields["meta"].value as object | undefined;
 
         if (meta && typeof meta != "object") {
-            throw "Meta is not JSON or wrong content-type";
+            throw new ErrorDto("invalid-argument", "Meta is not JSON or wrong content-type");
         }
 
         if (!parts.stream) {
-            throw "Data is not provided or content-type is not 'application/octet-stream'"
+            throw new ErrorDto("invalid-argument",
+                "Data is not provided or content-type is not 'application/octet-stream'")
         }
 
         return {
@@ -75,7 +79,7 @@ export function V2RestApiActions(requestManager: IRequestManager) {
         desc: V2RouteDescriptor
     }) {
         if (opts.error || !opts.value) {
-            sendError(opts.res, opts.desc.failCode, opts.error)
+            sendError(opts.res, opts.error)
         } else {
             multipartReply({
                 res: opts.res,
@@ -86,11 +90,13 @@ export function V2RestApiActions(requestManager: IRequestManager) {
     }
 
     function defaultSetHandler(opts: {
-        res: FastifyReply, error: any, value?: GetInfo | null,
+        res: FastifyReply, error: ErrorDto | null | undefined, value?: GetInfo | null,
         desc: V2RouteDescriptor
     }) {
-        if (opts.error || !opts.value) {
-            sendError(opts.res, opts.desc.failCode, opts.error)
+        if (opts.error) {
+            sendError(opts.res, opts.error)
+        } else if (!opts.value) {
+            sendError(opts.res, new ErrorDto("unknown", "There is no value or error :/"))
         } else {
             const info = opts.value.infoType &&
                 opts.value[opts.value.infoType] || undefined;
@@ -148,7 +154,7 @@ export function V2RestApiActions(requestManager: IRequestManager) {
                         }
                     }, dataInfo)
                 } catch (err) {
-                    sendError(res, desc.failCode, err);
+                    sendError(res, err);
                 }
             }
             return res;
@@ -160,3 +166,5 @@ export function V2RestApiActions(requestManager: IRequestManager) {
         getURL
     }
 }
+
+

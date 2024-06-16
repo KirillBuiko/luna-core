@@ -1,11 +1,12 @@
 import type {DestinationOptionsType, SourceOptionsType} from "@/types/Types";
-import type {ServerErrorResponse} from "@grpc/grpc-js/build/src/server-call";
+import type {ErrorDto} from "@/endpoints/ErrorDto";
+import {PlainErrorDto} from "@/endpoints/ErrorDto";
 
 export class PipeErrorHandler {
-    sourceErrorEmit(sourceOptions: SourceOptionsType, error: ServerErrorResponse) {
+    sourceErrorEmit(sourceOptions: SourceOptionsType, error: ErrorDto) {
         switch (typeof sourceOptions.sourceWriter) {
             case "object":
-                sourceOptions.sourceWriter.destroy && sourceOptions.sourceWriter.destroy(error);
+                sourceOptions.sourceWriter.destroy && sourceOptions.sourceWriter.destroy(new PlainErrorDto(error));
                 break;
             case "function":
                 sourceOptions.sourceWriter(error)
@@ -25,12 +26,12 @@ export class PipeErrorHandler {
         // }
     }
 
-    destinationErrorEmit(destOptions: DestinationOptionsType, error: ServerErrorResponse) {
+    destinationErrorEmit(destOptions: DestinationOptionsType, error: ErrorDto) {
         if (typeof destOptions.destReader == "object" && "destroy" in destOptions.destReader) {
-            destOptions.destReader.destroy(error);
+            destOptions.destReader.destroy(new PlainErrorDto(error));
         }
         if (typeof destOptions.destWriter == "object" && "destroy" in destOptions.destWriter) {
-            destOptions.destWriter.destroy(error);
+            destOptions.destWriter.destroy(new PlainErrorDto(error));
         }
         // if (destOptions.protocol == "GRPC" && destOptions.requestName == "GET") {
         //     destOptions.destReader && destOptions.destReader.destroy(error);
@@ -45,7 +46,7 @@ export class PipeErrorHandler {
 
     bothErrorEmit(sourceOptions: SourceOptionsType,
                   destOptions: DestinationOptionsType,
-                  error: ServerErrorResponse) {
+                  error: ErrorDto) {
         this.sourceErrorEmit(sourceOptions, error);
         this.destinationErrorEmit(destOptions, error);
     }

@@ -1,6 +1,7 @@
 import type {Multipart} from "@fastify/multipart";
 import type {BusboyFileStream} from "@fastify/busboy";
 import type {FastifyRequest} from "fastify";
+import {ErrorDto} from "@/endpoints/ErrorDto";
 
 export type MultipartParts =
     {
@@ -12,11 +13,11 @@ export async function baseHandleMultipart(req: FastifyRequest): Promise<Multipar
     let multipart: AsyncIterableIterator<Multipart>;
     try {
         multipart = req.parts();
-        if (!multipart) {
-            throw "Body is not multipart";
-        }
     } catch (e) {
-        throw "Body is not multipart";
+        throw new ErrorDto("invalid-argument", `Multipart handle error: ${e}`);
+    }
+    if (!multipart) {
+        throw new ErrorDto("invalid-argument", "Body is not multipart");
     }
 
     let parts: MultipartParts = {fields: {}};

@@ -13,6 +13,7 @@ import {PassThrough, Readable} from "node:stream";
 import type {ReadableStream} from "stream/web";
 import busboy, {Busboy} from "busboy";
 import {randomBoundary} from "@/utils/randomBoundary";
+import {ErrorDto} from "@/endpoints/ErrorDto";
 
 type FetchOptions = { url: string, method?: string, body?: string, contentType?: string }
 export type FieldType = { key: string, value: string, contentType?: string }
@@ -38,7 +39,7 @@ export class RestApiEndpoint extends Endpoint {
         const reader = (async (): Promise<MultipartTransferObject> => {
             const resolvedMultipart = await multipart;
             if (!("info" in resolvedMultipart.fields)) {
-                throw "No info in multipart";
+                throw new ErrorDto("endpoint-error", "No info in multipart");
             }
             return {
                 info: JSON.parse(resolvedMultipart.fields.info),
@@ -83,10 +84,10 @@ export class RestApiEndpoint extends Endpoint {
             body: options.body,
             headers: {...(options.contentType ? {'Content-Type': options.contentType} : {})}
         }).catch(err => {
-            throw "Endpoint is not available: " + err;
+            throw new ErrorDto("unavailable", "Endpoint is not available: " + err);
         }).then(async response => {
             if (!response.ok) {
-                throw await response.text();
+                throw new ErrorDto("endpoint-error", await response.text());
             }
             return response;
         })
@@ -128,7 +129,7 @@ export class RestApiEndpoint extends Endpoint {
                 bb = busboy({headers: {"content-type": response.headers.get("content-type") ?? undefined}});
                 Readable.fromWeb(response.body as ReadableStream).pipe(bb);
             } catch (err) {
-                return reject("Multipart handling error: " + err);
+                return reject(new ErrorDto("endpoint-error", "Multipart handling error: " + err));
             }
 
             function resolvePromise() {
@@ -166,10 +167,11 @@ export class RestApiEndpoint extends Endpoint {
         const reader = new Promise<string>((resolve, reject) =>
             form.submit(options.url, (err, res) => {
                 if (err) {
-                    reject("Endpoint is not available: " + err);
+                    reject(new ErrorDto("unavailable", "Endpoint is not available: " + err));
                 } else {
                     res.on("data", (data) => {
-                        res.statusCode != 200 ? reject(data.toString()) : resolve(data.toString());
+                        res.statusCode != 200 ? reject(new ErrorDto("endpoint-error", data.toString()))
+                            : resolve(data.toString());
                     })
                 }
             }))

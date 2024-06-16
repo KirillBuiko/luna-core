@@ -1,8 +1,8 @@
 import type {NarrowedDestination} from "@/types/Types";
 import type {NarrowedSource} from "@/types/Types";
 import {ErrorMessage} from "@/utils/ErrorMessage";
-import {Status} from "@grpc/grpc-js/build/src/constants";
 import {AbstractPipe} from "@/pipe-builder/pipes/AbstractPipe";
+import type {ErrorDto} from "@/endpoints/ErrorDto";
 
 type S = "REST_API";
 type D = "REST_API";
@@ -15,9 +15,9 @@ export class RestToRestPipe extends AbstractPipe<S, D> {
         if (!(destReader && sourceWriter)) return;
         destReader.then((value) => {
             sourceWriter(null, value);
-        }).catch(err => {
+        }).catch((err: ErrorDto) => {
             this.pipeErrorHandler.sourceErrorEmit(sourceOptions,
-                ErrorMessage.create(Status.ABORTED, err));
+                ErrorMessage.create(err));
         })
     }
 
@@ -33,17 +33,17 @@ export class RestToRestPipe extends AbstractPipe<S, D> {
                 .on("end", () => {
                     destWriter.end()
                 })
-                .on("error", err => {
+                .on("error", (err: ErrorDto) => {
                     this.pipeErrorHandler.destinationErrorEmit(destOptions,
-                        ErrorMessage.create(Status.ABORTED, err));
+                        ErrorMessage.create(err));
                 });
         }
 
         destReader!.then(data => {
             sourceWriter!(null, data);
-        }).catch(err => {
+        }).catch((err: ErrorDto) => {
             this.pipeErrorHandler.sourceErrorEmit(sourceOptions,
-                ErrorMessage.create(Status.ABORTED, err));
+                ErrorMessage.create(err));
         })
     }
 }

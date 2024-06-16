@@ -2,6 +2,8 @@ import type {BusboyFileStream} from "@fastify/busboy";
 import type {MainRequestsClient, MainRequestsHandlers} from "@grpc-build/MainRequests";
 import type {Readable, Writable} from "node:stream";
 import type {DataInfo} from "@grpc-build/DataInfo";
+import type {ErrorDto} from "@/endpoints/ErrorDto";
+import type {GetInfo} from "@grpc-build/GetInfo";
 
 export type ProtocolType =
     | "GRPC"
@@ -40,7 +42,7 @@ export type SourceOptionsType =
     Parameters<MainRequestsHandlers["Set"]>[0], Parameters<MainRequestsHandlers["Set"]>[1]>
 
     | SourceReaderWriterOptions<"REST_API", "SET",
-    BusboyFileStream, Parameters<MainRequestsHandlers["Set"]>[1]>
+    BusboyFileStream, (error: ErrorDto | null, value?: GetInfo | null) => void>
 
 export type DestinationOptionsType =
     | DestinationReaderWriterOptions<"GRPC", "GET",

@@ -1,11 +1,12 @@
-import type {ServerErrorResponse} from "@grpc/grpc-js/build/src/server-call";
-import type {Status} from "@grpc/grpc-js/build/src/constants";
+import {ErrorDto} from "@/endpoints/ErrorDto";
 
 export const ErrorMessage = {
-    create(code: Status, message: string | number | object | Error): ServerErrorResponse {
-        const errorMessage: string | object = this.createMessage(message);
-        const error = new MyError(code, errorMessage);
-        return error as ServerErrorResponse;
+    create(err: ErrorDto | string | object): ErrorDto {
+        return err instanceof ErrorDto
+            ? err
+            : err instanceof Error
+                ? new ErrorDto("unknown", err.toString())
+                : new ErrorDto("unknown", err);
     },
     createMessage(message: string | number | object | Error): string | object {
         switch (typeof message) {
@@ -18,10 +19,5 @@ export const ErrorMessage = {
             default:
                 return message ? message.toString() : "";
         }
-    }
-}
-
-class MyError {
-    constructor(public code: number, public message: string | number | object | Error) {
     }
 }

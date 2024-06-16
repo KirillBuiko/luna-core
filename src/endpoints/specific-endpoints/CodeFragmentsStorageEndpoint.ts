@@ -9,6 +9,8 @@ import type {CodeFInfoGet} from "@grpc-build/CodeFInfoGet";
 import type {CodeFPluginProcedureGet} from "@grpc-build/CodeFPluginProcedureGet";
 import type {CodeFData} from "@grpc-build/CodeFData";
 import type {CodeFPluginData} from "@grpc-build/CodeFPluginData";
+import {ErrorDto} from "@/endpoints/ErrorDto";
+import {strTemplates} from "@/endpoints/strTemplates";
 
 const p = "REST_API";
 type P = typeof p;
@@ -28,7 +30,8 @@ export class CodeFStorageEndpoint extends RestApiEndpoint {
     } as const;
 
     protected getGetHandler(info: GetInfo__Output): NarrowedDestination<P, "GET"> {
-        if (!(info.requestType && info.requestType in this.getMapper)) throw "Request type is not supported";
+        if (!(info.requestType && info.requestType in this.getMapper))
+            throw new ErrorDto("not-supported", strTemplates.notSupported("Request type"));
         const handlers: SpecHandlerReturnType<P, "GET"> =
             (this.getMapper[info.requestType].bind(this))(info);
         return {
@@ -39,7 +42,8 @@ export class CodeFStorageEndpoint extends RestApiEndpoint {
     }
 
     protected getSetHandler(info: DataInfo__Output): NarrowedDestination<P, "SET"> {
-        if (!(info.requestType && info.requestType in this.setMapper)) throw "Request type is not supported";
+        if (!(info.requestType && info.requestType in this.setMapper))
+            throw new ErrorDto("not-supported", strTemplates.notSupported("Request type"));
         const handlers: SpecHandlerReturnType<P, "SET"> =
             (this.setMapper[info.requestType].bind(this))(info);
         return {
@@ -55,7 +59,7 @@ export class CodeFStorageEndpoint extends RestApiEndpoint {
         const getInfoName = "codeFGet";
         const getInfo = info[info.infoType || ""] as CodeFGet;
         const reader = (async (): Promise<MultipartTransferObject> => {
-            if (!getInfo) throw `${getInfoName} is not provided`;
+            if (!getInfo) throw new ErrorDto("invalid-argument", strTemplates.notProvided(getInfoName));
             try {
                 const stream = await this.getStream({
                     url: `${this.config.host}/${getInfo.id}/target_code`
@@ -83,7 +87,7 @@ export class CodeFStorageEndpoint extends RestApiEndpoint {
         const getInfoName = "codeFInfoGet";
         const getInfo = info[info.infoType || ""] as CodeFInfoGet;
         const reader = (async (): Promise<MultipartTransferObject> => {
-            if (!getInfo) throw `${getInfoName} is not provided`;
+            if (!getInfo) throw new ErrorDto("invalid-argument", strTemplates.notProvided(getInfoName));
             try {
                 const json = await this.getJson({
                     url: `${this.config.host}/${getInfo.id}/info`
@@ -163,7 +167,7 @@ export class CodeFStorageEndpoint extends RestApiEndpoint {
         const getInfoName = "codeFPluginProcedureGet";
         const getInfo = info[info.infoType || ""] as CodeFPluginProcedureGet;
         const reader = (async (): Promise<MultipartTransferObject> => {
-            if (!getInfo) throw `${getInfoName} is not provided`;
+            if (!getInfo) throw new ErrorDto("invalid-argument", strTemplates.notProvided(getInfoName));
             try {
                 const value = await this.getJson({
                     url: `${this.config.host}/${getInfo.codeFId}` +
@@ -194,14 +198,16 @@ export class CodeFStorageEndpoint extends RestApiEndpoint {
         if (!setInfo) {
             return {
                 destWriter: new PassThrough(),
-                destReader: Promise.reject("dataInfo is not provided")
+                destReader: Promise.reject(
+                    new ErrorDto("invalid-argument", strTemplates.notProvided("dataInfo")))
             }
         }
 
         if (!setInfo.getInfo || !setInfo.getInfo.id || !setInfo.value) {
             return {
                 destWriter: new PassThrough(),
-                destReader: Promise.reject("dataInfo is not valid")
+                destReader: Promise.reject(
+                    new ErrorDto("invalid-argument", strTemplates.notValid("dataInfo")))
             }
         }
 
@@ -239,14 +245,16 @@ export class CodeFStorageEndpoint extends RestApiEndpoint {
         if (!setInfo) {
             return {
                 destWriter: new PassThrough(),
-                destReader: Promise.reject("dataInfo is not provided")
+                destReader: Promise.reject(
+                    new ErrorDto("invalid-argument", strTemplates.notProvided("dataInfo")))
             }
         }
 
         if (!setInfo.getInfo || !setInfo.getInfo.pluginId) {
             return {
                 destWriter: new PassThrough(),
-                destReader: Promise.reject("dataInfo is not valid")
+                destReader: Promise.reject(
+                    new ErrorDto("invalid-argument", strTemplates.notValid("dataInfo")))
             }
         }
 

@@ -11,7 +11,8 @@ type Keys<T> = T extends object ? keyof T : never;
 export type V2RouteDescriptor = {
     http: [HTTPMethods, string],
     requestType: RequestType__Output,
-    successCode: number, failCode: number,
+    successCode: number,
+    // failCode: number,
 } & ({
     requestName: "GET",
     params?: Keys<GetInfo[keyof GetInfo]>[],
