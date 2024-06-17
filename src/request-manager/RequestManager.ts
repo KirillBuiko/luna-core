@@ -48,8 +48,7 @@ export class RequestManager implements IRequestManager {
             console.log(`Failed to ${sourceOptions.requestName} ` +
                 `${info.requestType} from ${sourceOptions.protocol} to ${destName}: ${e}`);
             (new PipeErrorHandler()).sourceErrorEmit(sourceOptions,
-                ErrorMessage.create(
-                    new ErrorDto("unavailable", `Couldn't connect to endpoint ${destName}: ${e}`)));
+                ErrorMessage.create(e));
 
         }
     }

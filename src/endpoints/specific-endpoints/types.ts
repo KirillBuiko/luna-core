@@ -7,7 +7,7 @@ type SelectByName<M extends string, T extends string> =
     { [key in T]: key extends `${M}${infer R}` ? key : never }[T];
 export type SpecHandlerReturnType<P extends ProtocolType, R extends RequestName> =
     Pick<NarrowedDestination<P, R>, "destReader" | "destWriter">;
-type SpecRequestFunction<P extends ProtocolType, R extends RequestName> =
+type SpecRequestHandler<P extends ProtocolType, R extends RequestName> =
     (info: R extends "GET" ? GetInfo__Output : DataInfo__Output) => SpecHandlerReturnType<P, R>
-export type SpecRequestFunctions<P extends ProtocolType, R extends RequestName, RT extends string> =
-    { [request in SelectByName<RT, RequestType__Output>]?: SpecRequestFunction<P, R> }
+export type SpecRequestHandlers<P extends ProtocolType, R extends RequestName, RT extends string> =
+    { [request in SelectByName<RT, RequestType__Output>]?: SpecRequestHandler<P, R> }

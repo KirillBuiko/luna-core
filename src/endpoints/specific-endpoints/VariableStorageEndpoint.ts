@@ -2,20 +2,20 @@ import type {DataInfo__Output} from "@grpc-build/DataInfo";
 import type {GetInfo__Output} from "@grpc-build/GetInfo";
 import {RestApiEndpoint} from "@/endpoints/RestApiEndpoint";
 import type {MultipartTransferObject, NarrowedDestination} from "@/types/Types";
-import type {SpecHandlerReturnType, SpecRequestFunctions} from "@/endpoints/specific-endpoints/types";
+import type {SpecHandlerReturnType, SpecRequestHandlers} from "@/endpoints/specific-endpoints/types";
 
 const p = "REST_API";
 type P = typeof p;
 
 export class VariableStorageEndpoint extends RestApiEndpoint {
-    getMapper: SpecRequestFunctions<P, "GET", "VAR"> = {
+    getMapper: SpecRequestHandlers<P, "GET", "VAR"> = {
         VAR: this.varGetHandler,
         VAR_VALUE: this.varValueGetHandler,
         VAR_DELETE: this.varDeleteHandler,
         VAR_VALUE_DELETE: this.varValueDeleteHandler,
     } as const;
 
-    setMapper: SpecRequestFunctions<P, "SET", "VAR"> = {
+    setMapper: SpecRequestHandlers<P, "SET", "VAR"> = {
         VAR: this.varSetHandler,
         VAR_VALUE: this.varValueSetHandler,
         // VAR_ADD_FILE: this.codeFPluginSetHandler,

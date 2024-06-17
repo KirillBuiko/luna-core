@@ -13,7 +13,7 @@ import {reasonToHttpCode} from "@/servers/rest-api/v2/constants";
 
 export function V2RestApiActions(requestManager: IRequestManager) {
     function getURL(desc: V2RouteDescriptor) {
-        return desc.http[1] + (desc.params ? "/:" + (desc.requestName == "GET" ? desc.params[0] : desc.params) : "");
+        return desc.http[1] + (desc.params ? "/:" + (desc.requestName == "GET" ? desc.params[0] : desc.params + "?") : "");
     }
 
     function multipartReply(opts: { res: FastifyReply, code: number, value: MultipartTransferObject }) {
@@ -37,13 +37,15 @@ export function V2RestApiActions(requestManager: IRequestManager) {
         opts.res.headers(formData.getHeaders()).code(opts.code).send(formData);
     }
 
-    function basicReply(opts: { res: FastifyReply, code: number,
-        contentType: string, value?: string | object | undefined }) {
+    function basicReply(opts: {
+        res: FastifyReply, code: number,
+        contentType: string, value?: string | object | undefined
+    }) {
         opts.res.code(opts.code).type(opts.contentType).send(opts.value);
     }
 
-    function sendError(res: FastifyReply, error: ErrorDto) {
-        const code = reasonToHttpCode[error.reason];
+    function sendError(res: FastifyReply, error: ErrorDto | Error) {
+        const code = "reason" in error ? reasonToHttpCode[error.reason] : 500;
         res.code(code).headers({
             "Content-Type": "application/json"
         }).send(ErrorMessage.create(error));
@@ -57,7 +59,7 @@ export function V2RestApiActions(requestManager: IRequestManager) {
             throw e;
         }
 
-        const meta = parts.fields["meta"].value as object | undefined;
+        const meta = parts.fields["meta"]?.value as object | undefined;
 
         if (meta && typeof meta != "object") {
             throw new ErrorDto("invalid-argument", "Meta is not JSON or wrong content-type");
@@ -116,7 +118,9 @@ export function V2RestApiActions(requestManager: IRequestManager) {
                 const getInfo: GetInfo = {
                     requestType: desc.requestType,
                     infoType: "codeFGet",
-                    codeFGet: params as CodeFGet
+                    ...(Object.keys(params).length > 0 ? {
+                        codeFGet: params as CodeFGet
+                    } : {})
                 }
                 await requestManager.register({
                     protocol: "REST_API",
@@ -128,7 +132,7 @@ export function V2RestApiActions(requestManager: IRequestManager) {
                             defaultGetHandler({res, error, value, desc})
                         }
                     }
-                },  getInfo)
+                }, getInfo)
             }
             if (desc.requestName == "SET") {
                 try {
@@ -136,10 +140,12 @@ export function V2RestApiActions(requestManager: IRequestManager) {
                     const dataInfo: DataInfo = {
                         requestType: desc.requestType,
                         dataType: "BYTES",
-                        dataValueType: "codeF",
-                        codeF: {
-                            getInfo: params as CodeFGet
-                        }
+                        ...(Object.keys(params).length > 0 ? {
+                            dataValueType: "codeF",
+                            codeF: {
+                                getInfo: params as CodeFGet
+                            }
+                        } : {})
                     }
                     await requestManager.register({
                         protocol: "REST_API",

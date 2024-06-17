@@ -5,7 +5,7 @@ import type {
 } from "@/types/Types";
 import type {RemoteStaticEndpointConfigType} from "@/app/types/RemoteStaticEndpointConfigType";
 import type {GetInfo__Output} from "@grpc-build/GetInfo";
-import type {DataInfo} from "@grpc-build/DataInfo";
+import type {DataInfo, DataInfo__Output} from "@grpc-build/DataInfo";
 import {Endpoint} from "@/endpoints/Endpoint";
 import type {ProtocolType} from "@/types/Types";
 import FormData from "form-data";
@@ -14,6 +14,7 @@ import type {ReadableStream} from "stream/web";
 import busboy, {Busboy} from "busboy";
 import {randomBoundary} from "@/utils/randomBoundary";
 import {ErrorDto} from "@/endpoints/ErrorDto";
+import {strTemplates} from "@/endpoints/strTemplates";
 
 type FetchOptions = { url: string, method?: string, body?: string, contentType?: string }
 export type FieldType = { key: string, value: string, contentType?: string }
@@ -75,6 +76,18 @@ export class RestApiEndpoint extends Endpoint {
             destReader: transformedReader,
             destWriter: dataWriter
         }
+    }
+
+    getGetInfo(info: GetInfo__Output) {
+        const getInfo = info[info.infoType || ""];
+        if (!getInfo) throw new ErrorDto("invalid-argument", strTemplates.notProvided("Get info"));
+        return getInfo
+    }
+
+    getDataInfo(info: DataInfo__Output) {
+        const dataInfo = info[info.dataValueType || ""];
+        if (!dataInfo) throw new ErrorDto("invalid-argument", strTemplates.notProvided("Data info"));
+        return dataInfo;
     }
 
     async baseFetch<T>(options: FetchOptions): Promise<Response> {
