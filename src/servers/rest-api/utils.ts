@@ -21,14 +21,17 @@ export async function baseHandleMultipart(req: FastifyRequest): Promise<Multipar
     }
 
     let parts: MultipartParts = {fields: {}};
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 10; i++) {
         const part = (await multipart.next());
         if (part.done) break;
         if (part.value.type == "field") parts.fields[part.value.fieldname] = {
             value: part.value.value as string,
             contentType: part.value.mimetype
         };
-        if (part.value.type == "file") parts.stream = part.value.file;
+        if (part.value.type == "file") {
+            parts.stream = part.value.file;
+            break;
+        }
     }
 
     return parts;
