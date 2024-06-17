@@ -19,6 +19,7 @@ export interface ProtoGrpcType {
   CodeFPluginProcedureGet: MessageTypeDefinition
   CodeFPluginsListData: MessageTypeDefinition
   CodeFPluginsListGet: MessageTypeDefinition
+  Custom: MessageTypeDefinition
   DataInfo: MessageTypeDefinition
   DataStream: MessageTypeDefinition
   DataType: EnumTypeDefinition

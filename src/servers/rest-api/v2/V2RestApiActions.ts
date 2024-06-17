@@ -117,9 +117,9 @@ export function V2RestApiActions(requestManager: IRequestManager) {
             if (desc.requestName == "GET") {
                 const getInfo: GetInfo = {
                     requestType: desc.requestType,
-                    infoType: "codeFGet",
+                    infoType: "custom",
                     ...(Object.keys(params).length > 0 ? {
-                        codeFGet: params as CodeFGet
+                        custom: params as CodeFGet
                     } : {})
                 }
                 await requestManager.register({
@@ -141,9 +141,9 @@ export function V2RestApiActions(requestManager: IRequestManager) {
                         requestType: desc.requestType,
                         dataType: "BYTES",
                         ...(Object.keys(params).length > 0 ? {
-                            dataValueType: "codeF",
-                            codeF: {
-                                getInfo: params as CodeFGet
+                            dataValueType: "custom",
+                            custom: {
+                                getInfo: params
                             }
                         } : {})
                     }
