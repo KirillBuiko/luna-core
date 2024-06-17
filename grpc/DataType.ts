@@ -2,7 +2,6 @@
 
 export const DataType = {
   UNKNOWN_DATA_TYPE: 'UNKNOWN_DATA_TYPE',
-  FILE: 'FILE',
   TEXT: 'TEXT',
   JSON: 'JSON',
   LINK: 'LINK',
@@ -12,8 +11,6 @@ export const DataType = {
 export type DataType =
   | 'UNKNOWN_DATA_TYPE'
   | 0
-  | 'FILE'
-  | 1
   | 'TEXT'
   | 20
   | 'JSON'

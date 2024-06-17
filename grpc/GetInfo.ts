@@ -8,6 +8,7 @@ import type { CodeFPluginProcedureGet as _CodeFPluginProcedureGet, CodeFPluginPr
 import type { CodeFPluginsListGet as _CodeFPluginsListGet, CodeFPluginsListGet__Output as _CodeFPluginsListGet__Output } from './CodeFPluginsListGet';
 import type { VarGet as _VarGet, VarGet__Output as _VarGet__Output } from './VarGet';
 import type { VarValueGet as _VarValueGet, VarValueGet__Output as _VarValueGet__Output } from './VarValueGet';
+import type { Custom as _Custom, Custom__Output as _Custom__Output } from './Custom';
 
 export interface GetInfo {
   'requestType'?: (_RequestType);
@@ -19,7 +20,8 @@ export interface GetInfo {
   'varGet'?: (_VarGet | null);
   'varValueGet'?: (_VarValueGet | null);
   'response'?: (string);
-  'infoType'?: "codeFGet"|"codeFInfoGet"|"codeFPluginGet"|"codeFPluginProcedureGet"|"codeFPluginsListGet"|"varGet"|"varValueGet"|"response";
+  'custom'?: (_Custom | null);
+  'infoType'?: "codeFGet"|"codeFInfoGet"|"codeFPluginGet"|"codeFPluginProcedureGet"|"codeFPluginsListGet"|"varGet"|"varValueGet"|"response"|"custom";
 }
 
 export interface GetInfo__Output {
@@ -32,5 +34,6 @@ export interface GetInfo__Output {
   'varGet'?: (_VarGet__Output);
   'varValueGet'?: (_VarValueGet__Output);
   'response'?: (string);
-  'infoType': "codeFGet"|"codeFInfoGet"|"codeFPluginGet"|"codeFPluginProcedureGet"|"codeFPluginsListGet"|"varGet"|"varValueGet"|"response";
+  'custom'?: (_Custom__Output);
+  'infoType': "codeFGet"|"codeFInfoGet"|"codeFPluginGet"|"codeFPluginProcedureGet"|"codeFPluginsListGet"|"varGet"|"varValueGet"|"response"|"custom";
 }

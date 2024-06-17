@@ -10,6 +10,7 @@ import type { CodeFPluginProcedureData as _CodeFPluginProcedureData, CodeFPlugin
 import type { CodeFPluginData as _CodeFPluginData, CodeFPluginData__Output as _CodeFPluginData__Output } from './CodeFPluginData';
 import type { VarData as _VarData, VarData__Output as _VarData__Output } from './VarData';
 import type { VarValueData as _VarValueData, VarValueData__Output as _VarValueData__Output } from './VarValueData';
+import type { Custom as _Custom, Custom__Output as _Custom__Output } from './Custom';
 
 export interface DataInfo {
   'requestType'?: (_RequestType);
@@ -22,7 +23,8 @@ export interface DataInfo {
   'codeFPlugin'?: (_CodeFPluginData | null);
   'var'?: (_VarData | null);
   'varValue'?: (_VarValueData | null);
-  'dataValueType'?: "codeF"|"codeFInfo"|"codeFList"|"codeFPluginsList"|"codeFPluginProcedure"|"codeFPlugin"|"var"|"varValue";
+  'custom'?: (_Custom | null);
+  'dataValueType'?: "codeF"|"codeFInfo"|"codeFList"|"codeFPluginsList"|"codeFPluginProcedure"|"codeFPlugin"|"var"|"varValue"|"custom";
 }
 
 export interface DataInfo__Output {
@@ -36,5 +38,6 @@ export interface DataInfo__Output {
   'codeFPlugin'?: (_CodeFPluginData__Output);
   'var'?: (_VarData__Output);
   'varValue'?: (_VarValueData__Output);
-  'dataValueType': "codeF"|"codeFInfo"|"codeFList"|"codeFPluginsList"|"codeFPluginProcedure"|"codeFPlugin"|"var"|"varValue";
+  'custom'?: (_Custom__Output);
+  'dataValueType': "codeF"|"codeFInfo"|"codeFList"|"codeFPluginsList"|"codeFPluginProcedure"|"codeFPlugin"|"var"|"varValue"|"custom";
 }
