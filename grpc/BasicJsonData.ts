@@ -1,10 +1,10 @@
 // Original file: node_modules/luna-proto-files/data_messages.proto
 
 
-export interface CodeFInfoData {
+export interface BasicJsonData {
   'value'?: (string);
 }
 
-export interface CodeFInfoData__Output {
+export interface BasicJsonData__Output {
   'value'?: (string);
 }

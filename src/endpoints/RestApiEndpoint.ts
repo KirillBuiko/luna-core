@@ -15,8 +15,9 @@ import busboy, {Busboy} from "busboy";
 import {randomBoundary} from "@/utils/randomBoundary";
 import {ErrorDto} from "@/endpoints/ErrorDto";
 import {strTemplates} from "@/endpoints/strTemplates";
+import type {HTTPMethods} from "fastify/types/utils";
 
-type FetchOptions = { url: string, method?: string, body?: string, contentType?: string }
+type FetchOptions = { url: string, method?: HTTPMethods, body?: string, contentType?: string }
 export type FieldType = { key: string, value: string, contentType?: string }
 
 export class RestApiEndpoint extends Endpoint {
@@ -32,7 +33,7 @@ export class RestApiEndpoint extends Endpoint {
 
     protected getGetHandler(info: GetInfo__Output):
         NarrowedDestination<"REST_API", "GET"> {
-        const multipart = this.getMultipart({
+        const multipart = this.requestMultipart({
             url: `${this.config.host}/api/v1/get`,
             body: JSON.stringify(info)
         })
@@ -59,6 +60,7 @@ export class RestApiEndpoint extends Endpoint {
         NarrowedDestination<"REST_API", "SET"> {
         const {reader, dataWriter} = this.sendMultipart({
             url: `${this.config.host}/api/v1/set`,
+            method: "SET",
             streamName: "data",
             fields: [
                 {key: "info", value: JSON.stringify(info), contentType: "application/json"}
@@ -78,16 +80,20 @@ export class RestApiEndpoint extends Endpoint {
         }
     }
 
-    getGetInfo(info: GetInfo__Output) {
+    getGetInfo<T>(info: GetInfo__Output) {
         const getInfo = info[info.infoType || ""];
-        if (!getInfo) throw new ErrorDto("invalid-argument", strTemplates.notProvided("Get info"));
-        return getInfo
+        if (!getInfo) {
+            throw new ErrorDto("invalid-argument", strTemplates.notProvided("Get info"));
+        }
+        return getInfo as NonNullable<T>;
     }
 
-    getDataInfo(info: DataInfo__Output) {
+    getDataInfo<T>(info: DataInfo__Output) {
         const dataInfo = info[info.dataValueType || ""];
-        if (!dataInfo) throw new ErrorDto("invalid-argument", strTemplates.notProvided("Data info"));
-        return dataInfo;
+        if (!dataInfo) {
+            throw new ErrorDto("invalid-argument", strTemplates.notProvided("Data info"));
+        }
+        return dataInfo as NonNullable<T>;
     }
 
     async baseFetch<T>(options: FetchOptions): Promise<Response> {
@@ -106,25 +112,25 @@ export class RestApiEndpoint extends Endpoint {
         })
     }
 
-    async getStream(options: FetchOptions) {
+    async requestStream(options: FetchOptions) {
         return this.baseFetch(options).then(async (response) => {
             return Readable.fromWeb(response.body as ReadableStream);
         })
     }
 
-    async getText(options: FetchOptions) {
+    async requestText(options: FetchOptions) {
         return this.baseFetch(options).then(async (response) => {
             return await response.text();
         })
     }
 
-    async getJson(options: FetchOptions) {
+    async requestJson(options: FetchOptions) {
         return this.baseFetch(options).then(async (response) => {
             return await response.json();
         })
     }
 
-    getMultipart(options: FetchOptions) {
+    requestMultipart(options: FetchOptions) {
         return new Promise<{ fields: Record<string, string>, stream: Readable }>
         (async (resolve, reject) => {
             let response: Response;
@@ -165,34 +171,37 @@ export class RestApiEndpoint extends Endpoint {
         })
     }
 
-    sendMultipart(options: { url: string, fields: FieldType[], streamName: string }) {
+    sendMultipart(options: { url: string, method?: string, fields?: FieldType[], streamName: string }) {
         const multipartPass = new PassThrough();
         const form = new FormData();
         form.setBoundary(randomBoundary(24, 16));
-        options.fields.forEach((f) => {
+        options.fields?.forEach((f) => {
             form.append(f.key, f.value, {
                 contentType: f.contentType
             })
         });
-        // console.log(form.getLengthSync());
         form.append(options.streamName, multipartPass);
-        // console.log(form.getBoundary());
-        const reader = new Promise<string>((resolve, reject) =>
-            form.submit(options.url, (err, res) => {
+        const reader = new Promise<string>((resolve, reject) => {
+            const parsedUrl = new URL(options.url);
+            form.submit({
+                ...parsedUrl,
+                protocol: parsedUrl.protocol as "http:",
+                method: options.method
+            }, (err, res) => {
                 if (err) {
                     reject(new ErrorDto("unavailable", "Endpoint is not available: " + err));
                 } else {
                     res.on("data", (data) => {
-                        res.statusCode != 200 ? reject(new ErrorDto("endpoint-error", data.toString()))
+                        res.statusCode && res.statusCode > 399
+                            ? reject(new ErrorDto("endpoint-error", data.toString()))
                             : resolve(data.toString());
                     })
                 }
-            }))
+            })
+        })
         return {
             reader,
             dataWriter: multipartPass
         }
     }
 }
-
-

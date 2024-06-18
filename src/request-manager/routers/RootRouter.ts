@@ -59,27 +59,23 @@ export class RootRouter extends RequestRouter {
 
             // VARIABLE STORAGE
 
-            VAR: {
-                GET: "variablesStorage",
-                SET: "variablesStorage"
-            },
-            VAR_DELETE: {
-                GET: "variablesStorage",
-                SET: null
-            },
             VAR_VALUE: {
                 GET: "variablesStorage",
                 SET: "variablesStorage"
             },
             VAR_VALUE_DELETE: {
-                GET: "variablesStorage",
-                SET: null
-            },
-            VAR_ADD_FILE: {
                 GET: null,
                 SET: "variablesStorage"
             },
-            VAR_SET_FILE: {
+            VAR_VALUE_LIST: {
+                GET: "variablesStorage",
+                SET: null
+            },
+            VAR_VALUE_META: {
+                GET: "variablesStorage",
+                SET: "variablesStorage"
+            },
+            VAR_VALUE_META_DELETE: {
                 GET: null,
                 SET: "variablesStorage"
             }

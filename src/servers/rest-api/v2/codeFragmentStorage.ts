@@ -43,12 +43,12 @@ export const codeFragmentRouteDescriptors: V2RouteDescriptor[] = [
         http: ["GET", `${EndpointPrefix}/plugin`],
         successCode: HttpCode.OK,
         requestName: "GET", requestType: "CODE_F_PLUGIN",
-        params: ["pluginId"],
+        params: ["id"],
     },
     {
         http: ["POST", `${EndpointPrefix}/plugin`],
         successCode: HttpCode.EMPTY,
         requestName: "SET", requestType: "CODE_F_PLUGIN",
-        params: "pluginId",
+        params: "id",
     },
 ]

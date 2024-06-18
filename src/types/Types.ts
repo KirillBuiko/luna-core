@@ -74,3 +74,5 @@ export interface MultipartTransferObject<D = DataInfo, S = Readable> {
     info: D,
     data?: S
 }
+
+export type KeysOfObjects<T> = T extends object ? keyof T : never;

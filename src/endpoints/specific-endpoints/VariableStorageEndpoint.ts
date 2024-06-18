@@ -1,74 +1,46 @@
 import type {DataInfo__Output} from "@grpc-build/DataInfo";
 import type {GetInfo__Output} from "@grpc-build/GetInfo";
-import {RestApiEndpoint} from "@/endpoints/RestApiEndpoint";
-import type {MultipartTransferObject, NarrowedDestination} from "@/types/Types";
+import type {MultipartTransferObject} from "@/types/Types";
 import type {SpecHandlerReturnType, SpecRequestHandlers} from "@/endpoints/specific-endpoints/types";
+import {ErrorDto} from "@/endpoints/ErrorDto";
+import {strTemplates} from "@/endpoints/strTemplates";
+import {varValueUrls} from "@/endpoints/specific-endpoints/endpointsUrls";
+import {SpecificRestApiEndpoint} from "@/endpoints/specific-endpoints/SpecificRestApiEndpoint";
 
 const p = "REST_API";
 type P = typeof p;
 
-export class VariableStorageEndpoint extends RestApiEndpoint {
+export class VariableStorageEndpoint extends SpecificRestApiEndpoint {
     getMapper: SpecRequestHandlers<P, "GET", "VAR"> = {
-        VAR: this.varGetHandler,
-        VAR_VALUE: this.varValueGetHandler,
-        VAR_DELETE: this.varDeleteHandler,
-        VAR_VALUE_DELETE: this.varValueDeleteHandler,
+        VAR_VALUE: this.getValue,
+        VAR_VALUE_LIST: this.getList,
+        // VAR_VALUE_META: this,
     } as const;
 
     setMapper: SpecRequestHandlers<P, "SET", "VAR"> = {
-        VAR: this.varSetHandler,
-        VAR_VALUE: this.varValueSetHandler,
-        // VAR_ADD_FILE: this.codeFPluginSetHandler,
-        // VAR_SET_FILE: this.codeFPluginSetHandler,
+        VAR_VALUE: this.addValue,
+        VAR_VALUE_DELETE: this.deleteValue,
+        // VAR_VALUE_META: this.varValueMetaSetHandler,
+        // VAR_VALUE_META_DELETE: this.varValueMetaDeleteSetHandler,
     } as const;
 
-    protected getGetHandler(info: GetInfo__Output): NarrowedDestination<P, "GET"> {
-        if (!(info.requestType && info.requestType in this.getMapper)) throw "Request type is not supported";
-        const handlers: SpecHandlerReturnType<P, "GET"> =
-            (this.getMapper[info.requestType].bind(this))(info);
-        return {
-            requestName: "GET",
-            protocol: p,
-            ...handlers
-        }
-    }
+    protected getList(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
+        const name: keyof DataInfo__Output = "varValueList";
+        // const getName: keyof GetInfo = "";
+        // const getInfo = this.getGetInfo<GetInfo[typeof getName]>(info);
 
-    protected getSetHandler(info: DataInfo__Output): NarrowedDestination<P, "SET"> {
-        if (!(info.requestType && info.requestType in this.setMapper)) throw "Request type is not supported";
-        const handlers: SpecHandlerReturnType<P, "SET"> =
-            (this.setMapper[info.requestType].bind(this))(info);
-        return {
-            requestName: "SET",
-            protocol: p,
-            ...handlers
-        }
-    }
-
-    protected varGetHandler(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
-        // /storage/vars/get?id
-        const name: keyof DataInfo__Output = "var";
-        const getInfoName = "varGet";
-        const getInfo = info[getInfoName];
         const reader = (async (): Promise<MultipartTransferObject> => {
-            if (!getInfo) throw `${getInfoName} is not provided`;
             try {
-                const json = await this.getJson({
-                    url: `${this.config.host}/storage/vars/get?id=${getInfo.id}`
-                }) as VariableReceive;
+                const json = await this.requestJson({
+                    url: varValueUrls.getList[1](this.config.host),
+                    method: varValueUrls.getList[0]
+                })
                 return {
                     info: {
                         requestType: info.requestType,
                         dataType: "JSON",
                         dataValueType: name,
-                        [name]: {
-                            getInfo: {id: json.id},
-                            value: {
-                                name: json.name,
-                                value: json.value,
-                                type: json.type,
-                                valueId: json.value_id
-                            }
-                        }
+                        [name]: {value: json}
                     }
                 }
             } catch (e) {
@@ -80,198 +52,89 @@ export class VariableStorageEndpoint extends RestApiEndpoint {
         }
     }
 
-    protected varValueGetHandler(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
-        // /storage/values/get?id
-        const name: keyof DataInfo__Output = "varValue";
-        const getInfoName = "varValueGet";
-        const getInfo = info[getInfoName];
-        const reader = (async (): Promise<MultipartTransferObject> => {
-            if (!getInfo) throw `${getInfoName} is not provided`;
-            try {
-                const json = await this.getJson({
-                    url: `${this.config.host}/storage/values/get?id=${getInfo.id}`
-                }) as VariableValueReceive;
-                return {
-                    info: {
-                        requestType: info.requestType,
-                        dataType: "JSON",
-                        dataValueType: name,
-                        [name]: {
-                            getInfo: {id: json.id},
-                            value: {
-                                name: json.name,
-                                value: json.value,
-                                type: json.type,
-                            }
-                        }
-                    }
-                }
-            } catch (e) {
-                throw e;
-            }
-        })()
-        return {
-            destReader: reader
-        }
-    }
+    protected addValue(info: DataInfo__Output): SpecHandlerReturnType<P, "SET"> {
+        // const name: keyof DataInfo__Output = "varValue";
+        const getName: keyof GetInfo__Output = "varValueGet";
+        // const setInfo = this.getDataInfo<DataInfo__Output[typeof name]>(info);
 
-    protected varSetHandler(info: DataInfo__Output): SpecHandlerReturnType<P, "SET"> {
-        // /storage/vars/set
-        // const name: keyof DataInfo__Output = "codeF";
-        const setInfo = info["var"];
+        const {reader, dataWriter} = this.sendMultipart({
+            url: varValueUrls.addValue[1](this.config.host),
+            method: varValueUrls.addValue[0],
+            streamName: "file",
+        })
 
-        if (!setInfo) {
-            return {
-                destReader: Promise.reject("dataInfo is not provided")
-            }
-        }
-
-        if (!setInfo.value) {
-            return {
-                destReader: Promise.reject("dataInfo is not valid")
-            }
-        }
-
-        const reader = this.getJson({
-            url: `${this.config.host}/storage/vars/set`,
-            contentType: "application/json",
-            body: JSON.stringify({
-                id: setInfo.getInfo?.id,
-                type: setInfo.value.type,
-                name: setInfo.value.name,
-                value: setInfo.value.value,
-                value_id: setInfo.value.valueId
-            } as VariableSend)
-        });
-
-        const transformedReader = reader.then(async (response: VariableReceive): Promise<GetInfo__Output> => {
-            console.log(response)
+        const transformedReader = (async (): Promise<GetInfo__Output> => {
+            const id = await reader;
             return {
                 requestType: info.requestType,
-                infoType: "varGet",
-                varGet: {
-                    id: response.id
+                infoType: getName,
+                [getName]: {
+                    id: id
                 }
-            }
-        })
+            } as GetInfo__Output
+        })()
 
         return {
-            destReader: transformedReader
+            destReader: transformedReader,
+            destWriter: dataWriter
         }
     }
 
-    protected varValueSetHandler(info: DataInfo__Output): SpecHandlerReturnType<P, "SET"> {
-        // /storage/vars/set
-        // const name: keyof DataInfo__Output = "var";
-        const setInfo = info["varValue"];
+    protected getValue(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
+        // const name: keyof DataInfo__Output = "varValue";
+        const getName: keyof GetInfo__Output = "varValueGet";
+        const getInfo = this.getGetInfo<GetInfo__Output[typeof getName]>(info);
 
-        if (!setInfo) {
-            return {
-                destReader: Promise.reject("dataInfo is not provided")
-            }
-        }
-
-        if (!setInfo.value) {
-            return {
-                destReader: Promise.reject("dataInfo is not valid")
-            }
-        }
-
-        const reader = this.getJson({
-            url: `${this.config.host}/storage/values/set`,
-            contentType: "application/json",
-            body: JSON.stringify({
-                id: setInfo.getInfo?.id,
-                type: setInfo.value.type,
-                name: setInfo.value.name,
-                value: setInfo.value.value,
-            } as VariableValueSend)
-        })
-
-        const transformedReader = reader.then(async (response: VariableValueReceive): Promise<GetInfo__Output> => ({
-            requestType: info.requestType,
-            infoType: "varValueGet",
-            varValueGet: {
-                id: response.id
-            }
-        }))
-
-        return {
-            destReader: transformedReader
-        }
-    }
-
-    protected varDeleteHandler(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
-        // /storage/vars/get?id
-        const name: keyof DataInfo__Output = "var";
-        const getInfoName = "varGet";
-        const getInfo = info[getInfoName];
         const reader = (async (): Promise<MultipartTransferObject> => {
-            if (!getInfo) throw `${getInfoName} is not provided`;
+            if (!getInfo.id) {
+                throw new ErrorDto("invalid-argument", strTemplates.notValid("Data info"))
+            }
             try {
-                const text = await this.getText({
-                    url: `${this.config.host}/storage/vars/delete?id=${getInfo.id}`,
-                    method: "POST"
+                const stream = await this.requestStream({
+                    url: varValueUrls.getValue[1](this.config.host, getInfo.id),
+                    method: varValueUrls.getValue[0]
                 });
                 return {
                     info: {
                         requestType: info.requestType,
-                        dataValueType: name,
-                        [name]: {
-                            getInfo: {id: text},
-                        }
-                    }
+                        dataType: "BYTES"
+                    },
+                    data: stream
                 }
             } catch (e) {
                 throw e;
             }
         })()
+
         return {
             destReader: reader
         }
     }
 
-    protected varValueDeleteHandler(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
-        // /storage/vars/get?id
-        const name: keyof DataInfo__Output = "varValue";
-        const getInfoName = "varValueGet";
-        const getInfo = info[getInfoName];
-        const reader = (async (): Promise<MultipartTransferObject> => {
-            if (!getInfo) throw `${getInfoName} is not provided`;
+    protected deleteValue(info: DataInfo__Output): SpecHandlerReturnType<P, "SET"> {
+        const name: keyof DataInfo__Output = "varValueDelete";
+        // const getName: keyof GetInfo__Output = "var";
+        const setInfo = this.getDataInfo<DataInfo__Output[typeof name]>(info);
+
+        const reader = (async (): Promise<GetInfo__Output> => {
+            if (!setInfo.getInfo || !setInfo.getInfo.id) {
+                throw new ErrorDto("invalid-argument", strTemplates.notValid("Data info"))
+            }
             try {
-                const text = await this.getText({
-                    url: `${this.config.host}/storage/values/delete?id=${getInfo.id}`,
-                    method: "POST"
-                });
+                await this.baseFetch({
+                    url: varValueUrls.deleteValue[1](this.config.host, setInfo.getInfo.id),
+                    method: varValueUrls.deleteValue[0]
+                })
                 return {
-                    info: {
-                        requestType: info.requestType,
-                        dataValueType: name,
-                        [name]: {
-                            getInfo: {id: text},
-                        }
-                    }
-                }
+                    requestType: info.requestType,
+                } as GetInfo__Output
             } catch (e) {
                 throw e;
             }
         })()
+
         return {
             destReader: reader
         }
     }
 }
-
-interface VariableSend {
-    id: string;
-    name: string;
-    value: string;
-    type: "string" | "file";
-    value_id: string;
-}
-
-type VariableReceive = VariableSend;
-
-type VariableValueSend = Omit<VariableReceive, "value_id">;
-
-type VariableValueReceive = VariableValueSend;

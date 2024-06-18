@@ -10,6 +10,7 @@ import {baseHandleMultipart, MultipartParts} from "@/servers/rest-api/utils";
 import type {CodeFGet} from "@grpc-build/CodeFGet";
 import {ErrorDto} from "@/endpoints/ErrorDto";
 import {reasonToHttpCode} from "@/servers/rest-api/v2/constants";
+import type {BasicSettableJsonData} from "@grpc-build/BasicSettableJsonData";
 
 export function V2RestApiActions(requestManager: IRequestManager) {
     function getURL(desc: V2RouteDescriptor) {
@@ -143,8 +144,8 @@ export function V2RestApiActions(requestManager: IRequestManager) {
                         ...(Object.keys(params).length > 0 ? {
                             dataValueType: "custom",
                             custom: {
-                                getInfo: params
-                            }
+                                getInfo: params,
+                            } as BasicSettableJsonData
                         } : {})
                     }
                     await requestManager.register({

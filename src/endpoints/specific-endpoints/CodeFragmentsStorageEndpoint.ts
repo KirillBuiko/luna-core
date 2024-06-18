@@ -1,66 +1,42 @@
 import type {DataInfo__Output} from "@grpc-build/DataInfo";
-import type {GetInfo__Output} from "@grpc-build/GetInfo";
-import {RestApiEndpoint} from "@/endpoints/RestApiEndpoint";
-import type {MultipartTransferObject, NarrowedDestination} from "@/types/Types";
-import {PassThrough} from "node:stream";
+import type {GetInfo, GetInfo__Output} from "@grpc-build/GetInfo";
+import type {MultipartTransferObject} from "@/types/Types";
 import type {SpecHandlerReturnType, SpecRequestHandlers} from "@/endpoints/specific-endpoints/types";
-import type {CodeFGet} from "@grpc-build/CodeFGet";
-import type {CodeFInfoGet} from "@grpc-build/CodeFInfoGet";
-import type {CodeFPluginProcedureGet} from "@grpc-build/CodeFPluginProcedureGet";
-import type {CodeFData} from "@grpc-build/CodeFData";
-import type {CodeFPluginData} from "@grpc-build/CodeFPluginData";
 import {ErrorDto} from "@/endpoints/ErrorDto";
 import {strTemplates} from "@/endpoints/strTemplates";
+import {codeFApi} from "@/endpoints/specific-endpoints/endpointsUrls";
+import {SpecificRestApiEndpoint} from "@/endpoints/specific-endpoints/SpecificRestApiEndpoint";
 
 const p = "REST_API";
 type P = typeof p;
 
-export class CodeFStorageEndpoint extends RestApiEndpoint {
+export class CodeFStorageEndpoint extends SpecificRestApiEndpoint {
     getMapper: SpecRequestHandlers<P, "GET", "CODE_F"> = {
-        CODE_F: this.codeFGetHandler,
-        CODE_F_LIST: this.codeFListGetHandler,
-        CODE_F_INFO: this.codeFInfoHandler,
-        CODE_F_PLUGINS_LIST: this.codeFPluginsListGetHandler,
-        CODE_F_PLUGIN_PROCEDURE: this.codeFPluginProcedureGetHandler,
+        CODE_F: this.getFragment,
+        CODE_F_LIST: this.getList,
+        CODE_F_INFO: this.getInfo,
+        CODE_F_PLUGINS_LIST: this.getPluginsList,
+        CODE_F_PLUGIN_PROCEDURE: this.getPluginProcedure,
     } as const;
 
     setMapper: SpecRequestHandlers<P, "SET", "CODE_F"> = {
-        CODE_F: this.codeFSetHandler,
-        CODE_F_PLUGIN: this.codeFPluginSetHandler,
+        CODE_F: this.addFragment,
+        CODE_F_PLUGIN: this.addPlugin,
     } as const;
 
-    protected getGetHandler(info: GetInfo__Output): NarrowedDestination<P, "GET"> {
-        if (!(info.requestType && info.requestType in this.getMapper))
-            throw new ErrorDto("not-supported", strTemplates.notSupported("Request type"));
-        const handlers: SpecHandlerReturnType<P, "GET"> =
-            (this.getMapper[info.requestType].bind(this))(info);
-        return {
-            requestName: "GET",
-            protocol: p,
-            ...handlers
-        }
-    }
-
-    protected getSetHandler(info: DataInfo__Output): NarrowedDestination<P, "SET"> {
-        if (!(info.requestType && info.requestType in this.setMapper))
-            throw new ErrorDto("not-supported", strTemplates.notSupported("Request type"));
-        const handlers: SpecHandlerReturnType<P, "SET"> =
-            (this.setMapper[info.requestType].bind(this))(info);
-        return {
-            requestName: "SET",
-            protocol: p,
-            ...handlers
-        }
-    }
-
-    protected codeFGetHandler(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
-        // /{className}/target_code
+    protected getFragment(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
         // const name: keyof DataInfo__Output = "codeF";
-        const getInfo = this.getGetInfo(info) as CodeFGet;
+        const getName: keyof GetInfo = "codeFGet";
+        const getInfo = this.getGetInfo<GetInfo[typeof getName]>(info);
+
         const reader = (async (): Promise<MultipartTransferObject> => {
+            if (!getInfo.id) {
+                throw new ErrorDto("invalid-argument", strTemplates.notValid("Data info"))
+            }
             try {
-                const stream = await this.getStream({
-                    url: `${this.config.host}/${getInfo.id}/target_code`
+                const stream = await this.requestStream({
+                    url: codeFApi.getFragment[1](this.config.host, getInfo.id),
+                    method: codeFApi.getFragment[0]
                 });
                 return {
                     info: {
@@ -79,14 +55,19 @@ export class CodeFStorageEndpoint extends RestApiEndpoint {
         }
     }
 
-    protected codeFInfoHandler(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
-        // /{codeF_id}/info
+    protected getInfo(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
         const name: keyof DataInfo__Output = "codeFInfo";
-        const getInfo = this.getGetInfo(info) as CodeFInfoGet;
+        const getName: keyof GetInfo = "codeFInfoGet";
+        const getInfo = this.getGetInfo<GetInfo[typeof getName]>(info);
+
         const reader = (async (): Promise<MultipartTransferObject> => {
+            if (!getInfo.id) {
+                throw new ErrorDto("invalid-argument", strTemplates.notValid("Data info"))
+            }
             try {
-                const json = await this.getJson({
-                    url: `${this.config.host}/${getInfo.id}/info`
+                const json = await this.requestJson({
+                    url: codeFApi.getInfo[1](this.config.host, getInfo.id),
+                    method: codeFApi.getInfo[0]
                 })
                 return {
                     info: {
@@ -105,12 +86,16 @@ export class CodeFStorageEndpoint extends RestApiEndpoint {
         }
     }
 
-    protected codeFListGetHandler(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
+    protected getList(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
         const name: keyof DataInfo__Output = "codeFList";
+        // const getName: keyof GetInfo = "";
+        // const getInfo = this.getGetInfo<GetInfo[typeof getName]>(info);
+
         const reader = (async (): Promise<MultipartTransferObject> => {
             try {
-                const json = await this.getJson({
-                    url: `${this.config.host}/code_fragments`
+                const json = await this.requestJson({
+                    url: codeFApi.getList[1](this.config.host),
+                    method: codeFApi.getList[0]
                 })
                 return {
                     info: {
@@ -129,13 +114,15 @@ export class CodeFStorageEndpoint extends RestApiEndpoint {
         }
     }
 
-    protected codeFPluginsListGetHandler(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
-        // /plugins
+    protected getPluginsList(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
         const name: keyof DataInfo__Output = "codeFPluginsList";
+        // const getName: keyof GetInfo = "";
+        // const getInfo = this.getGetInfo<GetInfo[typeof getName]>(info);
+
         const reader = (async (): Promise<MultipartTransferObject> => {
             try {
-                const json = await this.getJson({
-                    url: `${this.config.host}/plugins`
+                const json = await this.requestJson({
+                    url: codeFApi.getPluginsList[1](this.config.host)
                 })
                 return {
                     info: {
@@ -154,15 +141,19 @@ export class CodeFStorageEndpoint extends RestApiEndpoint {
         }
     }
 
-    protected codeFPluginProcedureGetHandler(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
-        // /{codeF_id}/pluginProcedure
-        const name: keyof DataInfo__Output = "codeFPluginProcedure";
-        const getInfo = this.getGetInfo(info) as CodeFPluginProcedureGet;
+    protected getPluginProcedure(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
+        const name: keyof DataInfo__Output = "codeFPluginsList";
+        const getName: keyof GetInfo = "codeFPluginProcedureGet";
+        const getInfo = this.getGetInfo<GetInfo[typeof getName]>(info);
+
         const reader = (async (): Promise<MultipartTransferObject> => {
+            if (!getInfo.codeFId || !getInfo.type) {
+                throw new ErrorDto("invalid-argument", strTemplates.notValid("Data info"))
+            }
             try {
-                const value = await this.getJson({
-                    url: `${this.config.host}/${getInfo.codeFId}` +
-                        `/pluginProcedure?type=${getInfo.type}`
+                const value = await this.requestJson({
+                    url: codeFApi.getPluginProcedure[1](this.config.host, getInfo.codeFId, getInfo.type),
+                    method: codeFApi.getPluginProcedure[0]
                 });
                 return {
                     info: {
@@ -181,10 +172,10 @@ export class CodeFStorageEndpoint extends RestApiEndpoint {
         }
     }
 
-    protected codeFSetHandler(info: DataInfo__Output): SpecHandlerReturnType<P, "SET"> {
-        // /add_codeF
-        // const name: keyof DataInfo__Output = "codeF";
-        const setInfo = this.getDataInfo(info) as CodeFData;
+    protected addFragment(info: DataInfo__Output): SpecHandlerReturnType<P, "SET"> {
+        const name: keyof DataInfo__Output = "codeF";
+        // const getName: keyof GetInfo = "codeFGet";
+        const setInfo = this.getDataInfo<DataInfo__Output[typeof name]>(info);
 
         if (!setInfo.getInfo || !setInfo.getInfo.id || !setInfo.value) {
             throw new ErrorDto("invalid-argument", strTemplates.notValid("Data info"))
@@ -193,7 +184,8 @@ export class CodeFStorageEndpoint extends RestApiEndpoint {
         // console.log(setInfo.getInfo.id);
 
         const {reader, dataWriter} = this.sendMultipart({
-            url: `${this.config.host}/add_code_fragment`,
+            url: codeFApi.addFragment[1](this.config.host),
+            method: codeFApi.addFragment[0],
             streamName: "file",
             fields: [
                 {key: "id", value: setInfo.getInfo.id, contentType: "text/plain"},
@@ -202,7 +194,7 @@ export class CodeFStorageEndpoint extends RestApiEndpoint {
         })
 
         const transformedReader = (async (): Promise<GetInfo__Output> => {
-            const response = await reader;
+            await reader;
             return {
                 requestType: info.requestType
             } as GetInfo__Output
@@ -214,37 +206,26 @@ export class CodeFStorageEndpoint extends RestApiEndpoint {
         }
     }
 
-    protected codeFPluginSetHandler(info: DataInfo__Output): SpecHandlerReturnType<P, "SET"> {
-        // /add_plugin
-        // const name: keyof DataInfo__Output = "codeFPlugin";
-        const setInfo = info[info.dataValueType] as CodeFPluginData;
+    protected addPlugin(info: DataInfo__Output): SpecHandlerReturnType<P, "SET"> {
+        const name: keyof DataInfo__Output = "codeFPlugin";
+        // const getName: keyof GetInfo = "codeF";
+        const setInfo = this.getDataInfo<DataInfo__Output[typeof name]>(info);
 
-        if (!setInfo) {
-            return {
-                destWriter: new PassThrough(),
-                destReader: Promise.reject(
-                    new ErrorDto("invalid-argument", strTemplates.notProvided("Data info")))
-            }
-        }
-
-        if (!setInfo.getInfo || !setInfo.getInfo.pluginId) {
-            return {
-                destWriter: new PassThrough(),
-                destReader: Promise.reject(
-                    new ErrorDto("invalid-argument", strTemplates.notValid("Data info")))
-            }
+        if (!setInfo.getInfo || !setInfo.getInfo.id) {
+            throw new ErrorDto("invalid-argument", strTemplates.notValid("Data info"))
         }
 
         const {reader, dataWriter} = this.sendMultipart({
-            url: `${this.config.host}/add_plugin`,
+            url: codeFApi.addPlugin[1](this.config.host),
+            method: codeFApi.addPlugin[0],
             streamName: "file",
             fields: [
-                {key: "id", value: setInfo.getInfo.pluginId},
+                {key: "id", value: setInfo.getInfo.id},
             ]
         })
 
         const transformedReader = (async (): Promise<GetInfo__Output> => {
-            const response = await reader;
+            await reader;
             return {
                 requestType: info.requestType
             } as GetInfo__Output
@@ -255,13 +236,4 @@ export class CodeFStorageEndpoint extends RestApiEndpoint {
             destWriter: dataWriter
         }
     }
-
-    //-  /codeFs
-    //?  /{codeF_id}/plugins <=codeF_id
-    //-  /plugins
-    //-  /{codeF_id}/info <=codeF_id
-    //   /add_codeF <=MP(id, json, file) (json?)=>
-    //   /add_plugin <=MP(id, file) (json?)=>
-    //-  /{codeF_id}/pluginProcedure
-    //-  /{className}/target_code
 }
