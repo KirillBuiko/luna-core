@@ -7,10 +7,11 @@ import type {DataInfo} from "@grpc-build/DataInfo";
 import type {MultipartTransferObject} from "@/types/Types";
 import {ErrorMessage} from "@/utils/ErrorMessage";
 import {baseHandleMultipart, MultipartParts} from "@/servers/rest-api/utils";
-import type {CodeFGet} from "@grpc-build/CodeFGet";
 import {ErrorDto} from "@/endpoints/ErrorDto";
 import {reasonToHttpCode} from "@/servers/rest-api/v2/constants";
 import type {BasicSettableJsonData} from "@grpc-build/BasicSettableJsonData";
+import type {BasicIdGet} from "@grpc-build/BasicIdGet";
+import type {BusboyFileStream} from "@fastify/busboy";
 
 export function V2RestApiActions(requestManager: IRequestManager) {
     function getURL(desc: V2RouteDescriptor) {
@@ -20,7 +21,7 @@ export function V2RestApiActions(requestManager: IRequestManager) {
     function multipartReply(opts: { res: FastifyReply, code: number, value: MultipartTransferObject }) {
         const formData = new FormData();
         const meta = {}
-        formData.append("info", JSON.stringify(meta), {
+        formData.append("meta", JSON.stringify(meta), {
             contentType: "application/json"
         });
         const dataInfo = opts.value.info.dataValueType && opts.value.info.dataValueType in opts.value.info &&
@@ -31,7 +32,7 @@ export function V2RestApiActions(requestManager: IRequestManager) {
                 contentType: "application/octet-stream"
             });
         } else if (opts.value.data) {
-            formData.append("data", opts.value, {
+            formData.append("data", opts.value.data, {
                 contentType: "application/octet-stream"
             });
         }
@@ -52,7 +53,10 @@ export function V2RestApiActions(requestManager: IRequestManager) {
         }).send(ErrorMessage.create(error));
     }
 
-    async function handleMultipart(req: FastifyRequest) {
+    async function handleMultipart(req: FastifyRequest): Promise<{meta?: object, stream?: BusboyFileStream}> {
+        if(!req.headers["content-type"]?.startsWith("multipart") && req.body == undefined) {
+            return {};
+        }
         let parts: MultipartParts | undefined = undefined;
         try {
             parts = await baseHandleMultipart(req);
@@ -120,7 +124,7 @@ export function V2RestApiActions(requestManager: IRequestManager) {
                     requestType: desc.requestType,
                     infoType: "custom",
                     ...(Object.keys(params).length > 0 ? {
-                        custom: params as CodeFGet
+                        custom: params as BasicIdGet
                     } : {})
                 }
                 await requestManager.register({

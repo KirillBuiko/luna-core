@@ -1,4 +1,4 @@
-POST http://{{host}}:5051/api/v2/code-f-storage/fragment
+POST http://{{host}}:5051/api/v2/var-storage/value
 Content-Type: multipart/form-data; boundary=boundary
 
 --boundary
@@ -6,7 +6,5 @@ Content-Disposition: form-data;name="data"
 Content-Type: application/octet-stream
 
 {
-  "name": "core-test-5",
-  "type": "string",
-  "value": "54321"
+  "test": "json"
 }

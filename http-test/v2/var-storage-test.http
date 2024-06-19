@@ -1,0 +1,49 @@
+### Set value
+POST http://{{host}}:5051/api/v2/var-storage/value
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data;name="data"
+Content-Type: application/octet-stream
+
+{"test": "object"}
+
+> {%
+    client.test("Value is added", function() {
+        client.assert(response.status < 299, `Response status is not success`);
+        client.assert(response.contentType.mimeType == "application/json", "Response is not json");
+        client.assert("id" in response.body, "Response has no id");
+        client.global.set("id", response.body.id)
+    });
+%}
+
+### Get value
+GET http://{{host}}:5051/api/v2/var-storage/value/{{id}}
+
+> {%
+    client.test("ValStorage has value", function() {
+        client.assert(response.status < 299, `Response status is not success`);
+        client.assert(response.contentType.mimeType.startsWith("multipart"), "Content-Type is not multipart");
+        client.log(typeof response.body);
+        client.log(response.body);
+    });
+%}
+
+### Delete value
+DELETE http://{{host}}:5051/api/v2/var-storage/value/{{id}}
+
+> {%
+    client.test("Delete value from ValStorage", function() {
+        client.assert(response.status < 299, `Response status is not success`);
+        client.assert(!!response.contentType.mimeType, "Response has content type");
+    });
+%}
+
+### False get value
+GET http://{{host}}:5051/api/v2/var-storage/value/{{id}}
+
+> {%
+    client.test("ValStorage must not has value", function() {
+        client.assert(response.status > 399, `False response is success`);
+    });
+%}

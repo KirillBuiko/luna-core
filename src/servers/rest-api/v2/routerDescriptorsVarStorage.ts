@@ -17,7 +17,7 @@ export const varStorageRouteDescriptors: V2RouteDescriptor[] = [
     },
     {
         http: ["POST", `${EndpointPrefix}/value`],
-        successCode: HttpCode.EMPTY,
+        successCode: HttpCode.CREATED,
         requestName: "SET", requestType: "VAR_VALUE",
     },
     {

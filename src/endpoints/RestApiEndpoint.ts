@@ -10,14 +10,14 @@ import {Endpoint} from "@/endpoints/Endpoint";
 import type {ProtocolType} from "@/types/Types";
 import FormData from "form-data";
 import {PassThrough, Readable} from "node:stream";
-import type {ReadableStream} from "stream/web";
 import busboy, {Busboy} from "busboy";
 import {randomBoundary} from "@/utils/randomBoundary";
 import {ErrorDto} from "@/endpoints/ErrorDto";
 import {strTemplates} from "@/endpoints/strTemplates";
 import type {HTTPMethods} from "fastify/types/utils";
+import fetch, {Response} from "node-fetch";
 
-type FetchOptions = { url: string, method?: HTTPMethods, body?: string, contentType?: string }
+type FetchOptions = { url: string, method?: HTTPMethods, body?: string | Readable, contentType?: string }
 export type FieldType = { key: string, value: string, contentType?: string }
 
 export class RestApiEndpoint extends Endpoint {
@@ -97,11 +97,17 @@ export class RestApiEndpoint extends Endpoint {
     }
 
     async baseFetch<T>(options: FetchOptions): Promise<Response> {
-        options.contentType = options.body && (options.contentType || "application/json");
+        const contentType = options.contentType || options.body && (typeof options.body == "string"
+            ? "application/json"
+            : "application/octet-stream");
+        console.log(options.url);
+        const body = options.body && (typeof options.body == "string"
+            ? options.body
+            : options.body);
         return fetch(options.url, {
             method: options.method ? options.method : (options.body ? "POST" : "GET"),
-            body: options.body,
-            headers: {...(options.contentType ? {'Content-Type': options.contentType} : {})}
+            body: body,
+            headers: {...(contentType ? {'Content-Type': contentType} : {})}
         }).catch(err => {
             throw new ErrorDto("unavailable", "Endpoint is not available: " + err);
         }).then(async response => {
@@ -114,7 +120,7 @@ export class RestApiEndpoint extends Endpoint {
 
     async requestStream(options: FetchOptions) {
         return this.baseFetch(options).then(async (response) => {
-            return Readable.fromWeb(response.body as ReadableStream);
+            return response.body as Readable;
         })
     }
 
@@ -146,7 +152,7 @@ export class RestApiEndpoint extends Endpoint {
 
             try {
                 bb = busboy({headers: {"content-type": response.headers.get("content-type") ?? undefined}});
-                Readable.fromWeb(response.body as ReadableStream).pipe(bb);
+                response.body.pipe(bb);
             } catch (err) {
                 return reject(new ErrorDto("endpoint-error", "Multipart handling error: " + err));
             }
@@ -202,6 +208,21 @@ export class RestApiEndpoint extends Endpoint {
         return {
             reader,
             dataWriter: multipartPass
+        }
+    }
+
+    sendStream(options: { url: string, method?: HTTPMethods }) {
+        const streamPass = new PassThrough();
+        const reader = this.baseFetch({
+            ...options,
+            contentType: "application/octet-stream",
+            body: streamPass
+        }).then(async (response) => {
+            return await response.text();
+        })
+        return {
+            reader,
+            dataWriter: streamPass
         }
     }
 }

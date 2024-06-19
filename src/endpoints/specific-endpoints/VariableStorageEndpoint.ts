@@ -4,11 +4,12 @@ import type {MultipartTransferObject} from "@/types/Types";
 import type {SpecHandlerReturnType, SpecRequestHandlers} from "@/endpoints/specific-endpoints/types";
 import {ErrorDto} from "@/endpoints/ErrorDto";
 import {strTemplates} from "@/endpoints/strTemplates";
-import {varValueUrls} from "@/endpoints/specific-endpoints/endpointsUrls";
+import {varStorageUrls} from "@/endpoints/specific-endpoints/endpointsUrls";
 import {SpecificRestApiEndpoint} from "@/endpoints/specific-endpoints/SpecificRestApiEndpoint";
 
 const p = "REST_API";
 type P = typeof p;
+const urls = varStorageUrls;
 
 export class VariableStorageEndpoint extends SpecificRestApiEndpoint {
     getMapper: SpecRequestHandlers<P, "GET", "VAR"> = {
@@ -32,8 +33,8 @@ export class VariableStorageEndpoint extends SpecificRestApiEndpoint {
         const reader = (async (): Promise<MultipartTransferObject> => {
             try {
                 const json = await this.requestJson({
-                    url: varValueUrls.getList[1](this.config.host),
-                    method: varValueUrls.getList[0]
+                    url: urls.getList[1](this.config.host),
+                    method: urls.getList[0]
                 })
                 return {
                     info: {
@@ -57,10 +58,9 @@ export class VariableStorageEndpoint extends SpecificRestApiEndpoint {
         const getName: keyof GetInfo__Output = "varValueGet";
         // const setInfo = this.getDataInfo<DataInfo__Output[typeof name]>(info);
 
-        const {reader, dataWriter} = this.sendMultipart({
-            url: varValueUrls.addValue[1](this.config.host),
-            method: varValueUrls.addValue[0],
-            streamName: "file",
+        const {reader, dataWriter} = this.sendStream({
+            url: urls.addValue[1](this.config.host),
+            method: urls.addValue[0],
         })
 
         const transformedReader = (async (): Promise<GetInfo__Output> => {
@@ -91,8 +91,8 @@ export class VariableStorageEndpoint extends SpecificRestApiEndpoint {
             }
             try {
                 const stream = await this.requestStream({
-                    url: varValueUrls.getValue[1](this.config.host, getInfo.id),
-                    method: varValueUrls.getValue[0]
+                    url: urls.getValue[1](this.config.host, getInfo.id),
+                    method: urls.getValue[0]
                 });
                 return {
                     info: {
@@ -122,8 +122,8 @@ export class VariableStorageEndpoint extends SpecificRestApiEndpoint {
             }
             try {
                 await this.baseFetch({
-                    url: varValueUrls.deleteValue[1](this.config.host, setInfo.getInfo.id),
-                    method: varValueUrls.deleteValue[0]
+                    url: urls.deleteValue[1](this.config.host, setInfo.getInfo.id),
+                    method: urls.deleteValue[0]
                 })
                 return {
                     requestType: info.requestType,

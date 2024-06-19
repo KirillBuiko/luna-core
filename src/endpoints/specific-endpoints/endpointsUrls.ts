@@ -9,12 +9,14 @@ export const codeFApi = {
     addPlugin: ["POST", (host: string) => `${host}/add_plugin`],
 } as const;
 
-export const varValueUrls = {
-    getList: ["GET", (host: string) => `${host}/`],
-    addValue: ["POST", (host: string) => `${host}/`],
-    getValue: ["GET", (host: string, id: string) => `${host}/${id}`],
-    deleteValue: ["DELETE", (host: string, id: string) => `${host}/${id}`],
-    getMeta: ["GET", (host: string, id: string) => `${host}/${id}/meta`],
-    setMeta: ["PUT", (host: string, id: string) => `${host}/${id}/meta`],
-    deleteMeta: ["DELETE", (host: string, id: string) => `${host}/${id}/meta`],
+const valStoragePrefix = "/valst";
+
+export const varStorageUrls = {
+    getList: ["GET", (host: string) => `${host}${valStoragePrefix}/`],
+    addValue: ["POST", (host: string) => `${host}${valStoragePrefix}/`],
+    getValue: ["GET", (host: string, id: string) => `${host}${valStoragePrefix}/${id}`],
+    deleteValue: ["DELETE", (host: string, id: string) => `${host}${valStoragePrefix}/${id}`],
+    getMeta: ["GET", (host: string, id: string) => `${host}${valStoragePrefix}/${id}/meta`],
+    setMeta: ["PUT", (host: string, id: string) => `${host}${valStoragePrefix}/${id}/meta`],
+    deleteMeta: ["DELETE", (host: string, id: string) => `${host}${valStoragePrefix}/${id}/meta`],
 } as const;
