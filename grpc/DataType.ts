@@ -2,6 +2,7 @@
 
 export const DataType = {
   UNKNOWN_DATA_TYPE: 'UNKNOWN_DATA_TYPE',
+  NONE: 'NONE',
   TEXT: 'TEXT',
   JSON: 'JSON',
   LINK: 'LINK',
@@ -11,6 +12,8 @@ export const DataType = {
 export type DataType =
   | 'UNKNOWN_DATA_TYPE'
   | 0
+  | 'NONE'
+  | 10
   | 'TEXT'
   | 20
   | 'JSON'

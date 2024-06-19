@@ -144,7 +144,7 @@ export function V2RestApiActions(requestManager: IRequestManager) {
                     const multipart = await handleMultipart(req);
                     const dataInfo: DataInfo = {
                         requestType: desc.requestType,
-                        dataType: "BYTES",
+                        dataType: multipart.stream ? "BYTES" : "NONE",
                         ...(Object.keys(params).length > 0 ? {
                             dataValueType: "custom",
                             custom: {
