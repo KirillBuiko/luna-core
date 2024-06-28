@@ -2,7 +2,7 @@ import type {DataInfo__Output} from "@grpc-build/DataInfo";
 import type {GetInfo__Output} from "@grpc-build/GetInfo";
 import {RestApiEndpoint} from "@/endpoints/RestApiEndpoint";
 import type {NarrowedDestination} from "@/types/Types";
-import type {SpecHandlerReturnType} from "@/endpoints/specific-endpoints/types";
+import type {SpecHandlerReturnType, SpecificRequestDescriptor} from "@/endpoints/specific-endpoints/types";
 import {ErrorDto} from "@/endpoints/ErrorDto";
 import {strTemplates} from "@/endpoints/strTemplates";
 
@@ -36,5 +36,14 @@ export abstract class SpecificRestApiEndpoint extends RestApiEndpoint {
             protocol: p,
             ...handlers
         }
+    }
+
+    protected getSpecificEndpoint(descriptor: SpecificRequestDescriptor) {
+        // 1. Check requirements
+        // 2. If SET, create pipeThrough for input, if 'json/text' wait stream and handle, if 'stream' - pipe.
+        //    If 'mp' pack in FormData. Make url and send prepared data.
+        // 3. Handle response: if 'json/text' wait and handle, if 'stream' pipe, if 'mp' - get stream name from options
+        //    and send to data (+transform). If 'empty' - ...
+        // 4. Pack reader with info promises, return writer + reader
     }
 }

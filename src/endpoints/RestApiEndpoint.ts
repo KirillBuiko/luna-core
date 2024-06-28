@@ -112,7 +112,10 @@ export class RestApiEndpoint extends Endpoint {
             throw new ErrorDto("unavailable", "Endpoint is not available: " + err);
         }).then(async response => {
             if (!response.ok) {
-                throw new ErrorDto("endpoint-error", await response.text());
+                throw new ErrorDto("endpoint-error", {
+                    code: response.status,
+                    response: await response.text()
+                });
             }
             return response;
         })

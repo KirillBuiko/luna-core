@@ -31,7 +31,7 @@ export class PipeBuilder implements IPipeBuilder {
         } else {
             (new PipeErrorHandler()).bothErrorEmit(sourceOptions, destOptions,
                 ErrorMessage.create(
-                    new ErrorDto("not-supported", "Protocols pair or method is not supported")));
+                    new ErrorDto("not-supported", "Protocols pair or type is not supported")));
         }
     }
 }
