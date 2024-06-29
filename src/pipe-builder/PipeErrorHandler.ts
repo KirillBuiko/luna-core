@@ -1,4 +1,4 @@
-import type {DestinationOptionsType, SourceOptionsType} from "@/types/Types";
+import type {DestinationOptionsType, SourceOptionsType} from "@/types/general";
 import type {ErrorDto} from "@/endpoints/ErrorDto";
 import {PlainErrorDto} from "@/endpoints/ErrorDto";
 

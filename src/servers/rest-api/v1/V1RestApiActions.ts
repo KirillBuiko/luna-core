@@ -5,7 +5,7 @@ import type {IRequestManager} from "@/request-manager/types/IRequestManager";
 import type {FastifyReply, FastifyRequest} from "fastify";
 import {ErrorMessage} from "@/utils/ErrorMessage";
 import FormData from "form-data";
-import type {MultipartTransferObject} from "@/types/Types";
+import type {MultipartTransferObject} from "@/types/general";
 import {baseHandleMultipart, MultipartParts} from "@/servers/rest-api/utils";
 import type {DataInfo} from "@grpc-build/DataInfo";
 import {EndedStream} from "@/utils/EndedStream";

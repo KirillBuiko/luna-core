@@ -4,7 +4,7 @@ import type {GetInfo} from "@grpc-build/GetInfo";
 import FormData from "form-data";
 import type {FastifyReply, FastifyRequest} from "fastify";
 import type {DataInfo} from "@grpc-build/DataInfo";
-import type {MultipartTransferObject} from "@/types/Types";
+import type {MultipartTransferObject} from "@/types/general";
 import {ErrorMessage} from "@/utils/ErrorMessage";
 import {baseHandleMultipart, MultipartParts} from "@/servers/rest-api/utils";
 import {ErrorDto} from "@/endpoints/ErrorDto";

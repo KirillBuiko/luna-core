@@ -1,6 +1,6 @@
 import type {DataInfo__Output} from "@grpc-build/DataInfo";
 import type {GetInfo__Output} from "@grpc-build/GetInfo";
-import type {MultipartTransferObject} from "@/types/Types";
+import type {MultipartTransferObject} from "@/types/general";
 import type {SpecHandlerReturnType, SpecRequestHandlers} from "@/endpoints/specific-endpoints/types";
 import {ErrorDto} from "@/endpoints/ErrorDto";
 import {strTemplates} from "@/endpoints/strTemplates";

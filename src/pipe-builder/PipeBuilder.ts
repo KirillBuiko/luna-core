@@ -1,7 +1,7 @@
 import type {
     DestinationOptionsType, ProtocolType,
     SourceOptionsType
-} from "@/types/Types";
+} from "@/types/general";
 import {ErrorMessage} from "@/utils/ErrorMessage";
 import {PipeErrorHandler} from "@/pipe-builder/PipeErrorHandler";
 import {RestToRestPipe} from "@/pipe-builder/pipes/RestToRestPipe";

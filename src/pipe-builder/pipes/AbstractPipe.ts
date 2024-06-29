@@ -1,6 +1,6 @@
 import type {
     NarrowedDestination, NarrowedSource, ProtocolType,
-} from "@/types/Types";
+} from "@/types/general";
 import {PipeErrorHandler} from "@/pipe-builder/PipeErrorHandler";
 import {ErrorMessage} from "@/utils/ErrorMessage";
 import type {IPipeBuilder} from "@/request-manager/types/IPipeBuilder";

@@ -2,14 +2,14 @@ import type {EndpointStatus} from "@/request-manager/types/IEndpoint";
 import type {
     MultipartTransferObject,
     NarrowedDestination
-} from "@/types/Types";
+} from "@/types/general";
 import type {RemoteStaticEndpointConfigType} from "@/app/types/RemoteStaticEndpointConfigType";
 import type {GetInfo__Output} from "@grpc-build/GetInfo";
 import type {DataInfo, DataInfo__Output} from "@grpc-build/DataInfo";
 import {Endpoint} from "@/endpoints/Endpoint";
-import type {ProtocolType} from "@/types/Types";
+import type {ProtocolType} from "@/types/general";
 import FormData from "form-data";
-import {PassThrough, Readable} from "node:stream";
+import {PassThrough, Readable, Writable} from "node:stream";
 import busboy, {Busboy} from "busboy";
 import {randomBoundary} from "@/utils/randomBoundary";
 import {ErrorDto} from "@/endpoints/ErrorDto";
@@ -17,7 +17,10 @@ import {strTemplates} from "@/endpoints/strTemplates";
 import type {HTTPMethods} from "fastify/types/utils";
 import fetch, {Response} from "node-fetch";
 
-type FetchOptions = { url: string, method?: HTTPMethods, body?: string | Readable, contentType?: string }
+type FetchOptions = {
+    url: string, method?: HTTPMethods, body?: string | Readable, contentType?: string,
+    headers?: Record<string, string>
+}
 export type FieldType = { key: string, value: string, contentType?: string }
 
 export class RestApiEndpoint extends Endpoint {
@@ -60,7 +63,7 @@ export class RestApiEndpoint extends Endpoint {
         NarrowedDestination<"REST_API", "SET"> {
         const {reader, dataWriter} = this.sendMultipart({
             url: `${this.config.host}/api/v1/set`,
-            method: "SET",
+            method: "POST",
             streamName: "data",
             fields: [
                 {key: "info", value: JSON.stringify(info), contentType: "application/json"}
@@ -68,8 +71,7 @@ export class RestApiEndpoint extends Endpoint {
         })
 
         const transformedReader = (async () => {
-            const resolved = await reader;
-            return JSON.parse(resolved);
+            return await (await reader).json();
         })()
 
         return {
@@ -107,7 +109,7 @@ export class RestApiEndpoint extends Endpoint {
         return fetch(options.url, {
             method: options.method ? options.method : (options.body ? "POST" : "GET"),
             body: body,
-            headers: {...(contentType ? {'Content-Type': contentType} : {})}
+            headers: {...(contentType ? {'Content-Type': contentType} : {}), ...options.headers}
         }).catch(err => {
             throw new ErrorDto("unavailable", "Endpoint is not available: " + err);
         }).then(async response => {
@@ -180,7 +182,8 @@ export class RestApiEndpoint extends Endpoint {
         })
     }
 
-    sendMultipart(options: { url: string, method?: string, fields?: FieldType[], streamName: string }) {
+    createMultipartBody(options: { method?: string, fields?: FieldType[], streamName?: string }):
+        { writer: Writable, reader: Readable, headers: Record<string, string> } {
         const multipartPass = new PassThrough();
         const form = new FormData();
         form.setBoundary(randomBoundary(24, 16));
@@ -189,28 +192,25 @@ export class RestApiEndpoint extends Endpoint {
                 contentType: f.contentType
             })
         });
-        form.append(options.streamName, multipartPass);
-        const reader = new Promise<string>((resolve, reject) => {
-            const parsedUrl = new URL(options.url);
-            form.submit({
-                ...parsedUrl,
-                protocol: parsedUrl.protocol as "http:",
-                method: options.method
-            }, (err, res) => {
-                if (err) {
-                    reject(new ErrorDto("unavailable", "Endpoint is not available: " + err));
-                } else {
-                    res.on("data", (data) => {
-                        res.statusCode && res.statusCode > 399
-                            ? reject(new ErrorDto("endpoint-error", data.toString()))
-                            : resolve(data.toString());
-                    })
-                }
-            })
+        options.streamName && form.append(options.streamName, multipartPass);
+        return {
+            writer: multipartPass,
+            reader: form,
+            headers: form.getHeaders()
+        };
+    }
+
+    sendMultipart(options: { url: string, method?: HTTPMethods, fields?: FieldType[], streamName?: string }) {
+        const mp = this.createMultipartBody(options);
+        const reader = this.baseFetch({
+            url: options.url,
+            method: options.method || "POST",
+            body: mp.reader,
+            headers: mp.headers
         })
         return {
             reader,
-            dataWriter: multipartPass
+            dataWriter: mp.writer
         }
     }
 
@@ -220,8 +220,6 @@ export class RestApiEndpoint extends Endpoint {
             ...options,
             contentType: "application/octet-stream",
             body: streamPass
-        }).then(async (response) => {
-            return await response.text();
         })
         return {
             reader,

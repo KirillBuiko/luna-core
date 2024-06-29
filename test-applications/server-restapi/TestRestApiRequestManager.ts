@@ -1,4 +1,4 @@
-import type {NarrowedSource} from "@/types/Types";
+import type {NarrowedSource} from "@/types/general";
 import type {IRequestManager} from "@/request-manager/types/IRequestManager";
 import type {GetInfo} from "@grpc-build/GetInfo";
 import type {DataInfo} from "@grpc-build/DataInfo";

@@ -12,8 +12,8 @@
     "outDir": "./dist",
     "baseUrl": ".",
     "paths": {
-      "@grpc-build/*": [ "./grpc/*" ],
-      "@/*": [ "./src/*" ]
+      "@grpc-build/*": [ "grpc/*" ],
+      "@/*": [ "src/*" ]
     }
   },
   "ts-node": {

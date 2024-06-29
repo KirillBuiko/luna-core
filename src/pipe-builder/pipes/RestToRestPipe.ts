@@ -1,5 +1,5 @@
-import type {NarrowedDestination} from "@/types/Types";
-import type {NarrowedSource} from "@/types/Types";
+import type {NarrowedDestination} from "@/types/general";
+import type {NarrowedSource} from "@/types/general";
 import {ErrorMessage} from "@/utils/ErrorMessage";
 import {AbstractPipe} from "@/pipe-builder/pipes/AbstractPipe";
 import type {ErrorDto} from "@/endpoints/ErrorDto";

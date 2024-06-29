@@ -1,7 +1,7 @@
 import type {EndpointStatus} from "@/request-manager/types/IEndpoint";
 import type {
     NarrowedDestination, ProtocolType
-} from "@/types/Types";
+} from "@/types/general";
 import type {RemoteStaticEndpointConfigType} from "@/app/types/RemoteStaticEndpointConfigType";
 import * as protoLoader from "@grpc/proto-loader";
 import {grpcLoadOptions} from "@/grpcLoadOptions";

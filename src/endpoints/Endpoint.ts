@@ -1,7 +1,7 @@
 import type {EndpointStatus, IEndpoint} from "@/request-manager/types/IEndpoint";
 import type {GetInfo__Output} from "@grpc-build/GetInfo";
 import type {DataInfo} from "@grpc-build/DataInfo";
-import type {DestinationOptionsType, ProtocolType, RequestName} from "@/types/Types";
+import type {DestinationOptionsType, ProtocolType, RequestName} from "@/types/general";
 import type {RemoteStaticEndpointConfigType} from "@/app/types/RemoteStaticEndpointConfigType";
 
 export abstract class Endpoint implements IEndpoint {

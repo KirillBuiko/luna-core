@@ -1,6 +1,6 @@
 import type {
     DestinationOptionsType, RequestName,
-} from "@/types/Types";
+} from "@/types/general";
 import type {GetInfo} from "@grpc-build/GetInfo";
 import type {DataInfo} from "@grpc-build/DataInfo";
 import type {RemoteStaticEndpointConfigType} from "@/app/types/RemoteStaticEndpointConfigType";

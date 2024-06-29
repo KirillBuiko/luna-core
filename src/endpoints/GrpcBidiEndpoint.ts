@@ -2,7 +2,7 @@ import {Endpoint} from "@/endpoints/Endpoint";
 import type {MainRequestsHandlers} from "@grpc-build/MainRequests";
 import type {GetInfo} from "@grpc-build/GetInfo";
 import type {DataInfo} from "@grpc-build/DataInfo";
-import type {ProtocolType} from "@/types/Types";
+import type {ProtocolType} from "@/types/general";
 
 // export class GrpcBidiEndpoint extends Endpoint {
 //     protocol: ProtocolType = "GRPC";
