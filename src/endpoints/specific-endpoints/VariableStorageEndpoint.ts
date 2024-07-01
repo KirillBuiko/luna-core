@@ -64,7 +64,7 @@ export class VariableStorageEndpoint extends SpecificRestApiEndpoint {
         })
 
         const transformedReader = (async (): Promise<GetInfo__Output> => {
-            const id = await reader;
+            const id = await (await reader).text();
             return {
                 requestType: info.requestType,
                 infoType: getName,

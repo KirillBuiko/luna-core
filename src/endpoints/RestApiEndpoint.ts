@@ -17,7 +17,7 @@ import {strTemplates} from "@/endpoints/strTemplates";
 import type {HTTPMethods} from "fastify/types/utils";
 import fetch, {Response} from "node-fetch";
 
-type FetchOptions = {
+export type FetchOptions = {
     url: string, method?: HTTPMethods, body?: string | Readable, contentType?: string,
     headers?: Record<string, string>
 }
@@ -109,7 +109,7 @@ export class RestApiEndpoint extends Endpoint {
         return fetch(options.url, {
             method: options.method ? options.method : (options.body ? "POST" : "GET"),
             body: body,
-            headers: {...(contentType ? {'Content-Type': contentType} : {}), ...options.headers}
+            headers: {...(contentType && {'Content-Type': contentType}), ...options.headers}
         }).catch(err => {
             throw new ErrorDto("unavailable", "Endpoint is not available: " + err);
         }).then(async response => {

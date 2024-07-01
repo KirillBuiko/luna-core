@@ -1,6 +1,5 @@
 import type {BusboyFileStream} from "@fastify/busboy";
 import type {MainRequestsClient, MainRequestsHandlers} from "@grpc-build/MainRequests";
-import type {Readable, Writable} from "node:stream";
 import type {DataInfo} from "@grpc-build/DataInfo";
 import type {ErrorDto} from "@/endpoints/ErrorDto";
 import type {GetInfo} from "@grpc-build/GetInfo";
@@ -55,7 +54,7 @@ export type DestinationOptionsType =
     Promise<MultipartTransferObject>, void>
 
     | DestinationReaderWriterOptions<"REST_API", "SET",
-    Promise<NonNullable<Parameters<Parameters<MainRequestsClient["Set"]>[0]>[1]>>, Writable>
+    Promise<NonNullable<Parameters<Parameters<MainRequestsClient["Set"]>[0]>[1]>>, NodeJS.WritableStream>
 
 export type NarrowedOptionsType<
     ProtocolT extends ProtocolType, RequestN extends RequestName, OptionsT> =
@@ -70,9 +69,12 @@ export type NarrowedDestination<
     ProtocolT extends ProtocolType = ProtocolType, RequestN extends RequestName = RequestName> =
     NarrowedOptionsType<ProtocolT, RequestN, DestinationOptionsType>
 
-export interface MultipartTransferObject<D = DataInfo, S = Readable> {
+export interface MultipartTransferObject<D = DataInfo, S = NodeJS.ReadableStream> {
     info: D,
     data?: S
 }
+
+export type KeysNotType<T, V> = {[K in keyof T]-?: (T[K] & {}) extends V ? never : K}[keyof T]
+export type FieldsNotType<T, T2> = T[KeysNotType<T, T2>] & {}
 
 export type KeysOfObjects<T> = T extends object ? keyof T : never;
