@@ -4,12 +4,12 @@ import type {MultipartTransferObject} from "@/types/general";
 import type {SpecHandlerReturnType, SpecRequestHandlers} from "@/endpoints/specific-endpoints/types";
 import {ErrorDto} from "@/endpoints/ErrorDto";
 import {strTemplates} from "@/endpoints/strTemplates";
-import {varStorageUrls} from "@/endpoints/specific-endpoints/endpointsUrls";
+import {varStorageUris} from "@/endpoints/specific-endpoints/endpointsUrls";
 import {SpecificRestApiEndpoint} from "@/endpoints/specific-endpoints/SpecificRestApiEndpoint";
 
 const p = "REST_API";
 type P = typeof p;
-const urls = varStorageUrls;
+const urls = varStorageUris;
 
 export class VariableStorageEndpoint extends SpecificRestApiEndpoint {
     getMapper: SpecRequestHandlers<P, "GET", "VAR"> = {
@@ -26,31 +26,39 @@ export class VariableStorageEndpoint extends SpecificRestApiEndpoint {
     } as const;
 
     protected getList(info: GetInfo_Strict): SpecHandlerReturnType<P, "GET"> {
-        const name: keyof DataInfo_Strict = "varValueList";
+        // const name: keyof DataInfo_Strict = "varValueList";
         // const getName: keyof GetInfo = "";
         // const getInfo = this.getGetInfo<GetInfo[typeof getName]>(info);
 
-        const reader = (async (): Promise<MultipartTransferObject> => {
-            try {
-                const json = await this.requestJson({
-                    url: urls.getList[1](this.config.host),
-                    method: urls.getList[0]
-                })
-                return {
-                    info: {
-                        requestType: info.requestType,
-                        dataType: "JSON",
-                        dataValueType: name,
-                        [name]: {value: json}
-                    }
-                }
-            } catch (e) {
-                throw e;
+        // const reader = (async (): Promise<MultipartTransferObject> => {
+        //     try {
+        //         const json = await this.requestJson({
+        //             url: urls.getList[1](this.config.host),
+        //             method: urls.getList[0]
+        //         })
+        //         return {
+        //             info: {
+        //                 requestType: info.requestType,
+        //                 dataType: "JSON",
+        //                 dataValueType: name,
+        //                 [name]: {value: json}
+        //             }
+        //         }
+        //     } catch (e) {
+        //         throw e;
+        //     }
+        // })()
+        // return {
+        //     destReader: reader
+        // }
+        return this.getSpecificEndpoint(info, {
+            type: "GET",
+            names: ["varValueGet", "varValueList"],
+            inputOptions: {
+                uri: () => urls.getList[1](),
+                httpMethod: urls.getList[0]
             }
-        })()
-        return {
-            destReader: reader
-        }
+        })
     }
 
     protected addValue(info: DataInfo_Strict): SpecHandlerReturnType<P, "SET"> {
@@ -59,7 +67,7 @@ export class VariableStorageEndpoint extends SpecificRestApiEndpoint {
         // const setInfo = this.getDataInfo<DataInfo_Strict[typeof name]>(info);
 
         const {reader, dataWriter} = this.sendStream({
-            url: urls.addValue[1](this.config.host),
+            url: urls.addValue[1](),
             method: urls.addValue[0],
         })
 
@@ -91,7 +99,7 @@ export class VariableStorageEndpoint extends SpecificRestApiEndpoint {
             }
             try {
                 const stream = await this.requestStream({
-                    url: urls.getValue[1](this.config.host, getInfo.id),
+                    url: urls.getValue[1](getInfo.id),
                     method: urls.getValue[0]
                 });
                 return {
@@ -122,7 +130,7 @@ export class VariableStorageEndpoint extends SpecificRestApiEndpoint {
             }
             try {
                 await this.baseFetch({
-                    url: urls.deleteValue[1](this.config.host, setInfo.getInfo.id),
+                    url: urls.deleteValue[1](setInfo.getInfo.id),
                     method: urls.deleteValue[0]
                 })
                 return {

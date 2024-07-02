@@ -101,7 +101,7 @@ export abstract class SpecificRestApiEndpoint extends RestApiEndpoint {
                         : options.text!(text)
                 })
             } else if (options.stream) {
-                return passThrough.pipe(options.stream);
+                return passThrough.end(options.stream);
             }
             return passThrough;
         })()
@@ -149,9 +149,9 @@ export abstract class SpecificRestApiEndpoint extends RestApiEndpoint {
         }
         if (options.json || options.text) {
             const string = options.json
-                ? await response.json().then(json => JSON.stringify(options.json!(json)))
-                : await response.text().then(text => options.text!(text))
-            passThrough.write(Buffer.from(string))
+                ? await (response.json().then(json => JSON.stringify(options.json!(json))))
+                : await (response.text().then(text => options.text!(text)))
+            passThrough.end(Buffer.from(string))
             return passThrough;
         }
         if (options.stream) {
@@ -187,7 +187,7 @@ export abstract class SpecificRestApiEndpoint extends RestApiEndpoint {
             throw new ErrorDto("invalid-argument", strTemplates.notProvided(key));
         }
         // 2. Prepare body and url.
-        const url = descriptor.inputOptions.url(getInfo);
+        const url = this.config.host + descriptor.inputOptions.uri(getInfo);
         const body = descriptor.type == "GET" || descriptor.inputOptions.bodyType == "none"
             ? undefined
             : this.getOutputBody(getInfo, descriptor);

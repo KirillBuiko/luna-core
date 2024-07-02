@@ -1,22 +1,22 @@
-export const codeFApi = {
-    getFragment: ["GET", (host: string, id: string) => `${host}/${id}/target_code`],
-    getInfo: ["GET", (host: string, id: string) => `${host}/${id}/info`],
-    getList: ["GET", (host: string) => `${host}/code_fragments`],
-    getPluginsList: ["GET", (host: string) => `${host}/plugins`],
-    getPluginProcedure: ["GET", (host: string, codeFId: string, type: string) =>
-        `${host}/${codeFId}/pluginProcedure?type=${type}`],
-    addFragment: ["POST", (host: string) => `${host}/add_code_fragment`],
-    addPlugin: ["POST", (host: string) => `${host}/add_plugin`],
+export const codeFUris = {
+    getFragment: ["GET", (id: string) => `/${id}/target_code`],
+    getInfo: ["GET", (id: string) => `/${id}/info`],
+    getList: ["GET", () => `/code_fragments`],
+    getPluginsList: ["GET", () => `/plugins`],
+    getPluginProcedure: ["GET", (codeFId: string, type: string) =>
+        `/${codeFId}/pluginProcedure?type=${type}`],
+    addFragment: ["POST", () => `/add_code_fragment`],
+    addPlugin: ["POST", () => `/add_plugin`]
 } as const;
 
 const valStoragePrefix = "/valst";
 
-export const varStorageUrls = {
-    getList: ["GET", (host: string) => `${host}${valStoragePrefix}/`],
-    addValue: ["POST", (host: string) => `${host}${valStoragePrefix}/`],
-    getValue: ["GET", (host: string, id: string) => `${host}${valStoragePrefix}/${id}`],
-    deleteValue: ["DELETE", (host: string, id: string) => `${host}${valStoragePrefix}/${id}`],
-    getMeta: ["GET", (host: string, id: string) => `${host}${valStoragePrefix}/${id}/meta`],
-    setMeta: ["PUT", (host: string, id: string) => `${host}${valStoragePrefix}/${id}/meta`],
-    deleteMeta: ["DELETE", (host: string, id: string) => `${host}${valStoragePrefix}/${id}/meta`],
+export const varStorageUris = {
+    getList: ["GET", () => `${valStoragePrefix}/`],
+    addValue: ["POST", () => `${valStoragePrefix}/`],
+    getValue: ["GET", (id: string) => `${valStoragePrefix}/${id}`],
+    deleteValue: ["DELETE", (id: string) => `${valStoragePrefix}/${id}`],
+    getMeta: ["GET", (id: string) => `${valStoragePrefix}/${id}/meta`],
+    setMeta: ["PUT", (id: string) => `${valStoragePrefix}/${id}/meta`],
+    deleteMeta: ["DELETE", (id: string) => `${valStoragePrefix}/${id}/meta`],
 } as const;

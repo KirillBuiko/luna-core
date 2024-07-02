@@ -52,7 +52,7 @@ export type SpecificRequestBaseDescriptor<N extends keyof GetInfo_Strict = KeysN
     names: [N, keyof DataInfo_Strict],
     requirements?: KeysOfObjects<I>[],
     inputOptions: {
-        url: (info?: I) => string,
+        uri: (info?: I) => string,
         httpMethod: HTTPMethods
     },
     outputOptions?: {

@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/rest-api-stream-test/server.ts",
   "scripts": {
-    "start-core": "ts-node ./src/app/main.ts",
+    "start-core": "bun ./src/app/main.ts",
     "update-protos": "npm i github:KirillBuiko/luna-proto-files & npm run build-proto-types",
     "REMOVE-and-build-proto": "rmdir /Q /S \"./grpc/build\" & npm run build-proto-types",
     "build-proto-types": "powershell ./scripts/build-types.ps1",

@@ -4,7 +4,7 @@ import type {MultipartTransferObject} from "@/types/general";
 import type {SpecHandlerReturnType, SpecRequestHandlers} from "@/endpoints/specific-endpoints/types";
 import {ErrorDto} from "@/endpoints/ErrorDto";
 import {strTemplates} from "@/endpoints/strTemplates";
-import {codeFApi} from "@/endpoints/specific-endpoints/endpointsUrls";
+import {codeFUris} from "@/endpoints/specific-endpoints/endpointsUrls";
 import {SpecificRestApiEndpoint} from "@/endpoints/specific-endpoints/SpecificRestApiEndpoint";
 
 const p = "REST_API";
@@ -35,8 +35,8 @@ export class CodeFStorageEndpoint extends SpecificRestApiEndpoint {
             }
             try {
                 const stream = await this.requestStream({
-                    url: codeFApi.getFragment[1](this.config.host, getInfo.id),
-                    method: codeFApi.getFragment[0]
+                    url: this.config.host + codeFUris.getFragment[1](getInfo.id),
+                    method: codeFUris.getFragment[0]
                 });
                 return {
                     info: {
@@ -66,8 +66,8 @@ export class CodeFStorageEndpoint extends SpecificRestApiEndpoint {
             }
             try {
                 const json = await this.requestJson({
-                    url: codeFApi.getInfo[1](this.config.host, getInfo.id),
-                    method: codeFApi.getInfo[0]
+                    url: this.config.host + codeFUris.getInfo[1](getInfo.id),
+                    method: codeFUris.getInfo[0]
                 })
                 return {
                     info: {
@@ -94,8 +94,8 @@ export class CodeFStorageEndpoint extends SpecificRestApiEndpoint {
         const reader = (async (): Promise<MultipartTransferObject> => {
             try {
                 const json = await this.requestJson({
-                    url: codeFApi.getList[1](this.config.host),
-                    method: codeFApi.getList[0]
+                    url: this.config.host + codeFUris.getList[1](),
+                    method: codeFUris.getList[0]
                 })
                 return {
                     info: {
@@ -122,7 +122,7 @@ export class CodeFStorageEndpoint extends SpecificRestApiEndpoint {
         const reader = (async (): Promise<MultipartTransferObject> => {
             try {
                 const json = await this.requestJson({
-                    url: codeFApi.getPluginsList[1](this.config.host)
+                    url: this.config.host + codeFUris.getPluginsList[1]()
                 })
                 return {
                     info: {
@@ -152,8 +152,8 @@ export class CodeFStorageEndpoint extends SpecificRestApiEndpoint {
             }
             try {
                 const value = await this.requestJson({
-                    url: codeFApi.getPluginProcedure[1](this.config.host, getInfo.codeFId, getInfo.type),
-                    method: codeFApi.getPluginProcedure[0]
+                    url: this.config.host + codeFUris.getPluginProcedure[1](getInfo.codeFId, getInfo.type),
+                    method: codeFUris.getPluginProcedure[0]
                 });
                 return {
                     info: {
@@ -184,8 +184,8 @@ export class CodeFStorageEndpoint extends SpecificRestApiEndpoint {
         // console.log(setInfo.getInfo.id);
 
         const {reader, dataWriter} = this.sendMultipart({
-            url: codeFApi.addFragment[1](this.config.host),
-            method: codeFApi.addFragment[0],
+            url: this.config.host + codeFUris.addFragment[1](),
+            method: codeFUris.addFragment[0],
             streamName: "file",
             fields: [
                 {key: "id", value: setInfo.getInfo.id, contentType: "text/plain"},
@@ -216,8 +216,8 @@ export class CodeFStorageEndpoint extends SpecificRestApiEndpoint {
         }
 
         const {reader, dataWriter} = this.sendMultipart({
-            url: codeFApi.addPlugin[1](this.config.host),
-            method: codeFApi.addPlugin[0],
+            url: this.config.host + codeFUris.addPlugin[1](),
+            method: codeFUris.addPlugin[0],
             streamName: "file",
             fields: [
                 {key: "id", value: setInfo.getInfo.id},
