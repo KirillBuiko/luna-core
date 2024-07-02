@@ -49,7 +49,8 @@ type SpecificSetResponseTransformers<I = FieldsNotType<GetInfo_Strict, string>> 
 
 export type SpecificRequestBaseDescriptor<N extends keyof GetInfo_Strict = KeysNotType<GetInfo_Strict, string>,
     I = GetInfo_Strict[N]> = {
-    names: [N, keyof DataInfo_Strict],
+    // names: [N, keyof DataInfo_Strict],
+    getInfoName?: N,
     requirements?: KeysOfObjects<I>[],
     inputOptions: {
         uri: (info?: I) => string,
@@ -69,6 +70,7 @@ export type SpecificRequestGetDescriptor<N extends keyof GetInfo_Strict = KeysNo
 export type SpecificRequestSetDescriptor<N extends keyof GetInfo_Strict = KeysNotType<GetInfo_Strict, string>,
     I = GetInfo_Strict[N]> = SpecificRequestBaseDescriptor<N, I> & {
     type: "SET",
+    getInfoName: N,
     inputOptions: {
         bodyType: "json" | "bytes" | "text" | "mp" | "none",
     } & SpecificSetBodyTransformers<I>,

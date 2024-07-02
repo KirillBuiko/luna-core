@@ -224,8 +224,8 @@ export abstract class SpecificRestApiEndpoint extends RestApiEndpoint {
                 return {
                     requestType: info.requestType,
                     ...(transformed && {
-                        infoType: descriptor.names[0],
-                        [descriptor.names[0]]: transformed
+                        infoType: descriptor.getInfoName,
+                        [descriptor.getInfoName]: transformed
                     })
                 } as GetInfo_Strict
             })()

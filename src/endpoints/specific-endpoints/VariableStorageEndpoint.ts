@@ -53,7 +53,6 @@ export class VariableStorageEndpoint extends SpecificRestApiEndpoint {
         // }
         return this.getSpecificEndpoint(info, {
             type: "GET",
-            names: ["varValueGet", "varValueList"],
             inputOptions: {
                 uri: () => urls.getList[1](),
                 httpMethod: urls.getList[0]
