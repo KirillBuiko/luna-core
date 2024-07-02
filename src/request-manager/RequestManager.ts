@@ -1,4 +1,4 @@
-import type {RequestType__Output} from "@grpc-build/RequestType";
+import type {RequestType_Strict} from "@grpc-build/RequestType";
 import type {
     SourceOptionsType
 } from "@/types/general";
@@ -27,7 +27,7 @@ export class RequestManager implements IRequestManager {
         let destName: EndpointName | null = null;
         try {
             destName =
-                await this.router.getEndpointName(info.requestType as RequestType__Output, sourceOptions.requestName);
+                await this.router.getEndpointName(info.requestType as RequestType_Strict, sourceOptions.requestName);
         } catch (e) {
         }
         console.log(`Request ${sourceOptions.requestName} of type ${info.requestType} ` +

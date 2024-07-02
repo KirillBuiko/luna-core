@@ -1,6 +1,6 @@
 // Original file: node_modules/luna-proto-files/requests.proto
 
-import type { DataInfo as _DataInfo, DataInfo__Output as _DataInfo__Output } from './DataInfo';
+import type { DataInfo as _DataInfo, DataInfo_Strict as _DataInfo_Strict } from './DataInfo';
 
 export interface DataStream {
   'info'?: (_DataInfo | null);
@@ -8,8 +8,8 @@ export interface DataStream {
   'infoOrData'?: "info"|"chunkData";
 }
 
-export interface DataStream__Output {
-  'info'?: (_DataInfo__Output);
+export interface DataStream_Strict {
+  'info'?: (_DataInfo_Strict);
   'chunkData'?: (Buffer);
   'infoOrData': "info"|"chunkData";
 }

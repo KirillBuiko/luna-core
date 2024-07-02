@@ -41,4 +41,4 @@ export type RequestType =
   | 'VAR_VALUE_META_DELETE'
   | 310
 
-export type RequestType__Output = typeof RequestType[keyof typeof RequestType]
+export type RequestType_Strict = typeof RequestType[keyof typeof RequestType]

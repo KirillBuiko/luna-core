@@ -1,4 +1,4 @@
-import type {GetInfo__Output} from "@grpc-build/GetInfo";
+import type {GetInfo_Strict} from "@grpc-build/GetInfo";
 import type {DataInfo} from "@grpc-build/DataInfo";
 import * as fs from "fs";
 import {testConfigs} from "../testConfigs";
@@ -9,7 +9,7 @@ export class TestRestApiClient extends RestApiEndpoint {
         super();
     }
 
-    async get(info: GetInfo__Output) {
+    async get(info: GetInfo_Strict) {
         const options = super.getGetHandler(info);
         const result = await options.destReader;
         console.log(result!.info);

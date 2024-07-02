@@ -2,34 +2,34 @@
 
 import type * as grpc from '@grpc/grpc-js'
 import type { MethodDefinition } from '@grpc/proto-loader'
-import type { DataStream as _DataStream, DataStream__Output as _DataStream__Output } from './DataStream';
-import type { GetInfo as _GetInfo, GetInfo__Output as _GetInfo__Output } from './GetInfo';
+import type { DataStream as _DataStream, DataStream_Strict as _DataStream_Strict } from './DataStream';
+import type { GetInfo as _GetInfo, GetInfo_Strict as _GetInfo_Strict } from './GetInfo';
 
 export interface MainRequestsClient extends grpc.Client {
-  Get(argument: _GetInfo, metadata: grpc.Metadata, options?: grpc.CallOptions): grpc.ClientReadableStream<_DataStream__Output>;
-  Get(argument: _GetInfo, options?: grpc.CallOptions): grpc.ClientReadableStream<_DataStream__Output>;
-  get(argument: _GetInfo, metadata: grpc.Metadata, options?: grpc.CallOptions): grpc.ClientReadableStream<_DataStream__Output>;
-  get(argument: _GetInfo, options?: grpc.CallOptions): grpc.ClientReadableStream<_DataStream__Output>;
+  Get(argument: _GetInfo, metadata: grpc.Metadata, options?: grpc.CallOptions): grpc.ClientReadableStream<_DataStream_Strict>;
+  Get(argument: _GetInfo, options?: grpc.CallOptions): grpc.ClientReadableStream<_DataStream_Strict>;
+  get(argument: _GetInfo, metadata: grpc.Metadata, options?: grpc.CallOptions): grpc.ClientReadableStream<_DataStream_Strict>;
+  get(argument: _GetInfo, options?: grpc.CallOptions): grpc.ClientReadableStream<_DataStream_Strict>;
   
-  Set(metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_GetInfo__Output>): grpc.ClientWritableStream<_DataStream>;
-  Set(metadata: grpc.Metadata, callback: grpc.requestCallback<_GetInfo__Output>): grpc.ClientWritableStream<_DataStream>;
-  Set(options: grpc.CallOptions, callback: grpc.requestCallback<_GetInfo__Output>): grpc.ClientWritableStream<_DataStream>;
-  Set(callback: grpc.requestCallback<_GetInfo__Output>): grpc.ClientWritableStream<_DataStream>;
-  set(metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_GetInfo__Output>): grpc.ClientWritableStream<_DataStream>;
-  set(metadata: grpc.Metadata, callback: grpc.requestCallback<_GetInfo__Output>): grpc.ClientWritableStream<_DataStream>;
-  set(options: grpc.CallOptions, callback: grpc.requestCallback<_GetInfo__Output>): grpc.ClientWritableStream<_DataStream>;
-  set(callback: grpc.requestCallback<_GetInfo__Output>): grpc.ClientWritableStream<_DataStream>;
+  Set(metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_GetInfo_Strict>): grpc.ClientWritableStream<_DataStream>;
+  Set(metadata: grpc.Metadata, callback: grpc.requestCallback<_GetInfo_Strict>): grpc.ClientWritableStream<_DataStream>;
+  Set(options: grpc.CallOptions, callback: grpc.requestCallback<_GetInfo_Strict>): grpc.ClientWritableStream<_DataStream>;
+  Set(callback: grpc.requestCallback<_GetInfo_Strict>): grpc.ClientWritableStream<_DataStream>;
+  set(metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_GetInfo_Strict>): grpc.ClientWritableStream<_DataStream>;
+  set(metadata: grpc.Metadata, callback: grpc.requestCallback<_GetInfo_Strict>): grpc.ClientWritableStream<_DataStream>;
+  set(options: grpc.CallOptions, callback: grpc.requestCallback<_GetInfo_Strict>): grpc.ClientWritableStream<_DataStream>;
+  set(callback: grpc.requestCallback<_GetInfo_Strict>): grpc.ClientWritableStream<_DataStream>;
   
 }
 
 export interface MainRequestsHandlers extends grpc.UntypedServiceImplementation {
-  Get: grpc.handleServerStreamingCall<_GetInfo__Output, _DataStream>;
+  Get: grpc.handleServerStreamingCall<_GetInfo_Strict, _DataStream>;
   
-  Set: grpc.handleClientStreamingCall<_DataStream__Output, _GetInfo>;
+  Set: grpc.handleClientStreamingCall<_DataStream_Strict, _GetInfo>;
   
 }
 
 export interface MainRequestsDefinition extends grpc.ServiceDefinition {
-  Get: MethodDefinition<_GetInfo, _DataStream, _GetInfo__Output, _DataStream__Output>
-  Set: MethodDefinition<_DataStream, _GetInfo, _DataStream__Output, _GetInfo__Output>
+  Get: MethodDefinition<_GetInfo, _DataStream, _GetInfo_Strict, _DataStream_Strict>
+  Set: MethodDefinition<_DataStream, _GetInfo, _DataStream_Strict, _GetInfo_Strict>
 }

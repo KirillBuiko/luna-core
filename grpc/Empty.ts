@@ -4,5 +4,5 @@
 export interface Empty {
 }
 
-export interface Empty__Output {
+export interface Empty_Strict {
 }

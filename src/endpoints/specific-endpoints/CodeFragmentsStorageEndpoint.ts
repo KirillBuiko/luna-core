@@ -1,5 +1,5 @@
-import type {DataInfo__Output} from "@grpc-build/DataInfo";
-import type {GetInfo, GetInfo__Output} from "@grpc-build/GetInfo";
+import type {DataInfo_Strict} from "@grpc-build/DataInfo";
+import type {GetInfo, GetInfo_Strict} from "@grpc-build/GetInfo";
 import type {MultipartTransferObject} from "@/types/general";
 import type {SpecHandlerReturnType, SpecRequestHandlers} from "@/endpoints/specific-endpoints/types";
 import {ErrorDto} from "@/endpoints/ErrorDto";
@@ -24,8 +24,8 @@ export class CodeFStorageEndpoint extends SpecificRestApiEndpoint {
         CODE_F_PLUGIN: this.addPlugin,
     } as const;
 
-    protected getFragment(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
-        // const name: keyof DataInfo__Output = "codeF";
+    protected getFragment(info: GetInfo_Strict): SpecHandlerReturnType<P, "GET"> {
+        // const name: keyof DataInfo_Strict = "codeF";
         const getName: keyof GetInfo = "codeFGet";
         const getInfo = this.getGetInfo<GetInfo[typeof getName]>(info);
 
@@ -55,8 +55,8 @@ export class CodeFStorageEndpoint extends SpecificRestApiEndpoint {
         }
     }
 
-    protected getInfo(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
-        const name: keyof DataInfo__Output = "codeFInfo";
+    protected getInfo(info: GetInfo_Strict): SpecHandlerReturnType<P, "GET"> {
+        const name: keyof DataInfo_Strict = "codeFInfo";
         const getName: keyof GetInfo = "codeFInfoGet";
         const getInfo = this.getGetInfo<GetInfo[typeof getName]>(info);
 
@@ -86,8 +86,8 @@ export class CodeFStorageEndpoint extends SpecificRestApiEndpoint {
         }
     }
 
-    protected getList(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
-        const name: keyof DataInfo__Output = "codeFList";
+    protected getList(info: GetInfo_Strict): SpecHandlerReturnType<P, "GET"> {
+        const name: keyof DataInfo_Strict = "codeFList";
         // const getName: keyof GetInfo = "";
         // const getInfo = this.getGetInfo<GetInfo[typeof getName]>(info);
 
@@ -114,8 +114,8 @@ export class CodeFStorageEndpoint extends SpecificRestApiEndpoint {
         }
     }
 
-    protected getPluginsList(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
-        const name: keyof DataInfo__Output = "codeFPluginsList";
+    protected getPluginsList(info: GetInfo_Strict): SpecHandlerReturnType<P, "GET"> {
+        const name: keyof DataInfo_Strict = "codeFPluginsList";
         // const getName: keyof GetInfo = "";
         // const getInfo = this.getGetInfo<GetInfo[typeof getName]>(info);
 
@@ -141,8 +141,8 @@ export class CodeFStorageEndpoint extends SpecificRestApiEndpoint {
         }
     }
 
-    protected getPluginProcedure(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
-        const name: keyof DataInfo__Output = "codeFPluginsList";
+    protected getPluginProcedure(info: GetInfo_Strict): SpecHandlerReturnType<P, "GET"> {
+        const name: keyof DataInfo_Strict = "codeFPluginsList";
         const getName: keyof GetInfo = "codeFPluginProcedureGet";
         const getInfo = this.getGetInfo<GetInfo[typeof getName]>(info);
 
@@ -172,10 +172,10 @@ export class CodeFStorageEndpoint extends SpecificRestApiEndpoint {
         }
     }
 
-    protected addFragment(info: DataInfo__Output): SpecHandlerReturnType<P, "SET"> {
-        const name: keyof DataInfo__Output = "codeF";
+    protected addFragment(info: DataInfo_Strict): SpecHandlerReturnType<P, "SET"> {
+        const name: keyof DataInfo_Strict = "codeF";
         // const getName: keyof GetInfo = "codeFGet";
-        const setInfo = this.getDataInfo<DataInfo__Output[typeof name]>(info);
+        const setInfo = this.getDataInfo<DataInfo_Strict[typeof name]>(info);
 
         if (!setInfo.getInfo || !setInfo.getInfo.id || !setInfo.value) {
             throw new ErrorDto("invalid-argument", strTemplates.notValid("Data info"))
@@ -193,11 +193,11 @@ export class CodeFStorageEndpoint extends SpecificRestApiEndpoint {
             ]
         })
 
-        const transformedReader = (async (): Promise<GetInfo__Output> => {
+        const transformedReader = (async (): Promise<GetInfo_Strict> => {
             await reader;
             return {
                 requestType: info.requestType
-            } as GetInfo__Output
+            } as GetInfo_Strict
         })()
 
         return {
@@ -206,10 +206,10 @@ export class CodeFStorageEndpoint extends SpecificRestApiEndpoint {
         }
     }
 
-    protected addPlugin(info: DataInfo__Output): SpecHandlerReturnType<P, "SET"> {
-        const name: keyof DataInfo__Output = "codeFPlugin";
+    protected addPlugin(info: DataInfo_Strict): SpecHandlerReturnType<P, "SET"> {
+        const name: keyof DataInfo_Strict = "codeFPlugin";
         // const getName: keyof GetInfo = "codeF";
-        const setInfo = this.getDataInfo<DataInfo__Output[typeof name]>(info);
+        const setInfo = this.getDataInfo<DataInfo_Strict[typeof name]>(info);
 
         if (!setInfo.getInfo || !setInfo.getInfo.id) {
             throw new ErrorDto("invalid-argument", strTemplates.notValid("Data info"))
@@ -224,11 +224,11 @@ export class CodeFStorageEndpoint extends SpecificRestApiEndpoint {
             ]
         })
 
-        const transformedReader = (async (): Promise<GetInfo__Output> => {
+        const transformedReader = (async (): Promise<GetInfo_Strict> => {
             await reader;
             return {
                 requestType: info.requestType
-            } as GetInfo__Output
+            } as GetInfo_Strict
         })()
 
         return {

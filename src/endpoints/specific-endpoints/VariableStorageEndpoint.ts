@@ -1,5 +1,5 @@
-import type {DataInfo__Output} from "@grpc-build/DataInfo";
-import type {GetInfo__Output} from "@grpc-build/GetInfo";
+import type {DataInfo_Strict} from "@grpc-build/DataInfo";
+import type {GetInfo_Strict} from "@grpc-build/GetInfo";
 import type {MultipartTransferObject} from "@/types/general";
 import type {SpecHandlerReturnType, SpecRequestHandlers} from "@/endpoints/specific-endpoints/types";
 import {ErrorDto} from "@/endpoints/ErrorDto";
@@ -25,8 +25,8 @@ export class VariableStorageEndpoint extends SpecificRestApiEndpoint {
         // VAR_VALUE_META_DELETE: this.varValueMetaDeleteSetHandler,
     } as const;
 
-    protected getList(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
-        const name: keyof DataInfo__Output = "varValueList";
+    protected getList(info: GetInfo_Strict): SpecHandlerReturnType<P, "GET"> {
+        const name: keyof DataInfo_Strict = "varValueList";
         // const getName: keyof GetInfo = "";
         // const getInfo = this.getGetInfo<GetInfo[typeof getName]>(info);
 
@@ -53,17 +53,17 @@ export class VariableStorageEndpoint extends SpecificRestApiEndpoint {
         }
     }
 
-    protected addValue(info: DataInfo__Output): SpecHandlerReturnType<P, "SET"> {
-        // const name: keyof DataInfo__Output = "varValue";
-        const getName: keyof GetInfo__Output = "varValueGet";
-        // const setInfo = this.getDataInfo<DataInfo__Output[typeof name]>(info);
+    protected addValue(info: DataInfo_Strict): SpecHandlerReturnType<P, "SET"> {
+        // const name: keyof DataInfo_Strict = "varValue";
+        const getName: keyof GetInfo_Strict = "varValueGet";
+        // const setInfo = this.getDataInfo<DataInfo_Strict[typeof name]>(info);
 
         const {reader, dataWriter} = this.sendStream({
             url: urls.addValue[1](this.config.host),
             method: urls.addValue[0],
         })
 
-        const transformedReader = (async (): Promise<GetInfo__Output> => {
+        const transformedReader = (async (): Promise<GetInfo_Strict> => {
             const id = await (await reader).text();
             return {
                 requestType: info.requestType,
@@ -71,7 +71,7 @@ export class VariableStorageEndpoint extends SpecificRestApiEndpoint {
                 [getName]: {
                     id: id
                 }
-            } as GetInfo__Output
+            } as GetInfo_Strict
         })()
 
         return {
@@ -80,10 +80,10 @@ export class VariableStorageEndpoint extends SpecificRestApiEndpoint {
         }
     }
 
-    protected getValue(info: GetInfo__Output): SpecHandlerReturnType<P, "GET"> {
-        // const name: keyof DataInfo__Output = "varValue";
-        const getName: keyof GetInfo__Output = "varValueGet";
-        const getInfo = this.getGetInfo<GetInfo__Output[typeof getName]>(info);
+    protected getValue(info: GetInfo_Strict): SpecHandlerReturnType<P, "GET"> {
+        // const name: keyof DataInfo_Strict = "varValue";
+        const getName: keyof GetInfo_Strict = "varValueGet";
+        const getInfo = this.getGetInfo<GetInfo_Strict[typeof getName]>(info);
 
         const reader = (async (): Promise<MultipartTransferObject> => {
             if (!getInfo.id) {
@@ -111,12 +111,12 @@ export class VariableStorageEndpoint extends SpecificRestApiEndpoint {
         }
     }
 
-    protected deleteValue(info: DataInfo__Output): SpecHandlerReturnType<P, "SET"> {
-        const name: keyof DataInfo__Output = "varValueDelete";
-        // const getName: keyof GetInfo__Output = "var";
-        const setInfo = this.getDataInfo<DataInfo__Output[typeof name]>(info);
+    protected deleteValue(info: DataInfo_Strict): SpecHandlerReturnType<P, "SET"> {
+        const name: keyof DataInfo_Strict = "varValueDelete";
+        // const getName: keyof GetInfo_Strict = "var";
+        const setInfo = this.getDataInfo<DataInfo_Strict[typeof name]>(info);
 
-        const reader = (async (): Promise<GetInfo__Output> => {
+        const reader = (async (): Promise<GetInfo_Strict> => {
             if (!setInfo.getInfo || !setInfo.getInfo.id) {
                 throw new ErrorDto("invalid-argument", strTemplates.notValid("Data info"))
             }
@@ -127,7 +127,7 @@ export class VariableStorageEndpoint extends SpecificRestApiEndpoint {
                 })
                 return {
                     requestType: info.requestType,
-                } as GetInfo__Output
+                } as GetInfo_Strict
             } catch (e) {
                 throw e;
             }

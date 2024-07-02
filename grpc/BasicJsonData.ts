@@ -5,6 +5,6 @@ export interface BasicJsonData {
   'value'?: (string);
 }
 
-export interface BasicJsonData__Output {
+export interface BasicJsonData_Strict {
   'value'?: (string);
 }

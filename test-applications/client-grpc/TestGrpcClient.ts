@@ -1,6 +1,6 @@
 import type {GetInfo} from "@grpc-build/GetInfo";
 import type {DataInfo} from "@grpc-build/DataInfo";
-import type {DataStream__Output} from "@grpc-build/DataStream";
+import type {DataStream_Strict} from "@grpc-build/DataStream";
 import fs from "fs";
 import {testConfigs} from "../testConfigs";
 import {GrpcEndpoint} from "@/endpoints/GrpcEndpoint";
@@ -13,7 +13,7 @@ export class TestGrpcClient extends GrpcEndpoint {
     get(info: GetInfo) {
         const {destReader: reader} = this.getGetHandler(info);
         reader!
-            .on("data", (data: DataStream__Output) =>
+            .on("data", (data: DataStream_Strict) =>
                 console.log(data.infoOrData == "info" ? JSON.stringify(data.info) : data.chunkData!.toString()))
             .on("error", (err) => {
                 console.log(err);

@@ -5,3 +5,4 @@ node ./node_modules/@grpc/proto-loader/build/bin/proto-loader-gen-types.js \
 --enums=String \
 --oneofs \
 --grpcLib=@grpc/grpc-js \
+--includeComments=true

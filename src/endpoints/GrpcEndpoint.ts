@@ -7,7 +7,7 @@ import * as protoLoader from "@grpc/proto-loader";
 import {grpcLoadOptions} from "@/grpcLoadOptions";
 import * as grpc from "@grpc/grpc-js";
 import type {ProtoGrpcType} from "@grpc-build/requests";
-import type {GetInfo, GetInfo__Output} from "@grpc-build/GetInfo";
+import type {GetInfo, GetInfo_Strict} from "@grpc-build/GetInfo";
 import type {DataInfo} from "@grpc-build/DataInfo";
 import {type ClientWritableStream, waitForClientReady} from "@grpc/grpc-js";
 import type {DataStream} from "@grpc-build/DataStream";
@@ -46,12 +46,12 @@ export class GrpcEndpoint extends Endpoint {
     protected getSetHandler(info: DataInfo):
         NarrowedDestination<"GRPC", "SET"> {
         let writer: ClientWritableStream<DataStream> | undefined = undefined;
-        const reader = new Promise<GetInfo__Output>((resolve, reject) => {
+        const reader = new Promise<GetInfo_Strict>((resolve, reject) => {
             writer = this.client!.set((err, value) => {
                 if (err) {
                     reject(err);
                 } else {
-                    resolve(value as GetInfo__Output);
+                    resolve(value as GetInfo_Strict);
                 }
             });
         })

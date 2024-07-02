@@ -1,4 +1,4 @@
-import type {GetInfo, GetInfo__Output} from "@grpc-build/GetInfo";
+import type {GetInfo, GetInfo_Strict} from "@grpc-build/GetInfo";
 import type {DataInfo} from "@grpc-build/DataInfo";
 import fs from "fs";
 import path from "path";
@@ -23,7 +23,7 @@ const setProgramInfo: DataInfo = {
     }
 }
 
-const getModuleInfo: GetInfo__Output = {
+const getModuleInfo: GetInfo_Strict = {
     requestType: "CODE_F",
     infoType: "codeFGet",
     codeFGet: {

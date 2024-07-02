@@ -6,7 +6,7 @@ export interface CodeFPluginProcedureGet {
   'type'?: (string);
 }
 
-export interface CodeFPluginProcedureGet__Output {
+export interface CodeFPluginProcedureGet_Strict {
   'codeFId'?: (string);
   'type'?: (string);
 }

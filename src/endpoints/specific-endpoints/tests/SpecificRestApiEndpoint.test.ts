@@ -1,17 +1,17 @@
 import {test, expect} from "@jest/globals";
 import {SpecificRestApiEndpoint} from "../SpecificRestApiEndpoint";
-import type {GetInfo__Output} from "@grpc-build/GetInfo";
-import type {DataInfo__Output} from "@grpc-build/DataInfo";
+import type {GetInfo_Strict} from "@grpc-build/GetInfo";
+import type {DataInfo_Strict} from "@grpc-build/DataInfo";
 
 const utils = SpecificRestApiEndpoint.prototype;
 
-const testGetInfo: GetInfo__Output = {
+const testGetInfo: GetInfo_Strict = {
     infoType: "codeFGet",
     codeFGet: {
         id: "123"
     }
 }
-const testDataInfo: DataInfo__Output = {
+const testDataInfo: DataInfo_Strict = {
     dataValueType: "codeF",
     codeF: {
         getInfo: {
@@ -20,10 +20,10 @@ const testDataInfo: DataInfo__Output = {
     }
 }
 
-const testEmptyGetInfo: GetInfo__Output = {
+const testEmptyGetInfo: GetInfo_Strict = {
     infoType: "codeFGet"
 }
-const testEmptyDataInfo: DataInfo__Output = {
+const testEmptyDataInfo: DataInfo_Strict = {
     dataValueType: "codeF",
     codeFPlugin: {
     }

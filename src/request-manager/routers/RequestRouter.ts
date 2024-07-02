@@ -1,4 +1,4 @@
-import type {RequestType__Output} from "@grpc-build/RequestType";
+import type {RequestType_Strict} from "@grpc-build/RequestType";
 import type {EndpointName} from "@/app/types/RemoteStaticEndpointConfigType";
 
 import type {RequestName} from "@/types/general";
@@ -10,5 +10,5 @@ export abstract class RequestRouter {
 
     }
 
-    abstract getEndpointName(requestType: RequestType__Output, requestName: RequestName): Promise<EndpointName | null>;
+    abstract getEndpointName(requestType: RequestType_Strict, requestName: RequestName): Promise<EndpointName | null>;
 }

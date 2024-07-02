@@ -1,5 +1,5 @@
 "use strict"
-import type {RequestType__Output} from "@grpc-build/RequestType";
+import type {RequestType_Strict} from "@grpc-build/RequestType";
 import type {EndpointName} from "@/app/types/RemoteStaticEndpointConfigType";
 
 import type {RequestName} from "@/types/general";
@@ -8,14 +8,14 @@ import type {IRequestManager} from "@/request-manager/types/IRequestManager";
 import type {IEndpointsManager} from "@/request-manager/types/IEndpointsManager";
 
 export class RootRouter extends RequestRouter {
-    routes: {[requestType in RequestType__Output]?: {[requestName in RequestName]: EndpointName | RequestRouter | null}};
+    routes: {[requestType in RequestType_Strict]?: {[requestName in RequestName]: EndpointName | RequestRouter | null}};
 
     constructor(deps: {requestManager: IRequestManager, endpointsManager: IEndpointsManager}) {
         super(deps);
         this.initRoutes();
     }
 
-    async getEndpointName(requestType: RequestType__Output, requestName: RequestName): Promise<EndpointName | null> {
+    async getEndpointName(requestType: RequestType_Strict, requestName: RequestName): Promise<EndpointName | null> {
         const route: null | EndpointName | RequestRouter =
             (this.routes && this.routes[requestType] && this.routes[requestType]![requestName]) || null;
         if (typeof route == "string") return route;

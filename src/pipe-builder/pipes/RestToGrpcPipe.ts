@@ -2,7 +2,7 @@
 // import type {NarrowedSource, RequestName} from "@/types/Types";
 // import {ErrorMessage} from "@/utils/ErrorMessage";
 // import {Status} from "@grpc/grpc-js/build/src/constants";
-// import type {DataStream__Output} from "@grpc-build/DataStream";
+// import type {DataStream_Strict} from "@grpc-build/DataStream";
 // import {AbstractPipe} from "@/pipe-builder/pipes/AbstractPipe";
 //
 // type S = "REST_API";
@@ -16,7 +16,7 @@
 //
 //         // TODO: support it
 //         // destReader
-//         //     .on("data", (data: DataStream__Output) =>
+//         //     .on("data", (data: DataStream_Strict) =>
 //         //         data.infoOrData == "info"
 //         //             ? sourceWriter.write(JSON.stringify(data.info))
 //         //             : sourceWriter.write(data.chunkData))

@@ -7,7 +7,7 @@ export type Any = AnyExtension | {
   value: Buffer | Uint8Array | string;
 }
 
-export interface Any__Output {
+export interface Any_Strict {
   'type_url'?: (string);
   'value'?: (Buffer);
 }

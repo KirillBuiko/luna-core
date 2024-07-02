@@ -4,4 +4,5 @@ node ./node_modules/@grpc/proto-loader/build/bin/proto-loader-gen-types.js `
 --longs=String `
 --enums=String `
 --oneofs=true `
+--outputTemplate='%s_Strict' `
 --grpcLib=@grpc/grpc-js

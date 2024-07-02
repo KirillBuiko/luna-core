@@ -2,7 +2,7 @@
 // import type {NarrowedSource, RequestName} from "@/types/Types";
 // import {ErrorMessage} from "@/utils/ErrorMessage";
 // import {Status} from "@grpc/grpc-js/build/src/constants";
-// import type {DataStream, DataStream__Output} from "@grpc-build/DataStream";
+// import type {DataStream, DataStream_Strict} from "@grpc-build/DataStream";
 // import {AbstractPipe} from "@/pipe-builder/pipes/AbstractPipe";
 //
 // type S = "GRPC";
@@ -15,7 +15,7 @@
 //         const {destReader} = destOptions;
 //         if (!destReader) return;
 //         destReader
-//             .on("data", (data: DataStream__Output) =>
+//             .on("data", (data: DataStream_Strict) =>
 //                 sourceWriter!.write(data))
 //             .on("close", () =>
 //                 sourceWriter!.destroy())

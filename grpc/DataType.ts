@@ -23,4 +23,4 @@ export type DataType =
   | 'BYTES'
   | 50
 
-export type DataType__Output = typeof DataType[keyof typeof DataType]
+export type DataType_Strict = typeof DataType[keyof typeof DataType]

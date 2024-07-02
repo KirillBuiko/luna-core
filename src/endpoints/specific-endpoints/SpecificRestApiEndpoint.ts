@@ -1,5 +1,5 @@
-import type {DataInfo__Output} from "@grpc-build/DataInfo";
-import type {GetInfo__Output} from "@grpc-build/GetInfo";
+import type {DataInfo_Strict} from "@grpc-build/DataInfo";
+import type {GetInfo_Strict} from "@grpc-build/GetInfo";
 import {FetchOptions, RestApiEndpoint} from "@/endpoints/RestApiEndpoint";
 import type {FieldsNotType, MultipartTransferObject, NarrowedDestination} from "@/types/general";
 import type {
@@ -28,7 +28,7 @@ export abstract class SpecificRestApiEndpoint extends RestApiEndpoint {
 
     abstract setMapper;
 
-    getGetHandler(info: GetInfo__Output): NarrowedDestination<P, "GET"> {
+    getGetHandler(info: GetInfo_Strict): NarrowedDestination<P, "GET"> {
         if (!(this.getMapper && info.requestType && info.requestType in this.getMapper))
             throw new ErrorDto("not-supported", strTemplates.notSupported("Request type"));
         const handlers: SpecHandlerReturnType<P, "GET"> =
@@ -40,7 +40,7 @@ export abstract class SpecificRestApiEndpoint extends RestApiEndpoint {
         }
     }
 
-    getSetHandler(info: DataInfo__Output): NarrowedDestination<P, "SET"> {
+    getSetHandler(info: DataInfo_Strict): NarrowedDestination<P, "SET"> {
         if (!(info.requestType && info.requestType in this.setMapper))
             throw new ErrorDto("not-supported", strTemplates.notSupported("Request type"));
         const handlers: SpecHandlerReturnType<P, "SET"> =
@@ -52,7 +52,7 @@ export abstract class SpecificRestApiEndpoint extends RestApiEndpoint {
         }
     }
 
-    extractGetInfo(info: GetInfo__Output | DataInfo__Output) {
+    extractGetInfo(info: GetInfo_Strict | DataInfo_Strict) {
         if ("dataValueType" in info) {
             const dataValue = info[info["dataValueType"]];
             return (typeof dataValue == "object" && "getInfo" in dataValue) ? dataValue["getInfo"] : undefined;
@@ -62,7 +62,7 @@ export abstract class SpecificRestApiEndpoint extends RestApiEndpoint {
         }
     }
 
-    checkRequirements(getInfo: GetInfo__Output[keyof GetInfo__Output] | undefined,
+    checkRequirements(getInfo: GetInfo_Strict[keyof GetInfo_Strict] | undefined,
                       requirements: SpecificRequestDescriptor["requirements"]): undefined | string {
         if (!requirements) return;
         if (typeof getInfo != "object") {
@@ -73,7 +73,7 @@ export abstract class SpecificRestApiEndpoint extends RestApiEndpoint {
                 if (!keys.includes(key)) {
                     return true;
                 }
-            }) || undefined;
+            });
         }
     }
 
@@ -89,17 +89,17 @@ export abstract class SpecificRestApiEndpoint extends RestApiEndpoint {
         })
     }
 
-    basicBodyOutputPrepare(info: GetInfo__Output[keyof GetInfo__Output],
+    basicBodyOutputPrepare(info: GetInfo_Strict[keyof GetInfo_Strict],
                            descriptor: SpecificRequestSetDescriptor): BodyGetterDescriptor {
         const passThrough = new PassThrough();
         const {inputOptions: options} = descriptor;
         const reader = (() => {
-            if (options.json) {
-                return this.waitTextStream(passThrough)
-                    .then(text => JSON.stringify(options.json && options.json(JSON.parse(text))));
-            } else if (options.text) {
-                return this.waitTextStream(passThrough)
-                    .then(text => options.text && options.text(text));
+            if (options.json || options.text) {
+                return this.waitTextStream(passThrough).then(text => {
+                    return options.json
+                        ? JSON.stringify(options.json!(JSON.parse(text)))
+                        : options.text!(text)
+                })
             } else if (options.stream) {
                 return passThrough.pipe(options.stream);
             }
@@ -117,8 +117,8 @@ export abstract class SpecificRestApiEndpoint extends RestApiEndpoint {
         }
     }
 
-    getSpecificSetBody(getInfo: FieldsNotType<GetInfo__Output, string> | undefined,
-                       descriptor: SpecificRequestSetDescriptor): BodyGetterDescriptor {
+    getOutputBody(getInfo: FieldsNotType<GetInfo_Strict, string> | undefined,
+                  descriptor: SpecificRequestSetDescriptor): BodyGetterDescriptor {
         if (descriptor.inputOptions.mp) {
             const mpOptions = descriptor.inputOptions.mp(getInfo);
             const mpBody = this.createMultipartBody({
@@ -140,7 +140,7 @@ export abstract class SpecificRestApiEndpoint extends RestApiEndpoint {
         }
     }
 
-    async getTransformedGetResponse<D extends SpecificRequestGetDescriptor>(response: Response, descriptor: D):
+    async transformGetResponse<D extends SpecificRequestGetDescriptor>(response: Response, descriptor: D):
         Promise<NodeJS.ReadableStream | undefined> {
         const passThrough = new PassThrough();
         const {outputOptions: options} = descriptor;
@@ -148,10 +148,9 @@ export abstract class SpecificRestApiEndpoint extends RestApiEndpoint {
             return response.body;
         }
         if (options.json || options.text) {
-            const string =
-                options.json
-                    ? await response.json().then(json => JSON.stringify(options.json!(json)))
-                    : await response.text().then(text => options.text!(text))
+            const string = options.json
+                ? await response.json().then(json => JSON.stringify(options.json!(json)))
+                : await response.text().then(text => options.text!(text))
             passThrough.write(Buffer.from(string))
             return passThrough;
         }
@@ -160,13 +159,12 @@ export abstract class SpecificRestApiEndpoint extends RestApiEndpoint {
         }
     }
 
-    async getTransformedSetResponse(response: Response, descriptor: SpecificRequestSetDescriptor):
-        Promise<FieldsNotType<GetInfo__Output, string> | undefined> {
+    async transformSetResponse(response: Response, descriptor: SpecificRequestSetDescriptor):
+        Promise<FieldsNotType<GetInfo_Strict, string> | undefined> {
         const {outputOptions: options} = descriptor;
-        if (!options || !response.body) {
+        if (!options || options.empty || !response.body) {
             return undefined
         }
-        if (options.empty) return undefined;
         if (options.json) {
             return response.json().then(json => options.json!(json));
         }
@@ -175,18 +173,12 @@ export abstract class SpecificRestApiEndpoint extends RestApiEndpoint {
         }
     }
 
-
-    // getSpecificEndpoint(info: GetInfo__Output,
-    //                     descriptor: SpecificRequestDescriptor): Promise<SpecHandlerReturnType<"REST_API", "GET">>;
-    // getSpecificEndpoint(info: DataInfo__Output,
-    //                     descriptor: SpecificRequestDescriptor): Promise<SpecHandlerReturnType<"REST_API", "SET">>;
-
-    getSpecificEndpoint(info: GetInfo__Output, descriptor: SpecificRequestGetDescriptor):
+    getSpecificEndpoint(info: GetInfo_Strict, descriptor: SpecificRequestGetDescriptor):
         SpecHandlerReturnType<"REST_API", "GET">;
-    getSpecificEndpoint(info: DataInfo__Output, descriptor: SpecificRequestSetDescriptor):
+    getSpecificEndpoint(info: DataInfo_Strict, descriptor: SpecificRequestSetDescriptor):
         SpecHandlerReturnType<"REST_API", "SET">;
     getSpecificEndpoint<D extends SpecificRequestDescriptor>
-    (info: GetInfo__Output | DataInfo__Output, descriptor: SpecificRequestDescriptor):
+    (info: GetInfo_Strict | DataInfo_Strict, descriptor: SpecificRequestDescriptor):
         SpecHandlerReturnType<"REST_API"> {
         // 1. Check requirements
         const getInfo = this.extractGetInfo(info);
@@ -198,9 +190,8 @@ export abstract class SpecificRestApiEndpoint extends RestApiEndpoint {
         const url = descriptor.inputOptions.url(getInfo);
         const body = descriptor.type == "GET" || descriptor.inputOptions.bodyType == "none"
             ? undefined
-            : this.getSpecificSetBody(getInfo, descriptor);
-        // 3. Handle response: if 'json/text' wait and handle, if 'stream' pipe, if 'mp' - get stream name from options
-        //    and send to data (+transform). If 'empty' - ...
+            : this.getOutputBody(getInfo, descriptor);
+        // 3. Do request, handle response and pack in reader with info object.
         const getFetchOptions = async (): Promise<FetchOptions> => ({
             url,
             method: descriptor.inputOptions.httpMethod,
@@ -212,14 +203,9 @@ export abstract class SpecificRestApiEndpoint extends RestApiEndpoint {
         })
         if (descriptor.type == "GET") {
             const reader = (async (): Promise<MultipartTransferObject> => {
-                let stream: NodeJS.ReadableStream | undefined;
-                if (descriptor.outputOptions?.mp) {
-                    const response = await this.requestMultipart(await getFetchOptions());
-                    stream = response.stream;
-                } else {
-                    const response = await this.baseFetch(await getFetchOptions());
-                    stream = await this.getTransformedGetResponse(response, descriptor);
-                }
+                let stream = descriptor.outputOptions?.mp
+                    ? (await this.requestMultipart(await getFetchOptions())).stream
+                    : (await this.transformGetResponse(await this.baseFetch(await getFetchOptions()), descriptor))
                 return {
                     info: {
                         requestType: info.requestType,
@@ -232,16 +218,16 @@ export abstract class SpecificRestApiEndpoint extends RestApiEndpoint {
                 destReader: reader
             }
         } else {
-            const reader = (async (): Promise<GetInfo__Output> => {
+            const reader = (async (): Promise<GetInfo_Strict> => {
                 const response = await this.baseFetch(await getFetchOptions());
-                const transformed = await this.getTransformedSetResponse(response, descriptor);
+                const transformed = await this.transformSetResponse(response, descriptor);
                 return {
                     requestType: info.requestType,
                     ...(transformed && {
                         infoType: descriptor.names[0],
                         [descriptor.names[0]]: transformed
                     })
-                } as GetInfo__Output
+                } as GetInfo_Strict
             })()
             return {
                 destWriter: body?.writer,

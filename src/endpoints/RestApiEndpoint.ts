@@ -4,8 +4,8 @@ import type {
     NarrowedDestination
 } from "@/types/general";
 import type {RemoteStaticEndpointConfigType} from "@/app/types/RemoteStaticEndpointConfigType";
-import type {GetInfo__Output} from "@grpc-build/GetInfo";
-import type {DataInfo, DataInfo__Output} from "@grpc-build/DataInfo";
+import type {GetInfo_Strict} from "@grpc-build/GetInfo";
+import type {DataInfo, DataInfo_Strict} from "@grpc-build/DataInfo";
 import {Endpoint} from "@/endpoints/Endpoint";
 import type {ProtocolType} from "@/types/general";
 import FormData from "form-data";
@@ -34,7 +34,7 @@ export class RestApiEndpoint extends Endpoint {
         return null;
     }
 
-    protected getGetHandler(info: GetInfo__Output):
+    protected getGetHandler(info: GetInfo_Strict):
         NarrowedDestination<"REST_API", "GET"> {
         const multipart = this.requestMultipart({
             url: `${this.config.host}/api/v1/get`,
@@ -82,7 +82,7 @@ export class RestApiEndpoint extends Endpoint {
         }
     }
 
-    getGetInfo<T>(info: GetInfo__Output) {
+    getGetInfo<T>(info: GetInfo_Strict) {
         const getInfo = info[info.infoType || ""];
         if (!getInfo) {
             throw new ErrorDto("invalid-argument", strTemplates.notProvided("Get info"));
@@ -90,7 +90,7 @@ export class RestApiEndpoint extends Endpoint {
         return getInfo as NonNullable<T>;
     }
 
-    getDataInfo<T>(info: DataInfo__Output) {
+    getDataInfo<T>(info: DataInfo_Strict) {
         const dataInfo = info[info.dataValueType || ""];
         if (!dataInfo) {
             throw new ErrorDto("invalid-argument", strTemplates.notProvided("Data info"));
@@ -142,7 +142,7 @@ export class RestApiEndpoint extends Endpoint {
     }
 
     requestMultipart(options: FetchOptions) {
-        return new Promise<{ fields: Record<string, string>, stream: Readable }>
+        return new Promise<{ fields: Record<string, string>, stream: NodeJS.ReadableStream }>
         (async (resolve, reject) => {
             let response: Response;
             try {

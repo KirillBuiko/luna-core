@@ -5,6 +5,6 @@ export interface BasicIdGet {
   'id'?: (string);
 }
 
-export interface BasicIdGet__Output {
+export interface BasicIdGet_Strict {
   'id'?: (string);
 }

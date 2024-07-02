@@ -1,5 +1,5 @@
 import type {HTTPMethods} from "fastify/types/utils";
-import type {RequestType__Output} from "@grpc-build/RequestType";
+import type {RequestType_Strict} from "@grpc-build/RequestType";
 import type {GetInfo} from "@grpc-build/GetInfo";
 import type {FastifyReply} from "fastify";
 import type {KeysOfObjects, MultipartTransferObject} from "@/types/general";
@@ -9,7 +9,7 @@ export type SetRouteHandler = (opts: { res: FastifyReply, error: any, info?: Get
 
 export type V2RouteDescriptor = {
     http: [HTTPMethods, string],
-    requestType: RequestType__Output,
+    requestType: RequestType_Strict,
     successCode: number,
     // failCode: number,
 } & ({
