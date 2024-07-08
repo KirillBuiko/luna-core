@@ -4,7 +4,7 @@ import type {MultipartTransferObject} from "@/types/general";
 import type {SpecHandlerReturnType, SpecRequestHandlers} from "@/endpoints/specific-endpoints/types";
 import {ErrorDto} from "@/endpoints/ErrorDto";
 import {strTemplates} from "@/endpoints/strTemplates";
-import {codeFUris} from "@/endpoints/specific-endpoints/endpointsUrls";
+import {codeFUris} from "@/endpoints/specific-endpoints/endpointsUris";
 import {SpecificRestApiEndpoint} from "@/endpoints/specific-endpoints/SpecificRestApiEndpoint";
 
 const p = "REST_API";

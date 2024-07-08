@@ -1,8 +1,8 @@
 import type {FastifyInstance} from "fastify";
 import type {IRequestManager} from "@/request-manager/types/IRequestManager";
-import {codeFragmentRouteDescriptors} from "@/servers/rest-api/v2/routerDescriptorsCodeF";
+import {codeFragmentRouteDescriptors} from "@/servers/rest-api/v2/descriptors/codeFDescriptors";
 import {V2RestApiActions} from "@/servers/rest-api/v2/V2RestApiActions";
-import {varStorageRouteDescriptors} from "@/servers/rest-api/v2/routerDescriptorsVarStorage";
+import {varStorageRouteDescriptors} from "@/servers/rest-api/v2/descriptors/varStorageDescriptors";
 
 export function getV2Router(requestManager: IRequestManager) {
     const actions = V2RestApiActions(requestManager);

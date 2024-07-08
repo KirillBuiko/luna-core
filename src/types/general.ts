@@ -3,6 +3,7 @@ import type {MainRequestsClient, MainRequestsHandlers} from "@grpc-build/MainReq
 import type {DataInfo} from "@grpc-build/DataInfo";
 import type {ErrorDto} from "@/endpoints/ErrorDto";
 import type {GetInfo} from "@grpc-build/GetInfo";
+import type {GetInfo_Strict} from "@grpc-build/GetInfo";
 
 export type ProtocolType =
     | "GRPC"
@@ -75,6 +76,9 @@ export interface MultipartTransferObject<D = DataInfo, S = NodeJS.ReadableStream
 }
 
 export type KeysNotType<T, V> = {[K in keyof T]-?: (T[K] & {}) extends V ? never : K}[keyof T]
-export type FieldsNotType<T, T2> = T[KeysNotType<T, T2>] & {}
+export type ObjectFieldsNotType<T, V> = {[K in KeysNotType<T, V>]-?: T[K]}
+export type FieldsNotType<T, V> = T[KeysNotType<T, V>] & {}
 
 export type KeysOfObjects<T> = T extends object ? keyof T : never;
+
+export type ObjectGetInfo = ObjectFieldsNotType<GetInfo_Strict, string>;

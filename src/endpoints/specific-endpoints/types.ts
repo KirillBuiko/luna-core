@@ -1,7 +1,5 @@
 import type {
-    FieldsNotType,
-    KeysNotType,
-    NarrowedDestination,
+    NarrowedDestination, ObjectGetInfo,
     ProtocolType,
     RequestName
 } from "@/types/general";
@@ -30,7 +28,7 @@ type SpecificTransformers = {
 }
 
 type SpecificSetBodyTransformers<I> = SpecificTransformers & {
-    mp?: (info?: I) => {
+    mp?: (info?: I | undefined) => {
         fields?: FieldType[],
         streamName?: string,
         transformer?: Transform
@@ -41,19 +39,18 @@ type SpecificGetResponseTransformers<I> = SpecificTransformers & {
     mp?: true
 }
 
-type SpecificSetResponseTransformers<I = FieldsNotType<GetInfo_Strict, string>> = {
+type SpecificSetResponseTransformers<I> = {
     empty?: true
     json?: (response: object) => I,
     text?: (response: string) => I,
 }
 
-export type SpecificRequestBaseDescriptor<N extends keyof GetInfo_Strict = KeysNotType<GetInfo_Strict, string>,
-    I = GetInfo_Strict[N]> = {
+export type SpecificRequestBaseDescriptor<N extends keyof ObjectGetInfo = keyof ObjectGetInfo> = {
     // names: [N, keyof DataInfo_Strict],
     getInfoName?: N,
-    requirements?: KeysOfObjects<I>[],
+    requirements?: KeysOfObjects<ObjectGetInfo[N]>[],
     inputOptions: {
-        uri: (info?: I) => string,
+        uri: (info?: ObjectGetInfo[N]) => string,
         httpMethod: HTTPMethods
     },
     outputOptions?: {
@@ -61,21 +58,21 @@ export type SpecificRequestBaseDescriptor<N extends keyof GetInfo_Strict = KeysN
     }
 }
 
-export type SpecificRequestGetDescriptor<N extends keyof GetInfo_Strict = KeysNotType<GetInfo_Strict, string>,
-    I = GetInfo_Strict[N]> = SpecificRequestBaseDescriptor<N, I> & {
+export type SpecificRequestGetDescriptor<N extends keyof ObjectGetInfo = keyof ObjectGetInfo> =
+    SpecificRequestBaseDescriptor<N> & {
     type: "GET",
-    outputOptions?: SpecificGetResponseTransformers<I>
+    outputOptions?: SpecificGetResponseTransformers<ObjectGetInfo[N]>
 }
 
-export type SpecificRequestSetDescriptor<N extends keyof GetInfo_Strict = KeysNotType<GetInfo_Strict, string>,
-    I = GetInfo_Strict[N]> = SpecificRequestBaseDescriptor<N, I> & {
+export type SpecificRequestSetDescriptor<N extends keyof ObjectGetInfo = keyof ObjectGetInfo> =
+    SpecificRequestBaseDescriptor<N> & {
     type: "SET",
     getInfoName: N,
     inputOptions: {
         bodyType: "json" | "bytes" | "text" | "mp" | "none",
-    } & SpecificSetBodyTransformers<I>,
-    outputOptions?: SpecificSetResponseTransformers<I>
+    } & SpecificSetBodyTransformers<ObjectGetInfo[N]>,
+    outputOptions?: SpecificSetResponseTransformers<ObjectGetInfo[N]>
 }
 
-export type SpecificRequestDescriptor<N extends keyof GetInfo_Strict = KeysNotType<GetInfo_Strict, string>,
-    I = GetInfo_Strict[N]> = SpecificRequestGetDescriptor<N, I> | SpecificRequestSetDescriptor<N, I>
+export type SpecificRequestDescriptor<N extends keyof ObjectGetInfo = keyof ObjectGetInfo> =
+    SpecificRequestGetDescriptor<N> | SpecificRequestSetDescriptor<N>

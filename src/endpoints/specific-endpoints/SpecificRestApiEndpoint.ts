@@ -1,7 +1,7 @@
 import type {DataInfo_Strict} from "@grpc-build/DataInfo";
 import type {GetInfo_Strict} from "@grpc-build/GetInfo";
 import {FetchOptions, RestApiEndpoint} from "@/endpoints/RestApiEndpoint";
-import type {FieldsNotType, MultipartTransferObject, NarrowedDestination} from "@/types/general";
+import type {FieldsNotType, MultipartTransferObject, NarrowedDestination, ObjectGetInfo} from "@/types/general";
 import type {
     SpecHandlerReturnType,
     SpecificRequestDescriptor,
@@ -173,13 +173,15 @@ export abstract class SpecificRestApiEndpoint extends RestApiEndpoint {
         }
     }
 
-    getSpecificEndpoint(info: GetInfo_Strict, descriptor: SpecificRequestGetDescriptor):
+    getSpecificEndpoint<N extends keyof ObjectGetInfo>(info: GetInfo_Strict,
+                                                       descriptor: SpecificRequestGetDescriptor<N>):
         SpecHandlerReturnType<"REST_API", "GET">;
-    getSpecificEndpoint(info: DataInfo_Strict, descriptor: SpecificRequestSetDescriptor):
+    getSpecificEndpoint<N extends keyof ObjectGetInfo>(info: DataInfo_Strict,
+                                                       descriptor: SpecificRequestSetDescriptor<N>):
         SpecHandlerReturnType<"REST_API", "SET">;
-    getSpecificEndpoint<D extends SpecificRequestDescriptor>
-    (info: GetInfo_Strict | DataInfo_Strict, descriptor: SpecificRequestDescriptor):
-        SpecHandlerReturnType<"REST_API"> {
+    getSpecificEndpoint<N extends keyof ObjectGetInfo>(info: GetInfo_Strict | DataInfo_Strict,
+                                                       descriptor: SpecificRequestDescriptor<N>):
+        SpecHandlerReturnType<"REST_API", "SET" | "GET"> {
         // 1. Check requirements
         const getInfo = this.extractGetInfo(info);
         const key = this.checkRequirements(getInfo, descriptor.requirements);
