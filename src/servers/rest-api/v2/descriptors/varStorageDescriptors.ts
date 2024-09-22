@@ -22,7 +22,7 @@ export const varStorageRouteDescriptors: V2RouteDescriptor[] = [
     },
     {
         http: ["DELETE", `${EndpointPrefix}/value`],
-        successCode: HttpCode.OK,
+        successCode: HttpCode.EMPTY,
         requestName: "SET", requestType: "VAR_VALUE_DELETE",
         params: "id",
     }
