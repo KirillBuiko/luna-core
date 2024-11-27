@@ -4,6 +4,7 @@ import type {IRequestManager} from "@/request-manager/types/IRequestManager";
 import {configs} from "../../../configs/configs";
 import type {ServerStatus} from "@/app/types/ICoreServer";
 import Fastify from "fastify";
+import cors from "@fastify/cors";
 import {getV1Router} from "@/servers/rest-api/v1";
 import {getV2Router} from "@/servers/rest-api/v2";
 
@@ -13,7 +14,9 @@ export class RestApiServer implements IServer {
     server = Fastify();
 
     constructor() {
-        this.server.register(require('@fastify/multipart'), {
+        this.server.register(cors, {
+            origin: true
+        }).register(require('@fastify/multipart'), {
             limits: {
                 fileSize: 10_000_000_000
             }
