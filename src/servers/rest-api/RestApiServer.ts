@@ -7,6 +7,7 @@ import Fastify from "fastify";
 import cors from "@fastify/cors";
 import {getV1Router} from "@/servers/rest-api/v1";
 import {getV2Router} from "@/servers/rest-api/v2";
+import type {IServerDependencies} from "@/app/types/IServerDependencies";
 
 export class RestApiServer implements IServer {
     requestManager: IRequestManager | undefined;
@@ -31,10 +32,10 @@ export class RestApiServer implements IServer {
         });
     }
 
-    async start(config: ServerConfigType, requestManager: IRequestManager): Promise<Error | null> {
-        this.server.register(getV1Router(requestManager), {prefix: "/api/v1"});
-        this.server.register(getV2Router(requestManager), {prefix: "/api/v2"});
-        this.requestManager = requestManager;
+    async start(config: ServerConfigType, deps: IServerDependencies): Promise<Error | null> {
+        this.server.register(getV1Router(deps.requestsManager), {prefix: "/api/v1"});
+        this.server.register(getV2Router(deps.requestsManager), {prefix: "/api/v2"});
+        this.requestManager = deps.requestsManager;
         try {
             await this.server.listen({
                 port: config.port,

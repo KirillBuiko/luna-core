@@ -1,17 +1,17 @@
 import type {ServerConfigsType, ServerName} from "@/app/types/ServerConfigType";
 import {servers} from "./index";
 import type {IServersManager} from "@/app/types/IServersManager";
-import type {IRequestManager} from "@/request-manager/types/IRequestManager";
+import type {IServerDependencies} from "@/app/types/IServerDependencies";
 
 export class ServersManager implements IServersManager {
     constructor() {}
 
-    async startAll(configs: ServerConfigsType, requestManager: IRequestManager) {
+    async startAll(configs: ServerConfigsType, deps: IServerDependencies) {
         console.log("Servers are starting");
         const promises = Object.keys(servers).map(async serverName => {
             const server = servers[serverName as ServerName];
             const config = configs[serverName as ServerName];
-            const err = await server.start(config, requestManager);
+            const err = await server.start(config, deps);
             if (err) {
                 console.log(`The server "${serverName}" start attempt failed with error: ${err.message}`);
                 throw err;

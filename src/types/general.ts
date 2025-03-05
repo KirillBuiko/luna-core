@@ -81,4 +81,6 @@ export type FieldsNotType<T, V> = T[KeysNotType<T, V>] & {}
 
 export type KeysOfObjects<T> = T extends object ? keyof T : never;
 
+export type FieldsOfObjects<T> = T extends object ? T : never;
+
 export type ObjectGetInfo = ObjectFieldsNotType<GetInfo_Strict, string>;
