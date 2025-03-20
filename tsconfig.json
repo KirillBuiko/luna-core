@@ -2,7 +2,7 @@
   "include": ["src/**/*", "test-applications/**/*"],
   "compilerOptions": {
     "experimentalDecorators": true,
-    "module": "commonjs",
+    "module": "CommonJS",
     "esModuleInterop": true,
     "target": "ES2022",
     "moduleResolution": "node",

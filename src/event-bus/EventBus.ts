@@ -1,26 +1,29 @@
 import type {
-	BodyFilter, CorrelationIdBody, CorrelationIdType, EmitOptions,
-	EmittedEventDescriptor, ErrorResponse,
+	BodyFilter, CorrelationIdType, EmitOptions,
+	EmittedEventDescriptor,
 	EventBody,
-	EventCallback, EventMap,
+	EventCallback,
 	EventName,
 	IEventBus
 } from "@/event-bus/IEventBus";
 import {ErrorDto} from "@/endpoints/ErrorDto";
+import {isSubset} from "@/event-bus/utils";
+import {randomUUID} from "node:crypto";
 
 type anyListener = () => void
 
 export class EventBus implements IEventBus {
 	private counter = 1;
+	private busId = randomUUID();
 	private listeners = new Map<EventCallback, EventCallback>();
 
 	constructor() {
 	}
 
-	emit(body: EventBody, options: EmitOptions): EmittedEventDescriptor {
-		const corrId = options.correlationId ?? this.generateCorrId();
-		this.listeners.forEach((listener: EventCallback) =>
-			options.ignoreCallback !== listener && listener(body, corrId));
+	emit(body: EventBody, options?: EmitOptions): EmittedEventDescriptor {
+		const corrId = options?.correlationId ?? this.generateCorrId();
+		this.listeners.forEach((listener: EventCallback, origin) =>
+			options?.ignoreCallback !== origin && listener(body, corrId));
 		return {
 			correlationId: corrId
 		};
@@ -53,7 +56,7 @@ export class EventBus implements IEventBus {
 		});
 		const timeoutHandler = timeoutMs && setTimeout(() => {
 			resolvePromise({
-				eventName: "error",
+				eventName: "event-error",
 				error: new ErrorDto("unavailable", "Operator didn't answer")
 			})
 		}, timeoutMs);
@@ -68,13 +71,6 @@ export class EventBus implements IEventBus {
 		} else {
 			this.once(eventListener, filter);
 		}
-
-		if (filter.eventName !== "error" && filter.correlationId !== undefined) {
-			this.once(eventListener, {
-				...filter,
-				eventName: "error",
-			});
-		}
 		return promise;
 	}
 
@@ -87,6 +83,6 @@ export class EventBus implements IEventBus {
 	}
 
 	private generateCorrId(): CorrelationIdType {
-		return (this.counter++).toString();
+		return this.busId + (this.counter++).toString();
 	}
 }

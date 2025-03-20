@@ -6,3 +6,4 @@ web/*
 *.zip
 *.pid
 *.out
+logs

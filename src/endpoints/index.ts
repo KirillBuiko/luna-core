@@ -1,17 +1,23 @@
-import type {EndpointName} from "@/app/types/RemoteStaticEndpointConfigType";
 import type {IEndpoint} from "@/request-manager/types/IEndpoint";
 import {RestApiEndpoint} from "@/endpoints/RestApiEndpoint";
 import {CodeFStorageEndpoint} from "@/endpoints/specific-endpoints/handlers/CodeFragmentsStorageEndpoint";
-import {VariableStorageEndpoint} from "@/endpoints/specific-endpoints/handlers/VariableStorageEndpoint";
+import {RealVariableStorageEndpoint} from "@/endpoints/specific-endpoints/handlers/RealVariableStorageEndpoint";
+import type {EndpointName} from "@/app/types/RemoteStaticEndpointConfigType";
 
-export const endpoints: {[endpoint in EndpointName]: IEndpoint} = {
-    computationModelsStorage: new RestApiEndpoint(),
-    executor: new RestApiEndpoint(),
-    generator: new RestApiEndpoint(),
-    interpreter: new RestApiEndpoint(),
-    codeFStorage: new CodeFStorageEndpoint(),
-    planner: new RestApiEndpoint(),
-    programsStorage: new RestApiEndpoint(),
-    tasksStorage: new RestApiEndpoint(),
-    variablesStorage: new VariableStorageEndpoint()
+export const endpointConstructors: {[endpoint in EndpointName]: new () => IEndpoint} = {
+    realComputationModelsStorage: RestApiEndpoint,
+    realExecutor: RestApiEndpoint,
+    realGenerator: RestApiEndpoint,
+    realInterpreter: RestApiEndpoint,
+    realCodeFStorage: CodeFStorageEndpoint,
+    realPlanner: RestApiEndpoint,
+    realProgramsStorage: RestApiEndpoint,
+    realTasksStorage: RestApiEndpoint,
+    realVariablesStorage: RealVariableStorageEndpoint,
+    executor1: RestApiEndpoint,
+    executor2: RestApiEndpoint,
+    executor3: RestApiEndpoint,
+    variableStorage1: RealVariableStorageEndpoint,
+    variableStorage2: RealVariableStorageEndpoint,
+    variableStorage3: RealVariableStorageEndpoint
 }

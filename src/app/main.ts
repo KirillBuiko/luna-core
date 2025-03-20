@@ -6,11 +6,14 @@ import {endpointConfigs} from "../../configs/endpointConfigs";
 import fs from "fs";
 import {configs} from "../../configs/configs";
 import {EventBus} from "@/event-bus/EventBus";
+import { Logger } from "../../utils/logger";
+
+export let coreLogger = new Logger(__dirname, "CORE");
 
 const eventBus = new EventBus();
 const serversManager = new ServersManager();
 const endpointsManager = new EndpointsManager();
-const requestsManager = new RequestManager({endpointsManager});
+const requestsManager = new RequestManager({endpointsManager, eventBus});
 
 function writePid() {
     const pid = process.pid;
@@ -26,7 +29,7 @@ async function main() {
         });
     }
     catch (e) {
-        console.log("Core start failed: ", e);
+        coreLogger.info("Core start failed: ", e);
     }
 }
 

@@ -1,3 +1,5 @@
+import type {SpecificRequestUris} from "@/endpoints/specific-endpoints/types";
+
 export const codeFUris = {
     getFragment: ["GET", (id: string) =>
         `/${id}/target_code`],
@@ -13,7 +15,7 @@ export const codeFUris = {
         `/add_code_fragment`],
     addPlugin: ["POST", () =>
         `/add_plugin`]
-} as const;
+} as const satisfies SpecificRequestUris;
 
 const valstPrefix = "/valst";
 
@@ -32,4 +34,4 @@ export const varStorageUris = {
         `${valstPrefix}/${id}/meta`],
     deleteMeta: ["DELETE", (id: string) =>
         `${valstPrefix}/${id}/meta`],
-} as const;
+} as const satisfies SpecificRequestUris;

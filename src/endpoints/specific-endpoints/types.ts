@@ -76,3 +76,5 @@ export type SpecificRequestSetDescriptor<N extends keyof ObjectGetInfo = keyof O
 
 export type SpecificRequestDescriptor<N extends keyof ObjectGetInfo = keyof ObjectGetInfo> =
     SpecificRequestGetDescriptor<N> | SpecificRequestSetDescriptor<N>
+
+export type SpecificRequestUris = {[name: string]: [string, ((...args: string[]) => string) | (() => string)] }

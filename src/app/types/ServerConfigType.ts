@@ -6,5 +6,6 @@ export interface ServerConfigType {
 export type ServerName =
     // | "grpcServer"
     | "restApiServer"
+    | "operatorsServer"
 
 export type ServerConfigsType = {[server in ServerName]: ServerConfigType}

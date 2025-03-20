@@ -6,6 +6,7 @@ import type {RemoteStaticEndpointConfigType} from "@/app/types/RemoteStaticEndpo
 
 export abstract class Endpoint implements IEndpoint {
     status: EndpointStatus = "not-connected";
+    config: RemoteStaticEndpointConfigType;
     abstract protocol: ProtocolType;
 
     abstract init(config: RemoteStaticEndpointConfigType): Promise<Error | null>;

@@ -16,6 +16,7 @@ import {ErrorDto} from "@/endpoints/ErrorDto";
 import {strTemplates} from "@/endpoints/strTemplates";
 import type {HTTPMethods} from "fastify/types/utils";
 import fetch, {Response} from "node-fetch";
+import {coreLogger} from "@/app/main";
 
 export type FetchOptions = {
     url: string, method?: HTTPMethods, body?: string | Readable, contentType?: string,
@@ -26,7 +27,6 @@ export type FieldType = { key: string, value: string, contentType?: string }
 export class RestApiEndpoint extends Endpoint {
     status: EndpointStatus = "not-connected";
     protocol: ProtocolType = "REST_API";
-    config: RemoteStaticEndpointConfigType;
 
     async init(config: RemoteStaticEndpointConfigType): Promise<Error | null> {
         this.config = config;
@@ -102,7 +102,7 @@ export class RestApiEndpoint extends Endpoint {
         const contentType = options.contentType || options.body && (typeof options.body == "string"
             ? "application/json"
             : "application/octet-stream");
-        console.log(options.url);
+        coreLogger.info(options.url);
         const body = options.body && (typeof options.body == "string"
             ? options.body
             : options.body);

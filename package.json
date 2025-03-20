@@ -4,14 +4,14 @@
   "description": "",
   "main": "src/rest-api-stream-test/server.ts",
   "scripts": {
-    "start-core": "bun ./src/app/main.ts",
+    "start-core": "ts-node ./src/app/main.ts",
     "update-protos": "npm i github:KirillBuiko/luna-proto-files & npm run build-proto-types",
     "REMOVE-and-build-proto": "rmdir /Q /S \"./grpc/build\" & npm run build-proto-types",
     "build-proto-types": "powershell ./scripts/build-types.ps1",
-    "start-client-rest": "bun \"test-applications/client-restapi/main.ts\"",
-    "start-client-grpc": "bun \"test-applications/client-grpc/main.ts\"",
-    "start-server-rest": "bun \"test-applications/server-restapi/main.ts\"",
-    "start-server-grpc": "bun \"test-applications/server-grpc/main.ts\""
+    "start-client-rest": "ts-node \"test-applications/client-restapi/main.ts\"",
+    "start-client-grpc": "ts-node \"test-applications/client-grpc/main.ts\"",
+    "start-server-rest": "ts-node \"test-applications/server-restapi/main.ts\"",
+    "start-server-grpc": "ts-node \"test-applications/server-grpc/main.ts\""
   },
   "author": "",
   "license": "ISC",
@@ -35,6 +35,7 @@
     "lodash": "^4.17.21",
     "luna-proto-files": "github:KirillBuiko/luna-proto-files",
     "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "swagger-ui-dist": "^5.10.3",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0"

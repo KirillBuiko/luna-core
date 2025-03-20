@@ -1,0 +1,14 @@
+{
+  "name": "test-operators",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.ts",
+  "scripts": {
+    "start": "ts-node ./main.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KirillBuiko/luna-core.git"
+  },
+  "private": true
+}

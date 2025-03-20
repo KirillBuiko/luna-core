@@ -1,0 +1,16 @@
+{
+  "name": "scenario-runner",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.ts",
+  "scripts": {
+    "start-1": "cross-env SCENARIO_NAME=1 ts-node main.ts --security-revert",
+    "start-2": "cross-env SCENARIO_NAME=2 ts-node main.ts",
+    "start-3": "cross-env SCENARIO_NAME=3 ts-node main.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KirillBuiko/luna-core.git"
+  },
+  "private": true
+}

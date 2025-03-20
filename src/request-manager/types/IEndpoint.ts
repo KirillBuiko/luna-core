@@ -8,6 +8,7 @@ export type EndpointStatus = "connected" | "not-connected";
 
 export interface IEndpoint {
     status: EndpointStatus;
+    config: RemoteStaticEndpointConfigType;
 
     init(config: RemoteStaticEndpointConfigType): Promise<Error | null>;
 

@@ -11,18 +11,18 @@ const p = "REST_API";
 type P = typeof p;
 
 export class CodeFStorageEndpoint extends SpecificRestApiEndpoint {
-    getMapper: SpecRequestHandlers<P, "GET", "CODE_F"> = {
+    getMapper = {
         CODE_F: this.getFragment,
         CODE_F_LIST: this.getList,
         CODE_F_INFO: this.getInfo,
         CODE_F_PLUGINS_LIST: this.getPluginsList,
         CODE_F_PLUGIN_PROCEDURE: this.getPluginProcedure,
-    } as const;
+    } as const satisfies SpecRequestHandlers<P, "GET", "CODE_F">;
 
-    setMapper: SpecRequestHandlers<P, "SET", "CODE_F"> = {
+    setMapper = {
         CODE_F: this.addFragment,
         CODE_F_PLUGIN: this.addPlugin,
-    } as const;
+    } as const satisfies SpecRequestHandlers<P, "SET", "CODE_F">;
 
     protected getFragment(info: GetInfo_Strict): SpecHandlerReturnType<P, "GET"> {
         // const name: keyof DataInfo_Strict = "codeF";
@@ -181,7 +181,7 @@ export class CodeFStorageEndpoint extends SpecificRestApiEndpoint {
             throw new ErrorDto("invalid-argument", strTemplates.notValid("Data info"))
         }
 
-        // console.log(setInfo.getInfo.id);
+        // appLogger.info(setInfo.getInfo.id);
 
         const {reader, dataWriter} = this.sendMultipart({
             url: this.config.host + codeFUris.addFragment[1](),

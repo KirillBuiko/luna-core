@@ -5,4 +5,6 @@ export const serverConfigs: ServerConfigsType = {
         host: '0.0.0.0'},
     // grpcServer: {port: Number(process.env.GRPC_PORT || 5052),
     //     host: '0.0.0.0'}
+    operatorsServer: {port: Number(process.env.REST_PORT || 5053),
+        host: '0.0.0.0'},
 }

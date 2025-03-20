@@ -1,29 +1,43 @@
 import type {IEndpointsManager} from "@/request-manager/types/IEndpointsManager";
-import type {EndpointConfigsType, EndpointName} from "@/app/types/RemoteStaticEndpointConfigType";
-import {endpoints} from "./index";
+import type {EndpointConfigsType, EndpointGroup} from "@/app/types/RemoteStaticEndpointConfigType";
+import {endpointConstructors} from "./index";
+import type {IEndpoint} from "@/request-manager/types/IEndpoint";
+import {coreLogger} from "@/app/main";
 
 export class EndpointsManager implements IEndpointsManager {
-    getEndpoint(endpointName: EndpointName) {
-        return endpoints[endpointName];
-    }
+	endpoints: Map<string, IEndpoint> = new Map();
 
-    async initAll(configs: EndpointConfigsType) {
-        console.log("Endpoints are initiating");
-        const promises = Object.keys(endpoints).map(async endpointName => {
-            const endpoint = endpoints[endpointName as EndpointName];
-            const config = configs[endpointName as EndpointName];
-            try {
-                const err = await endpoint.init(config);
-                if (err) {
-                    console.log(`The endpoint "${endpointName}" init attempt failed with error: ${err.message}`);
-                } else {
-                    console.log(`The endpoint "${endpointName}" connected to host ${config.host}`);
-                }
-            } catch (err) {
-                throw err;
-            }
-        });
-        await Promise.allSettled(promises);
-        console.log("Endpoints init finished");
-    }
+	getEndpoint(endpointId: string) {
+		return this.endpoints.get(endpointId);
+	}
+
+	getEndpointsByGroup(endpointGroup: EndpointGroup): string[] {
+		return Array.from(this.endpoints.entries()).reduce<string[]>((ids, [endpointId, endpoint]) => {
+			endpoint.config.group === endpointGroup && ids.push(endpointId);
+			return ids;
+		}, []);
+	}
+
+	getAllEndpoints(): { [id: string]: IEndpoint } {
+		return Array.from(this.endpoints.entries()).reduce((endpoints, [endpointId, endpoint]) => {
+			endpoints[endpointId] = endpoint;
+			return endpoints;
+		}, {} as { [id: string]: IEndpoint });
+	}
+
+	async initAll(configs: EndpointConfigsType) {
+		coreLogger.info("Endpoints are initiating");
+		const promises = configs.map(async config => {
+			const endpoint = new endpointConstructors[config.name];
+			this.endpoints.set(config.id, endpoint);
+			const err = await endpoint.init(config);
+			if (err) {
+				coreLogger.error(`The endpoint "${config.name}" init attempt failed with error: ${err.message}`);
+			} else {
+				coreLogger.info(`The endpoint "${config.name}" connected to host ${config.host}`);
+			}
+		});
+		await Promise.allSettled(promises);
+		coreLogger.info("Endpoints init finished");
+	}
 }

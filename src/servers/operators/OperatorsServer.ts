@@ -1,46 +1,48 @@
 import type {IServer, ServerStatus} from "@/app/types/ICoreServer";
 import type {IRequestManager} from "@/request-manager/types/IRequestManager";
 import type {ServerConfigType} from "@/app/types/ServerConfigType";
-import express from 'express';
-import {createServer, Server} from 'node:http';
 import {type DisconnectReason, Server as IOServer, Socket} from 'socket.io';
 import type {IServerDependencies} from "@/app/types/IServerDependencies";
-import type {CorrelationIdType, EventBody, EventCallback, EventMap, SubscribeEventBody} from "@/event-bus/IEventBus";
+import type {CorrelationIdType, EventBody, EventCallback, SubscribeEventBody} from "@/event-bus/IEventBus";
 import type {SocketEventMap} from "@/servers/operators/types";
 import {ErrorDto} from "@/endpoints/ErrorDto";
 import {Readable} from "node:stream";
 import type {BusboyFileStream} from "@fastify/busboy";
+import {isSubset} from "@/event-bus/utils";
+import * as http from "node:http";
 
 type MySocket = Socket<SocketEventMap, SocketEventMap>;
 
-export class OperatorsSocket implements IServer {
+export class OperatorsServer implements IServer {
 	requestManager: IRequestManager | undefined;
 	status: ServerStatus;
 	io: IOServer<SocketEventMap, SocketEventMap>;
-	server: Server;
 	subscriptions: WeakMap<MySocket, SubscribeEventBody>;
 	deps: IServerDependencies;
 	private readonly thisEventBusCallback: EventCallback;
 
 	constructor() {
-		const app = express();
-		this.server = createServer(app);
-		this.io = new IOServer(this.server);
+		this.io = new IOServer();
 		this.subscriptions = new Map();
 		this.thisEventBusCallback = this.onEventBusEvent.bind(this);
 	}
 
 	async start(config: ServerConfigType, deps: IServerDependencies): Promise<Error | null> {
 		this.deps = deps;
-		const connectionPromise = new Promise<Error | null>((resolve, reject) => {
-			this.server.listen(config.port, () => {
-				resolve(null);
-			});
-			this.server.on("error", (err) => {
-				resolve(err);
-			});
+
+		const socket_http = http.createServer();
+
+		this.io = new IOServer(socket_http, {
+			cors: {
+				origin: "*"
+			}
 		});
 
+		const connectionPromise = new Promise<Error | null>((resolve) => {
+			socket_http.listen(config.port, () => {
+				resolve(null);
+			});
+		});
 
 		this.io.on('connection', (socket) => {
 			socket.on("subscribe", (...args) =>
@@ -66,11 +68,11 @@ export class OperatorsSocket implements IServer {
 		return Promise.resolve(undefined);
 	}
 
-	onDisconnect(reason: DisconnectReason, description?: any) {
+	onDisconnect(_reason: DisconnectReason, _description?: any) {
 
 	}
 
-	onError(err: Error) {
+	onError(_err: Error) {
 		// TODO: need to send error on all events on this socket
 	}
 
@@ -78,9 +80,23 @@ export class OperatorsSocket implements IServer {
 		if (event.eventName === "subscribe") {
 			this.subscriptions.set(socket, event);
 		}
+		this.onEventBusEvent(event, _corrId, true);
 	}
 
 	onMakeRequest(socket: MySocket, event: EventBody, corrId: CorrelationIdType) {
+		// if (event.eventName === "make-request") {
+		// 	let backEvent: EventBody = event.name === "GET"
+		// 		? {
+		// 			eventName: "make-request-response",
+		// 			buffer: "ping"
+		// 		}
+		// 		: {
+		// 			eventName: "make-request-response",
+		// 			buffer: "pong"
+		// 		};
+		// 	socket.emit(backEvent.eventName, backEvent, corrId);
+		// 	this.onEventBusEvent(event, corrId, true);
+		// }
 		if (event.eventName === "make-request") {
 			if (event.name == "SET") {
 				if (!event.buffer) {
@@ -101,10 +117,10 @@ export class OperatorsSocket implements IServer {
 							error
 						} : {
 							eventName: "make-request-response",
-							buffer: info
+							buffer: Buffer.from(JSON.stringify(info))
 						}
 						socket.emit(event.eventName, event, corrId);
-						this.eventByPass(socket, event, corrId);
+						this.onEventBusEvent(event, corrId, true);
 					}
 				}, {
 					requestType: event.type,
@@ -118,15 +134,36 @@ export class OperatorsSocket implements IServer {
 					requestName: "GET",
 					protocol: "REST_API",
 					sourceWriter: (error, value) => {
-						let event: EventBody = error ? {
-							eventName: "event-error",
-							error
-						} : {
-							eventName: "make-request-response",
-							buffer: info
+						if (error || !value || !value.data) {
+							let event: EventBody = {
+								eventName: "event-error",
+								error: error || new ErrorDto("unknown", "No stream object")
+							};
+							socket.emit(event.eventName, event, corrId);
+							this.onEventBusEvent(event, corrId, true);
+						} else {
+							const buffer: Buffer[] = [];
+							value.data.on("data", (chunk) => {
+								chunk && buffer.push(chunk);
+							})
+							value.data.on("end", (chunk) => {
+								chunk && buffer.push(chunk);
+								let event: EventBody = {
+									eventName: "make-request-response",
+									buffer: Buffer.concat(buffer)
+								}
+								socket.emit(event.eventName, event, corrId);
+								this.onEventBusEvent(event, corrId, true);
+							})
+							value.data.on("error", (err) => {
+								let event: EventBody = {
+									eventName: "event-error",
+									error: err
+								};
+								socket.emit(event.eventName, event, corrId);
+								this.onEventBusEvent(event, corrId, true);
+							})
 						}
-						socket.emit(event.eventName, event, corrId);
-						this.eventByPass(socket, event, corrId);
 					}
 				}, {
 					requestType: event.type,
@@ -137,34 +174,46 @@ export class OperatorsSocket implements IServer {
 			}
 
 		}
-		this.eventByPass(socket, event, corrId);
+		this.onEventBusEvent(event, corrId, true);
 	}
 
 	eventByPass(_socket: MySocket, event: EventBody, correlationId: CorrelationIdType) {
-		this.deps.eventBus.emit(event, {correlationId});
+		this.deps.eventBus.emit(event, {
+			correlationId,
+			ignoreCallback: this.thisEventBusCallback
+		});
+		this.onEventBusEvent(event, correlationId, true);
 	}
 
-	onEventBusEvent(body: EventBody, correlationId: CorrelationIdType) {
+	onEventBusEvent(event: EventBody, correlationId: CorrelationIdType, secondary = false) {
+		if (secondary) {
+			// TODO: emit events about events
+			return;
+		}
 		let anyFired = false;
 		this.io.sockets.sockets.forEach((socket) => {
 			const subscription = this.subscriptions.get(socket);
 			if (subscription) {
-				const fired = subscription.subscribes.some(subEvent =>
-					isSubset(body, subEvent)
-				)
+				const fired = subscription.subscribes.some(subEvent => {
+					return isSubset(event, subEvent)
+				})
+
 				if (fired && socket.connected) {
 					anyFired = true;
-					socket.emit(body.eventName, body, correlationId);
+					socket.emit(event.eventName, event, correlationId);
 				}
 			}
 		});
-		if (!anyFired) {
-			this.deps.eventBus.emit({
-				eventName: "event-error",
-				error: new ErrorDto("unavailable", "There no operators subscribed to event")
-			}, {
-				correlationId: correlationId
-			});
+		if (!anyFired && event.eventName !== "event-error") {
+			queueMicrotask(() => {
+				this.deps.eventBus.emit({
+					eventName: "event-error",
+					error: new ErrorDto("unavailable", "There no operators subscribed to event")
+				}, {
+					correlationId: correlationId,
+					ignoreCallback: this.thisEventBusCallback
+				});
+			})
 		}
 	}
 }

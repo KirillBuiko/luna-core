@@ -1,5 +1,4 @@
 import type {GetInfo_Strict} from "@grpc-build/GetInfo";
-import type {Multipart} from "@fastify/multipart";
 import type {sendUnaryData} from "@grpc/grpc-js";
 import type {IRequestManager} from "@/request-manager/types/IRequestManager";
 import type {FastifyReply, FastifyRequest} from "fastify";
@@ -105,7 +104,7 @@ export function V1RestApiActions(requestManager: IRequestManager) {
     }
 
     // async function debugHandler (req, res) {
-    //     console.log(req.headers);
+    //     appLogger.info(req.headers);
     //     if ((req.headers["content-type"] as string)?.includes("multipart")) {
     //         let parts: AsyncIterableIterator<Multipart>;
     //         parts = req.parts();
@@ -116,21 +115,21 @@ export function V1RestApiActions(requestManager: IRequestManager) {
     //                 return;
     //             }
     //             const part = next.value as Multipart;
-    //             console.log(part.type, part.fieldname, part.mimetype);
+    //             appLogger.info(part.type, part.fieldname, part.mimetype);
     //             if (part.type == "field") {
-    //                 console.log(part.value);
+    //                 appLogger.info(part.value);
     //             } else if (part.type == "file") {
     //                 let counter = 0;
     //                 part.file.on("data", (data) => {
-    //                     console.log("[PACK]", data);
+    //                     appLogger.info("[PACK]", data);
     //                     counter += data.length;
     //                 }).on("end", () => {
-    //                     console.log("Length ",counter);
+    //                     appLogger.info("Length ",counter);
     //                 })
     //             }
     //         }
     //     } else {
-    //         console.log(req.body)
+    //         appLogger.info(req.body)
     //         res.send(200);
     //     }
     //     await res;
