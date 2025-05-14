@@ -4,7 +4,7 @@ import { io, Socket } from 'socket.io-client';
 import type {IServerDependencies} from "@/app/types/IServerDependencies";
 import type {CorrelationIdType, EventBody, SubscribeEventBody} from "@/event-bus/IEventBus";
 import type {SocketEventMap} from "@/servers/operators/types";
-import {operatorsLogger} from "../main";
+import {operatorsLogger} from ".";
 
 type MySocket = Socket<SocketEventMap, SocketEventMap>;
 
@@ -34,9 +34,9 @@ export class OperatorsClient implements IOperatorClient {
 			withCredentials: true,
 		});
 
-		this.io.on('connect', () => {
+		this.io.on('connect', async () => {
 			resolvePromise(null);
-			operatorsLogger.info("Connected");
+			await operatorsLogger.info("Connected");
 			this.io.on("new-request", (...args) =>
 				this.eventByPass(...args));
 			this.io.on("make-request-response", (...args) =>

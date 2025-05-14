@@ -6,6 +6,6 @@ export const endpointsLogger = new Logger(__dirname, "ENDPOINTS");
 
 (async function(): Promise<void> {
 	await runKiller(__dirname);
-	endpointsLogger.info("Running endpoints...");
+	await endpointsLogger.info("Running endpoints...");
 	initVariableStorages();
 })()

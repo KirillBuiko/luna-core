@@ -6,6 +6,6 @@ export const operatorsLogger = new Logger(__dirname, "OPERATORS");
 
 (async function() {
 	await runKiller(__dirname);
-	operatorsLogger.info("Running operators...");
+	await operatorsLogger.info("Running operators...");
 	await initVariableStorageOperator();
 })()

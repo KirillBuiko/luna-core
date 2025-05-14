@@ -102,7 +102,6 @@ export class RestApiEndpoint extends Endpoint {
         const contentType = options.contentType || options.body && (typeof options.body == "string"
             ? "application/json"
             : "application/octet-stream");
-        coreLogger.info(options.url);
         const body = options.body && (typeof options.body == "string"
             ? options.body
             : options.body);

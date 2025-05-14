@@ -28,14 +28,15 @@ export interface EventNameBody<N extends EventName = EventName> {
 export interface NewRequestEventBody extends ComponentsInfoBody, EventNameBody<"new-request"> {
 	type: RequestType,
 	name: RequestName,
-	params?: object
+	params?: Record<string, string>
 }
 
 export interface MakeRequestEventBody extends EventNameBody<"make-request"> {
 	type: RequestType,
 	name: RequestName,
 	params?: object,
-	buffer?: Buffer
+	buffer?: Buffer,
+	componentId?: string
 }
 
 export interface NewRequestTargetEventBody extends EventNameBody<"new-request-target"> {
@@ -43,11 +44,11 @@ export interface NewRequestTargetEventBody extends EventNameBody<"new-request-ta
 }
 
 export interface NewRequestResponseEventBody extends EventNameBody<"new-request-response"> {
-	buffer: Buffer
+	buffer: Buffer | null
 }
 
 export interface MakeRequestResponseEventBody extends EventNameBody<"make-request-response"> {
-	buffer?: Buffer | null
+	buffer: Buffer | null
 }
 
 export interface ErrorResponse extends EventNameBody<"event-error"> {
@@ -94,5 +95,5 @@ export interface IEventBus {
 
 	emit(body: EventBody, options?: EmitOptions): EmittedEventDescriptor;
 
-	removeListener(callback: EventCallback): void;
+	off(callback: EventCallback): void;
 }

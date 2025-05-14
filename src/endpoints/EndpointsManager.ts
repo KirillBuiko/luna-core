@@ -26,18 +26,18 @@ export class EndpointsManager implements IEndpointsManager {
 	}
 
 	async initAll(configs: EndpointConfigsType) {
-		coreLogger.info("Endpoints are initiating");
+		await coreLogger.info("Endpoints are initiating");
 		const promises = configs.map(async config => {
 			const endpoint = new endpointConstructors[config.name];
 			this.endpoints.set(config.id, endpoint);
 			const err = await endpoint.init(config);
 			if (err) {
-				coreLogger.error(`The endpoint "${config.name}" init attempt failed with error: ${err.message}`);
+				await coreLogger.error(`The endpoint "${config.name}" init attempt failed with error: ${err.message}`);
 			} else {
-				coreLogger.info(`The endpoint "${config.name}" connected to host ${config.host}`);
+				await coreLogger.info(`The endpoint "${config.name}" connected to host ${config.host}`);
 			}
 		});
 		await Promise.allSettled(promises);
-		coreLogger.info("Endpoints init finished");
+		await coreLogger.info("Endpoints init finished");
 	}
 }

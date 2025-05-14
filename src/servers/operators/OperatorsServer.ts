@@ -99,17 +99,10 @@ export class OperatorsServer implements IServer {
 		// }
 		if (event.eventName === "make-request") {
 			if (event.name == "SET") {
-				if (!event.buffer) {
-					socket.emit("event-error", {
-						eventName: "event-error",
-						error: new ErrorDto("invalid-argument", "Operator do not pass buffer to SET request")
-					}, corrId);
-					return;
-				}
 				void this.deps.requestsManager.register({
 					requestName: "SET",
 					protocol: "REST_API",
-					sourceReader: Readable.from(event.buffer) as BusboyFileStream,
+					sourceReader: event.buffer && Readable.from(event.buffer) as BusboyFileStream,
 					sourceWriter: (error, value) => {
 						const info = value && value[value.infoType!];
 						let event: EventBody = error ? {
@@ -125,8 +118,11 @@ export class OperatorsServer implements IServer {
 				}, {
 					requestType: event.type,
 					dataType: "BYTES",
-					infoType: "custom",
-					custom: event.params,
+					dataValueType: "custom",
+					custom: {
+						getInfo: event.params
+					},
+					endpointId: event.componentId,
 				})
 			} else if (event.name == "GET") {
 				// TODO: finish GET request
@@ -169,6 +165,7 @@ export class OperatorsServer implements IServer {
 					requestType: event.type,
 					dataType: "BYTES",
 					infoType: "custom",
+					endpointId: event.componentId,
 					custom: event.params,
 				})
 			}

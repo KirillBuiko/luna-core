@@ -39,13 +39,13 @@ export class EventBus implements IEventBus {
 	once<E extends EventName>(callback: EventCallback, filter?: BodyFilter<E>): void {
 		const callbackWrapper = (body: EventBody, correlationId: CorrelationIdType) => {
 			if (this.resolveCallback(body, correlationId, callback, filter)) {
-				this.removeListener(callback);
+				this.off(callback);
 			}
 		}
 		this.listeners.set(callback, callbackWrapper);
 	}
 
-	removeListener(callback: EventCallback): void {
+	off(callback: EventCallback): void {
 		this.listeners.delete(callback);
 	}
 

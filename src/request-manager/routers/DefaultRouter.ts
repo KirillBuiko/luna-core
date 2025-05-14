@@ -3,21 +3,20 @@ import type {RequestType_Strict} from "@grpc-build/RequestType";
 
 import type {RequestName} from "@/types/general";
 import {RequestRouter, type RouterResult} from "@/request-manager/routers/RequestRouter";
-import type {IRequestManager} from "@/request-manager/types/IRequestManager";
 import type {IEndpointsManager} from "@/request-manager/types/IEndpointsManager";
 import type {IEventBus} from "@/event-bus/IEventBus";
 
 export class DefaultRouter extends RequestRouter {
     routes: {[requestType in RequestType_Strict]?: {[requestName in RequestName]: string | RequestRouter | null}};
 
-    constructor(deps: {requestManager: IRequestManager, endpointsManager: IEndpointsManager, eventBus: IEventBus}) {
-        super(deps);
+    constructor(protected deps: {endpointsManager: IEndpointsManager, eventBus: IEventBus}) {
+        super();
         setTimeout(() => {
             this.initRoutes();
         })
     }
 
-    async getRouterResult(requestType: RequestType_Strict, requestName: RequestName): Promise<RouterResult | null> {
+    async getRouterResult(requestType: RequestType_Strict, requestName: RequestName, params: Record<string, string>): Promise<RouterResult | null> {
         const route: null | string | RequestRouter =
             (this.routes && this.routes[requestType] && this.routes[requestType]![requestName]) || null;
         if (typeof route == "string") return {

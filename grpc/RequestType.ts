@@ -2,6 +2,7 @@
 
 export const RequestType = {
   UNKNOWN_REQUEST_TYPE: 'UNKNOWN_REQUEST_TYPE',
+  OP_QUALITY_REPORT: 'OP_QUALITY_REPORT',
   CODE_F: 'CODE_F',
   CODE_F_LIST: 'CODE_F_LIST',
   CODE_F_INFO: 'CODE_F_INFO',
@@ -18,6 +19,8 @@ export const RequestType = {
 export type RequestType =
   | 'UNKNOWN_REQUEST_TYPE'
   | 0
+  | 'OP_QUALITY_REPORT'
+  | 100
   | 'CODE_F'
   | 202
   | 'CODE_F_LIST'

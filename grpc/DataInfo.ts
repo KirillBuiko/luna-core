@@ -9,6 +9,7 @@ import type { Empty as _Empty, Empty_Strict as _Empty_Strict } from './Empty';
 
 export interface DataInfo {
   'requestType'?: (_RequestType);
+  'endpointId'?: (string);
   'dataType'?: (_DataType);
   'codeF'?: (_BasicSettableJsonData | null);
   'codeFInfo'?: (_BasicJsonData | null);
@@ -27,6 +28,7 @@ export interface DataInfo {
 
 export interface DataInfo_Strict {
   'requestType'?: (_RequestType_Strict);
+  'endpointId'?: (string);
   'dataType'?: (_DataType_Strict);
   'codeF'?: (_BasicSettableJsonData_Strict);
   'codeFInfo'?: (_BasicJsonData_Strict);

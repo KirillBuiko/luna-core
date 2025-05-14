@@ -6,6 +6,7 @@ import type { CodeFPluginProcedureGet as _CodeFPluginProcedureGet, CodeFPluginPr
 
 export interface GetInfo {
   'requestType'?: (_RequestType);
+  'endpointId'?: (string);
   'codeFGet'?: (_BasicIdGet | null);
   'codeFInfoGet'?: (_BasicIdGet | null);
   'codeFPluginGet'?: (_BasicIdGet | null);
@@ -20,6 +21,7 @@ export interface GetInfo {
 
 export interface GetInfo_Strict {
   'requestType'?: (_RequestType_Strict);
+  'endpointId'?: (string);
   'codeFGet'?: (_BasicIdGet_Strict);
   'codeFInfoGet'?: (_BasicIdGet_Strict);
   'codeFPluginGet'?: (_BasicIdGet_Strict);

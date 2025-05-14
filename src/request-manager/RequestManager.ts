@@ -24,21 +24,39 @@ export class RequestManager implements IRequestManager {
 	pipeBuilder: IPipeBuilder = new PipeBuilder();
 
 	constructor(private deps: { endpointsManager: IEndpointsManager, eventBus: IEventBus }) {
-		this.defaultRouter = new DefaultRouter({requestManager: this, ...deps});
-		this.operatorsRouter = new OperatorsRouter({requestManager: this, ...deps});
+		this.defaultRouter = new DefaultRouter({...deps});
+		this.operatorsRouter = new OperatorsRouter({...deps});
 	}
 
 	private async getRoutersResult(sourceOptions: SourceOptionsType, info: GetInfo | DataInfo): Promise<RouterResult | null> {
+		if (info.endpointId) {
+			await coreLogger.info("Endpoint fixed: ", info.endpointId);
+			return {
+				endpointId: info.endpointId
+			};
+		}
 		try {
-			const result = await this.operatorsRouter.getRouterResult(info.requestType as RequestType_Strict, sourceOptions.requestName);
-			coreLogger.info("Endpoint resolved by operator");
+			const params = (() => {
+				if (sourceOptions.requestName === "GET") {
+					const castedInfo = (info as GetInfo);
+					const getInfo = castedInfo.infoType && castedInfo[castedInfo.infoType];
+					return (getInfo && typeof getInfo === "object") ? getInfo : undefined;
+				} else {
+					const castedInfo = (info as DataInfo);
+					const dataValue = castedInfo.dataValueType && castedInfo[castedInfo.dataValueType];
+					const getInfo = dataValue && "getInfo" in dataValue && dataValue.getInfo;
+					return (getInfo && typeof getInfo === "object") ? getInfo : undefined;
+				}
+			})() as Record<string, string>;
+			const result = await this.operatorsRouter.getRouterResult(info.requestType as RequestType_Strict, sourceOptions.requestName, params);
+			await coreLogger.info("Endpoint resolved by operator");
 			return result;
 		} catch (e) {
 			// TODO: add endpoint search error handling
 		}
 		try {
 			const result = await this.defaultRouter.getRouterResult(info.requestType as RequestType_Strict, sourceOptions.requestName);
-			coreLogger.info("Endpoint resolved by default router");
+			await coreLogger.info("Endpoint resolved by default router");
 			return result;
 		} catch (e) {
 			// TODO: add endpoint search error handling
@@ -49,7 +67,11 @@ export class RequestManager implements IRequestManager {
 
 	async register(sourceOptions: SourceOptionsType, info: GetInfo | DataInfo) {
 		const result = await this.getRoutersResult(sourceOptions, info);
-		coreLogger.info("Router result: ", result);
+		if (result?.buffer) {
+			await coreLogger.info("Request resolving result: ", result.buffer.toString());
+		} else {
+			await coreLogger.info("Request resolving result: ", result);
+		}
 
 		const endpoint = result?.endpointId ? this.deps.endpointsManager.getEndpoint(result.endpointId) : null;
 
@@ -65,8 +87,8 @@ export class RequestManager implements IRequestManager {
 				const destOptions = endpoint.createSendHandler(sourceOptions.requestName, info);
 				this.pipeBuilder.buildPipe(sourceOptions, destOptions);
 			} catch (e) {
-				coreLogger.info(`Failed to ${sourceOptions.requestName} ` +
-					`${info.requestType} from ${sourceOptions.protocol} to ${endpoint.config.name}: ${e}`);
+				await coreLogger.info(`Failed to ${sourceOptions.requestName} ` +
+					`${info.requestType} from ${sourceOptions.protocol} to ${endpoint.config.name}:`,e);
 				(new PipeErrorHandler()).sourceErrorEmit(sourceOptions,
 					ErrorMessage.create(e));
 
@@ -85,8 +107,8 @@ export class RequestManager implements IRequestManager {
 					})
 				});
 			} catch (e) {
-				coreLogger.info(`Failed to ${sourceOptions.requestName} ` +
-					`${info.requestType} from ${sourceOptions.protocol} to Buffer: ${e}`);
+				await coreLogger.info(`Failed to ${sourceOptions.requestName} ` +
+					`${info.requestType} from ${sourceOptions.protocol} to Buffer:`,e);
 				(new PipeErrorHandler()).sourceErrorEmit(sourceOptions,
 					ErrorMessage.create(e));
 			}

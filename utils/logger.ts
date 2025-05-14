@@ -20,19 +20,19 @@ export class Logger {
 		});
 	}
 
-	log(level: LogLevel, ...args: any[]) {
+	async log(level: LogLevel, ...args: any[]) {
 		const loggerName = this.loggerName ? `[${this.loggerName}] ` : "";
 		const loggerLevel = `[${level}] `;
 		const loggerDate = `[${new Date().toLocaleTimeString()}] `;
 		const output = `${loggerLevel}${loggerName}${loggerDate} ${format(...args)}`;
 		console[level === "ERROR" ? "error" : "log"]?.(output);
-		this.file.write(output + '\n');
+		return new Promise((resolve) => this.file.write(output + '\n', resolve));
 	}
 
 	byPass(...args: any[]) {
 		const output = `${format(...args)}`;
 		process.stdout.write(output);
-		this.file.write(output);
+		return new Promise((resolve) => this.file.write(output, resolve));
 	}
 
 	info(...args: any[]) {

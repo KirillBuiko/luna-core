@@ -35,13 +35,13 @@ function Storage() {
 		return id;
 	}
 
-	this.get_keys = function () {
+	const get_keys = function () {
 		return use => {
 			use(Object.keys(db));
 		};
 	}
 
-	this.create_value = function (data_provider) {
+	const create_value = function (data_provider) {
 		return use => {
 			data_provider(data => {
 				use(create_record(data));
@@ -49,14 +49,14 @@ function Storage() {
 		};
 	}
 
-	this.get_value = function (id, val_cb, miss_cb) {
+	const get_value = function (id, val_cb, miss_cb) {
 		if (id in db)
 			val_cb(use => use(Buffer.from(db[id].val, "base64")));
 		else
 			miss_cb();
 	}
 
-	this.erase = function (id, done_cb, miss_cb) {
+	const erase = function (id, done_cb, miss_cb) {
 		if (id in db) {
 			delete db[id];
 			done_cb();
@@ -64,7 +64,7 @@ function Storage() {
 			miss_cb();
 	}
 
-	this.reset_meta = function (id, meta_provider, cb, miss_cb) {
+	const reset_meta = function (id, meta_provider, cb, miss_cb) {
 		if (meta_provider === undefined)
 			meta_provider = use => use(undefined);
 
@@ -77,8 +77,18 @@ function Storage() {
 		});
 	}
 
-	this.get_meta = function (id, cb, miss_cb) {
+	const get_meta = function (id, cb, miss_cb) {
 		return id in db ? cb(db[id].meta) : miss_cb();
+	}
+
+	return {
+		get_meta,
+		reset_meta,
+		erase,
+		get_keys,
+		create_value,
+		create_record,
+		get_value
 	}
 }
 
@@ -183,8 +193,8 @@ const type = what => (
 
 const rjust = what => what.length < 6 ? ' '.repeat(6 - what.length) + what : what;
 
-function handle_request(req, res, storage, url_prefix, config) {
-	endpointsLogger.info(config.name, rjust(req.method), req.url);
+async function handle_request(req, res, storage, url_prefix, config) {
+	await endpointsLogger.info(`[${config.name}]`, rjust(req.method), req.url);
 
 	const r = new Responder(res);
 
@@ -235,7 +245,7 @@ function handle_request(req, res, storage, url_prefix, config) {
 // MAIN
 
 export function initVariableStorage1(config?: RemoteStaticEndpointConfigType) {
-	const storage = new Storage();
+	const storage = Storage();
 	const urlPrefix = "/valst";
 
 	if (!config) {

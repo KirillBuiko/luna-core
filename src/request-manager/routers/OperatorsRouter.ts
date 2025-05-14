@@ -3,16 +3,13 @@ import type {RequestType_Strict} from "@grpc-build/RequestType";
 
 import type {RequestName} from "@/types/general";
 import {RequestRouter, type RouterResult} from "@/request-manager/routers/RequestRouter";
-import type {IRequestManager} from "@/request-manager/types/IRequestManager";
 import type {IEndpointsManager} from "@/request-manager/types/IEndpointsManager";
 import type {ComponentDescriptor, IEventBus} from "@/event-bus/IEventBus";
 import {ErrorDto} from "@/endpoints/ErrorDto";
 
 export class OperatorsRouter extends RequestRouter {
-    routes: {[requestType in RequestType_Strict]?: {[requestName in RequestName]: string | RequestRouter | null}};
-
-    constructor(deps: {requestManager: IRequestManager, endpointsManager: IEndpointsManager, eventBus: IEventBus}) {
-        super(deps);
+    constructor(protected deps: {endpointsManager: IEndpointsManager, eventBus: IEventBus}) {
+        super();
     }
 
     private getComponents(): ComponentDescriptor[] {
@@ -24,11 +21,12 @@ export class OperatorsRouter extends RequestRouter {
         }))
     }
 
-    async getRouterResult(requestType: RequestType_Strict, requestName: RequestName): Promise<RouterResult | null> {
+    async getRouterResult(requestType: RequestType_Strict, requestName: RequestName, params: Record<string, string>): Promise<RouterResult | null> {
         const requestDesc = this.deps.eventBus.emit({
             eventName: "new-request",
             type: requestType,
             name: requestName,
+            params,
             components: this.getComponents()
         })
         const event = await this.deps.eventBus.wait(requestDesc, 15000);
@@ -37,7 +35,7 @@ export class OperatorsRouter extends RequestRouter {
                 throw event.error;
             case "new-request-response":
                 return {
-                    buffer: event.buffer
+                    buffer: event.buffer || undefined
                 }
             case "new-request-target":
                 return {
